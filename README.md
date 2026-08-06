@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PETE-PETE 💸
 
-## Getting Started
+PETE-PETE adalah aplikasi *split bill* (bagi tagihan) modern, asyik, dan gak kaku yang dirancang khusus untuk anak muda dan geng tongkrongan. Aplikasi ini mempermudah perhitungan patungan makan, belanja, atau liburan bersama menggunakan teknologi **AI OCR Scan Struk** dan management multi-rekening/QRIS.
 
-First, run the development server:
+> *"Udah ga perlu ribet ngitung-ngitung tagihan manual lagi. Foto struknya, pilih siapa mesen apa, terus share ke grup. Beres!"*
 
+---
+
+## ✨ Fitur Utama
+
+- 📸 **Scan Foto Struk (AI OCR)**: Cukup upload foto struk makan/belanja, AI akan otomatis mendeteksi nama menu, kuantitas, dan harganya.
+- ✍️ **Input Manual ala Tongkrongan**: Form input manual super gampang, bisa tambah anggota geng, pilih siapa split menu apa, dan siapa yang bayar duluan.
+- 🏦 **Multi-Rekening / Wallet**: Satu user bisa mendaftarkan banyak nomor rekening bank, e-wallet (GoPay, OVO, Dana), hingga custom URL gambar QRIS dengan logo sharp (menggunakan aset dari [idn-finlogos](https://github.com/hafidznoor/idn-finlogos)).
+- 🔗 **Pilih Rekening Sesi**: Pilih rekening transfer spesifik dari profil saat membuat sesi patungan baru.
+- 💬 **Bagi Tagihan & Share WA**: Hitung split bill instan dan bagikan rincian patungan langsung ke grup WhatsApp teman-teman lo dengan satu klik.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router, React 19)
+- **Database ORM**: [Prisma ORM](https://www.prisma.io/) dengan Database PostgreSQL
+- **Authentication**: [Better Auth](https://www.better-auth.com/)
+- **UI Design System**: Built with customized [Untitled UI Components](https://github.com/untitledui) & [React Aria Components](https://react-spectrum.adobe.com/react-aria/react-aria-components.html)
+- **Styling**: Tailwind CSS v4
+- **Logo Assets**: Cloned from [idn-finlogos](https://github.com/hafidznoor/idn-finlogos)
+
+---
+
+## 🚀 Cara Menjalankan Project Secara Lokal
+
+### 1. Prasyarat (Prerequisites)
+Pastikan lo sudah menginstal:
+- [Node.js](https://nodejs.org/) (versi 18+ direkomendasikan)
+- [PostgreSQL](https://www.postgresql.org/) (running local database)
+
+### 2. Clone Repositori
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/username/pete-pete-splitbill.git
+cd pete-pete-splitbill
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Instal Dependensi
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Setup Environment Variable (`.env`)
+Buat file bernama `.env` di root direktori project, lalu isi dengan konfigurasi berikut:
+```env
+# Koneksi PostgreSQL Database
+DATABASE_URL="postgresql://username:password@localhost:5432/spitbill_db?schema=public"
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Better Auth secret & base URL
+BETTER_AUTH_SECRET="buat_random_secret_string_lo_di_sini"
+BETTER_AUTH_URL="http://localhost:3000"
 
-## Learn More
+# Optional: API Key untuk OCR Struk jika ingin menggunakan model AI penuh
+GEMINI_API_KEY="api_key_gemini_lo_di_sini"
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Setup Database & Prisma Migrations
+Jalankan perintah ini untuk generate client Prisma dan sinkronisasi skema ke database:
+```bash
+npx prisma generate
+npx prisma db push
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 6. Jalankan Server Development
+```bash
+npm run dev
+```
+Buka [http://localhost:3000](http://localhost:3000) di browser lo untuk mencoba aplikasinya secara lokal.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🤝 Cara Berkontribusi (Open for Contributions)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Kami sangat senang menerima kontribusi dari komunitas! Baik itu memperbaiki bug, menambahkan fitur baru, merapikan UI, atau sekadar memperbaiki typo di dokumentasi. 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Berikut langkah-langkah untuk berkontribusi:
+
+1. **Fork** repositori ini ke akun GitHub lo.
+2. **Clone** hasil fork lo ke komputer lokal:
+   ```bash
+   git clone https://github.com/username-lo/pete-pete-splitbill.git
+   ```
+3. Buat branch baru untuk fitur atau perbaikan lo:
+   ```bash
+   git checkout -b feature/fitur-keren-baru
+   ```
+4. Lakukan perubahan kode, pastikan kode lo rapi dan berjalan dengan baik.
+5. Jalankan pengecekan TypeScript & Linter untuk memastikan tidak ada build error:
+   ```bash
+   npx tsc --noEmit
+   npm run lint
+   ```
+6. Commit perubahan lo dengan pesan commit yang jelas:
+   ```bash
+   git commit -m "feat: tambah integrasi split bill via Line/Telegram"
+   ```
+7. Push ke branch lo:
+   ```bash
+   git push origin feature/fitur-keren-baru
+   ```
+8. Buka halaman repositori asli di GitHub, lalu klik tombol **New Pull Request**. Jelaskan secara detail perubahan yang lo buat dengan menggunakan format template berikut:
+   
+   ### 📝 Template Deskripsi Pull Request (PR)
+   ```markdown
+   ## 🎯 Tujuan PR
+   Jelaskan secara singkat apa tujuan dari PR ini (misal: "Memperbaiki overflow pada form input manual di mobile" atau "Menambahkan fitur integrasi pembayaran QRIS BCA").
+   
+   - Closes #issue-number (jika ada issue terkait)
+   
+   ## 🛠️ Perubahan yang Dilakukan
+   Sebutkan file apa saja yang diubah dan detail logika baru yang dimasukkan:
+   - [x] Refactor `ProfileForm.tsx` untuk memindahkan form input bank ke page baru.
+   - [x] Modifikasi `button.tsx` menggunakan `flex` dibanding `inline-flex` untuk responsivitas layout.
+   
+   ## 🧪 Langkah Pengujian
+   Tuliskan langkah-langkah detail agar reviewer bisa mencoba hasil kodemu secara lokal:
+   1. Jalankan development server `npm run dev`.
+   2. Masuk ke dashboard, pilih menu profil, lalu klik "Tambah Bank".
+   3. Coba isi dengan QRIS dan periksa apakah logo QRIS muncul dengan tajam.
+   4. Hapus salah satu rekening dan pastikan datanya hilang di database.
+   
+   ## 📸 Bukti Visual (Screenshot / GIF)
+   > Wajib dilampirkan jika ada perubahan tampilan UI/UX!
+   | Sebelum (Before) | Sesudah (After) |
+   | --- | --- |
+   | [Link/Foto Sebelum] | [Link/Foto Sesudah] |
+   ```
+
+   ### ⚠️ Aturan Penting Sebelum Mengajukan PR:
+   - Pastikan **tidak ada build/typescript error** (`npx tsc --noEmit` wajib lulus).
+   - Jangan memasukkan API key pribadi (seperti `GEMINI_API_KEY`) ke dalam file commit, gunakan `.env`.
+   - Gunakan format penulisan commit yang standar (Conventional Commits), seperti `feat: ...`, `fix: ...`, atau `docs: ...`.
+
+---
+
+## 📝 Lisensi
+Project ini berlisensi [MIT License](LICENSE). Lo bebas gunain, modifikasi, dan sebarluaskan untuk keperluan belajar atau portofolio pribadi lo.
+
+---
+
+*Grup chat lo nungguin patungan cair? PETE-PETE aja! 💸*
