@@ -6,8 +6,30 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PETE-PETE",
-  description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan OCR scan struk dan pembayaran langsung.",
+  title: "PETE-PETE — Akhir dari Drama Patungan",
+  description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
+  openGraph: {
+    title: "PETE-PETE — Akhir dari Drama Patungan",
+    description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
+    url: "https://ceban-pertama.vercel.app",
+    siteName: "PETE-PETE",
+    images: [
+      {
+        url: "https://ceban-pertama.vercel.app/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PETE-PETE Preview Image",
+      },
+    ],
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PETE-PETE — Akhir dari Drama Patungan",
+    description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
+    images: ["https://ceban-pertama.vercel.app/og-image.png"],
+  },
 };
 
 export default function RootLayout({
