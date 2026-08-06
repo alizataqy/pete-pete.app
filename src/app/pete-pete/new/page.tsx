@@ -190,7 +190,6 @@ export default function NewSessionPage() {
   // --- Create Session ---
   const handleCreate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!authSession?.user?.id) { setError("Anda harus masuk terlebih dahulu."); return; }
 
     const isManual = inputMode === "manual";
     const isScan = inputMode === "scan";
@@ -242,7 +241,7 @@ export default function NewSessionPage() {
         totalAmount,
         taxAmount,
         tipAmount,
-        userId: authSession.user.id,
+        userId: authSession?.user?.id,
         items,
         bankName: finalBankName,
         bankAccount: finalBankAccount,
@@ -277,7 +276,7 @@ export default function NewSessionPage() {
     return (
       <main className="flex-1 flex flex-col bg-lilac-ash-950">
         <header className="sticky top-0 z-20 bg-lilac-ash-950/90 backdrop-blur-md border-b border-lilac-ash-800 px-4 py-4 flex items-center gap-3">
-          <Button href="/dashboard" color="primary" size="sm">
+          <Button href={authSession ? "/dashboard" : "/"} color="primary" size="sm">
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>

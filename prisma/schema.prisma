@@ -56,8 +56,8 @@ model BillSession {
   currency     String        @default("IDR")
   splitType    SplitType     @default(PER_ITEM)
   inviteCode   String        @unique
-  createdBy    User          @relation(fields: [userId], references: [id])
-  userId       String
+  createdBy    User?         @relation(fields: [userId], references: [id])
+  userId       String?
   members      BillMember[]
   items        BillItem[]
   createdAt    DateTime      @default(now())
@@ -185,4 +185,14 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model OcrScanLog {
+  id        String   @id @default(cuid())
+  ipAddress String?
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([ipAddress])
 }

@@ -11,7 +11,7 @@ interface CreateSessionData {
   totalAmount: number;
   taxAmount?: number;
   tipAmount?: number;
-  userId: string;
+  userId?: string;
   bankName?: string;
   bankAccount?: string;
   bankOwner?: string;
@@ -29,21 +29,23 @@ export async function createBillSession(data: CreateSessionData) {
     const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
     // Ambil info rekening dari profil user pembuat sesi
-    const creator = await prisma.user.findUnique({
-      where: { id: data.userId },
-      select: {
-        banks: {
-          select: {
-            bankName: true,
-            bankAccount: true,
-            bankOwner: true,
+    let firstBank = null;
+    if (data.userId) {
+      const creator = await prisma.user.findUnique({
+        where: { id: data.userId },
+        select: {
+          banks: {
+            select: {
+              bankName: true,
+              bankAccount: true,
+              bankOwner: true,
+            },
+            take: 1,
           },
-          take: 1,
         },
-      },
-    });
-
-    const firstBank = creator?.banks?.[0];
+      });
+      firstBank = creator?.banks?.[0];
+    }
 
     const session = await prisma.billSession.create({
       data: {
@@ -54,7 +56,7 @@ export async function createBillSession(data: CreateSessionData) {
         taxAmount: data.taxAmount || 0,
         tipAmount: data.tipAmount || 0,
         inviteCode,
-        userId: data.userId,
+        userId: data.userId || null,
         bankName: data.bankName || firstBank?.bankName,
         bankAccount: data.bankAccount ? encrypt(data.bankAccount) : firstBank?.bankAccount,
         bankOwner: data.bankOwner || firstBank?.bankOwner,
@@ -72,7 +74,7 @@ export async function createBillSession(data: CreateSessionData) {
           create: {
             name: "Saya (Owner)",
             shareAmount: 0,
-            userId: data.userId,
+            userId: data.userId || null,
           },
         },
       },

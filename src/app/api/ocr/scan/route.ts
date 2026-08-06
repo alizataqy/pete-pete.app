@@ -1,4 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { headers } from "next/headers";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,6 +13,72 @@ export async function POST(request: NextRequest) {
         { error: "Tidak ada berkas struk yang diunggah" },
         { status: 400 }
       );
+    }
+
+    // Get Session and IP Address for checking limit
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    const ipAddress = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "127.0.0.1";
+
+    if (session?.user?.id) {
+      // User is logged in. Limit: 3 scans per day
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const scanCount = await prisma.ocrScanLog.count({
+        where: {
+          userId: session.user.id,
+          createdAt: {
+            gte: startOfDay,
+            lte: endOfDay,
+          },
+        },
+      });
+
+      if (scanCount >= 3) {
+        return NextResponse.json(
+          { error: "Batas harian tercapai. Anda hanya dapat melakukan 3 kali scan per hari saat masuk." },
+          { status: 403 }
+        );
+      }
+    } else {
+      // Anonymous user. Limit: 1 scan per day per cookie or IP
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const hasScannedCookie = request.cookies.get("has_scanned")?.value === "true";
+      
+      let hasScannedIp = false;
+      if (ipAddress && ipAddress !== "127.0.0.1") {
+        const ipScan = await prisma.ocrScanLog.findFirst({
+          where: {
+            ipAddress,
+            userId: null,
+            createdAt: {
+              gte: startOfDay,
+              lte: endOfDay,
+            },
+          },
+        });
+        if (ipScan) {
+          hasScannedIp = true;
+        }
+      }
+
+      if (hasScannedCookie || hasScannedIp) {
+        return NextResponse.json(
+          { error: "Batas harian gratis tanpa login tercapai. Silakan masuk untuk melakukan scan hingga 3 kali sehari!" },
+          { status: 403 }
+        );
+      }
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -31,7 +100,18 @@ export async function POST(request: NextRequest) {
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      return NextResponse.json({
+      // log the scan
+      if (session?.user?.id) {
+        await prisma.ocrScanLog.create({
+          data: { userId: session.user.id, ipAddress },
+        });
+      } else {
+        await prisma.ocrScanLog.create({
+          data: { ipAddress },
+        });
+      }
+
+      const responseObj = NextResponse.json({
         success: true,
         isMock: true,
         merchantName: "Restoran Selera Nusantara (Mock)",
@@ -41,6 +121,21 @@ export async function POST(request: NextRequest) {
         totalAmount: grandTotal,
         currency: "IDR",
       });
+
+      if (!session) {
+        const now = new Date();
+        const endOfToday = new Date();
+        endOfToday.setHours(23, 59, 59, 999);
+        const secondsLeft = Math.max(1, Math.round((endOfToday.getTime() - now.getTime()) / 1000));
+
+        responseObj.cookies.set("has_scanned", "true", {
+          path: "/",
+          maxAge: secondsLeft,
+          httpOnly: true,
+        });
+      }
+
+      return responseObj;
     }
 
     // Konversi File ke base64
@@ -116,7 +211,18 @@ Rules:
     const cleanJsonText = textResponse.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
     const parsedData = JSON.parse(cleanJsonText);
 
-    return NextResponse.json({
+    // log the scan
+    if (session?.user?.id) {
+      await prisma.ocrScanLog.create({
+        data: { userId: session.user.id, ipAddress },
+      });
+    } else {
+      await prisma.ocrScanLog.create({
+        data: { ipAddress },
+      });
+    }
+
+    const responseObj = NextResponse.json({
       success: true,
       isMock: false,
       merchantName: parsedData.merchantName || "Unknown Merchant",
@@ -126,6 +232,21 @@ Rules:
       totalAmount: parsedData.totalAmount || 0,
       currency: "IDR",
     });
+
+    if (!session) {
+      const now = new Date();
+      const endOfToday = new Date();
+      endOfToday.setHours(23, 59, 59, 999);
+      const secondsLeft = Math.max(1, Math.round((endOfToday.getTime() - now.getTime()) / 1000));
+
+      responseObj.cookies.set("has_scanned", "true", {
+        path: "/",
+        maxAge: secondsLeft,
+        httpOnly: true,
+      });
+    }
+
+    return responseObj;
 
   } catch (error) {
     console.error("OCR Scan Error:", error);
