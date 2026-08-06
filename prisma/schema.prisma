@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String        @id @default(cuid())
+  name          String
+  email         String        @unique
+  phone         String?
+  avatar        String?
+  sessions      BillSession[]
+  memberships   BillMember[]
+  transactions  Transaction[]
+  createdAt     DateTime      @default(now())
+  emailVerified Boolean       @default(false)
+  image         String?
+  updatedAt     DateTime      @updatedAt
+  accounts      Account[]
+  authSessions  Session[]     // Diperlukan karena relation dari model Session
+
+  banks         UserBank[]
+
+  @@map("user")
+}
+
+model UserBank {
+  id          String   @id @default(cuid())
+  bankName    String   // Misal: BCA, Mandiri, QRIS
+  bankAccount String   // Nomor rekening, nomor HP, atau URL image QRIS
+  bankOwner   String   // Nama pemilik rekening
+  imageUrl    String?  // Untuk link QRIS atau custom logo bank
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BillSession {
+  id           String        @id @default(cuid())
+  title        String
+  description  String?
+  merchantName String?
+  receiptUrl   String?
+  status       SessionStatus @default(DRAFT)
+  totalAmount  Decimal       @db.Decimal(12, 2)
+  taxAmount    Decimal       @default(0) @db.Decimal(12, 2)
+  tipAmount    Decimal       @default(0) @db.Decimal(12, 2)
+  currency     String        @default("IDR")
+  splitType    SplitType     @default(PER_ITEM)
+  inviteCode   String        @unique
+  createdBy    User          @relation(fields: [userId], references: [id])
+  userId       String
+  members      BillMember[]
+  items        BillItem[]
+  createdAt    DateTime      @default(now())
+  expiresAt    DateTime?
+  bankName     String?
+  bankAccount  String?
+  bankOwner    String?
+}
+
+model BillItem {
+  id          String           @id @default(cuid())
+  name        String
+  quantity    Int              @default(1)
+  unitPrice   Decimal          @db.Decimal(12, 2)
+  totalPrice  Decimal          @db.Decimal(12, 2)
+  session     BillSession      @relation(fields: [sessionId], references: [id])
+  sessionId   String
+  allocations ItemAllocation[]
+}
+
+model BillMember {
+  id          String           @id @default(cuid())
+  name        String
+  email       String?
+  phone       String?
+  user        User?            @relation(fields: [userId], references: [id])
+  userId      String?
+  session     BillSession      @relation(fields: [sessionId], references: [id])
+  sessionId   String
+  shareAmount Decimal          @db.Decimal(12, 2)
+  isPaid      Boolean          @default(false)
+  paymentLink String?
+  transaction Transaction?
+  allocations ItemAllocation[]
+}
+
+model ItemAllocation {
+  id            String     @id @default(cuid())
+  item          BillItem   @relation(fields: [itemId], references: [id])
+  itemId        String
+  member        BillMember @relation(fields: [memberId], references: [id])
+  memberId      String
+  quantity      Int        @default(1)
+  splitFraction Decimal    @default(1) @db.Decimal(5, 4)
+}
+
+model Transaction {
+  id            String        @id @default(cuid())
+  member        BillMember    @relation(fields: [memberId], references: [id])
+  memberId      String        @unique
+  user          User?         @relation(fields: [userId], references: [id])
+  userId        String?
+  amount        Decimal       @db.Decimal(12, 2)
+  status        PaymentStatus @default(PENDING)
+  paymentMethod String?
+  gatewayRef    String?
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+}
+
+enum SessionStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum SplitType {
+  EQUAL
+  PERCENTAGE
+  PER_ITEM
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}

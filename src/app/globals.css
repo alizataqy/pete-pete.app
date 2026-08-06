@@ -1,0 +1,129 @@
+@import "tailwindcss";
+@import "../styles/theme.css";
+@import "../styles/typography.css";
+
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-react-aria-components";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+@custom-variant label (& [data-label]);
+@custom-variant focus-input-within (&:has(input:focus));
+
+@theme {
+  --color-jet-black-50: #f1f3f3;
+  --color-jet-black-100: #e4e7e7;
+  --color-jet-black-200: #c8d0d0;
+  --color-jet-black-300: #adb8b8;
+  --color-jet-black-400: #92a0a0;
+  --color-jet-black-500: #778888;
+  --color-jet-black-600: #5f6d6d;
+  --color-jet-black-700: #475252;
+  --color-jet-black-800: #2f3737;
+  --color-jet-black-900: #181b1b;
+  --color-jet-black-950: #111313;
+
+  --color-lilac-ash-50: #f2f1f3;
+  --color-lilac-ash-100: #e6e4e7;
+  --color-lilac-ash-200: #cdc8d0;
+  --color-lilac-ash-300: #b4adb8;
+  --color-lilac-ash-400: #9b92a0;
+  --color-lilac-ash-500: #827788;
+  --color-lilac-ash-600: #685f6d;
+  --color-lilac-ash-700: #4e4752;
+  --color-lilac-ash-800: #342f37;
+  --color-lilac-ash-900: #1a181b;
+  --color-lilac-ash-950: #121113;
+
+  --color-powder-blue-50: #eff2f6;
+  --color-powder-blue-100: #dfe5ec;
+  --color-powder-blue-200: #becada;
+  --color-powder-blue-300: #9eb0c7;
+  --color-powder-blue-400: #7d95b5;
+  --color-powder-blue-500: #5d7ba2;
+  --color-powder-blue-600: #4a6282;
+  --color-powder-blue-700: #384a61;
+  --color-powder-blue-800: #253141;
+  --color-powder-blue-900: #131920;
+  --color-powder-blue-950: #0d1117;
+
+  --color-alice-blue-50: #e9f3fb;
+  --color-alice-blue-100: #d3e7f8;
+  --color-alice-blue-200: #a8cef0;
+  --color-alice-blue-300: #7cb6e9;
+  --color-alice-blue-400: #519ee1;
+  --color-alice-blue-500: #2586da;
+  --color-alice-blue-600: #1e6bae;
+  --color-alice-blue-700: #165083;
+  --color-alice-blue-800: #0f3557;
+  --color-alice-blue-900: #071b2c;
+  --color-alice-blue-950: #05131f;
+
+  --color-emerald-50: #e9fbf1;
+  --color-emerald-100: #d3f8e2;
+  --color-emerald-200: #a8f0c6;
+  --color-emerald-300: #7ce9a9;
+  --color-emerald-400: #51e18d;
+  --color-emerald-500: #25da70;
+  --color-emerald-600: #1eae5a;
+  --color-emerald-700: #168343;
+  --color-emerald-800: #0f572d;
+  --color-emerald-900: #072c16;
+  --color-emerald-950: #051f10;
+}
+
+:root {
+  --background: var(--color-powder-blue-950);
+  --foreground: var(--color-jet-black-50);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-variant-ligatures: contextual;
+  font-variant-ligatures: contextual;
+  -webkit-font-kerning: normal;
+  font-kerning: normal;
+}
+
+@utility scrollbar-hide {
+    &::-webkit-scrollbar {
+        display: none;
+        -webkit-appearance: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+@utility transition-inherit-all {
+    transition-property: inherit;
+    transition-duration: inherit;
+    transition-timing-function: inherit;
+}
+
+details summary::-webkit-details-marker {
+    display: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+.recharts-surface,
+.recharts-surface g,
+.recharts-surface path {
+    outline: none;
+}
