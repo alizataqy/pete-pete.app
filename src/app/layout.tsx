@@ -30,6 +30,9 @@ export const metadata: Metadata = {
     description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
     images: ["https://ceban-pertama.vercel.app/og-image.png"],
   },
+  verification: {
+    google: "CtKabgz4N2_NiMCQ74QNaLx6QFZhGUfvUuIcyk03IKc",
+  },
 };
 
 export default function RootLayout({

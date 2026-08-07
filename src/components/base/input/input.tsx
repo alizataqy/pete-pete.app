@@ -203,11 +203,11 @@ export const InputBase = ({
 
 InputBase.displayName = "InputBase";
 
-interface TextFieldContextProps extends Partial<Pick<InputBaseProps, "size" | "wrapperClassName" | "inputClassName" | "iconClassName" | "tooltipClassName">> {}
+type TextFieldContextProps = Partial<Pick<InputBaseProps, "size" | "wrapperClassName" | "inputClassName" | "iconClassName" | "tooltipClassName">>;
 
 const TextFieldContext = createContext<TextFieldContextProps>({});
 
-export interface TextFieldProps extends AriaTextFieldProps, TextFieldContextProps {}
+export type TextFieldProps = AriaTextFieldProps & TextFieldContextProps;
 
 export const TextField = ({ className, size = "md", inputClassName, wrapperClassName, iconClassName, tooltipClassName, ...props }: TextFieldProps) => {
     return (
