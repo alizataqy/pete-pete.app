@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import { Input } from "@/components/base/input/input";
 import { Button } from "@/components/base/buttons/button";
+import { ArrowLeft } from "@untitledui/icons";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,19 +43,25 @@ export default function LoginPage() {
 
   return (
     <main className="flex-1 flex flex-col justify-center p-6 relative overflow-hidden bg-transparent">
-
+      <header className="absolute top-0 left-0 right-0 z-10 p-6">
+        <Link href="/">
+          <Button size="xs">
+            <ArrowLeft />
+          </Button>
+        </Link>
+      </header>
 
       <div className="w-full z-10 space-y-6 max-w-sm mx-auto">
         <div className="text-center space-y-1.5">
-          <Link href="/" className="text-2xl font-extrabold text-alice-blue-400">
+          <Link href="/" className="text-2xl font-extrabold text-primary-400">
             PETE-PETE
           </Link>
-          <h2 className="text-lg font-bold text-jet-black-50">Balik lagi!</h2>
-          <p className="text-xs text-jet-black-300">Masuk dulu yuk</p>
+          <h2 className="text-lg font-bold text-text-50">Balik lagi!</h2>
+          <p className="text-xs text-text-300">Masuk dulu yuk</p>
         </div>
 
         {error && (
-          <div className="p-3 text-xs text-lilac-ash-200 bg-lilac-ash-900 text-error border border-lilac-ash-700 rounded-xl">
+          <div className="p-3 text-xs text-secondary-200 bg-secondary-900 text-error border border-secondary-700 rounded-xl">
             {error}
           </div>
         )}
@@ -91,16 +98,16 @@ export default function LoginPage() {
             isDisabled={loading}
             isLoading={loading}
             size="md"
-            className="w-full py-3 hover:from-alice-blue-600 hover:to-alice-blue-700"
+            className="w-full py-3 hover:from-primary-600 hover:to-primary-700"
           >
             Masuk
           </Button>
         </form>
 
         <div className="text-center pt-1">
-          <p className="text-xs text-jet-black-300">
+          <p className="text-xs text-text-50">
             Belum punya akun?{" "}
-            <Link href="/register" className="text-alice-blue-400 hover:underline">
+            <Link href="/register" className="text-primary-400 hover:underline">
               Daftar sini dong
             </Link>
           </p>

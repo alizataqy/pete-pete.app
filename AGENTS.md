@@ -15,10 +15,13 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Use icons from `@untitledui/icons` exclusively instead of emojis, raw SVG paths, or other generic icon libraries. Set them using component props like `iconLeading={IconName}` wherever available to maintain consistent spacing and scaling.
 
 ## 2. Strict Color Palette Constraint
-- Do NOT introduce any color classes outside of the predefined color system in `src/app/globals.css` and `src/styles/theme.css`.
+- Do NOT introduce any color classes outside of the predefined color system in `src/app/globals.css`.
 - Rely entirely on the project's Tailwind v4 custom theme palette:
-  - Backgrounds: `bg-powder-blue-950`, `bg-lilac-ash-950`, `bg-jet-black-900`, `bg-jet-black-950`
-  - Accents/Buttons: `bg-alice-blue-600` (hover: `bg-alice-blue-700`), `bg-emerald-600` (hover: `bg-emerald-700`), `border-lilac-ash-800`
-  - Texts: `text-alice-blue-400`, `text-jet-black-50`, `text-jet-black-300`, `text-jet-black-400`
+  - Backgrounds: `bg-background`, `bg-background-900`, `bg-background-950`, `bg-secondary-950`
+  - Accents/Buttons: `bg-primary` (hover: `bg-primary-600`/`bg-primary-700`), `bg-secondary`, `bg-accent`, `bg-emerald-600` (hover: `bg-emerald-700`), `border-secondary-800`
+  - Texts: `text-text`, `text-foreground`, `text-text-50`, `text-text-300`, `text-text-400`, `text-primary-400`
 - Do NOT use absolute inline HEX/RGB color values in components, inline CSS, or non-palette Tailwind utility classes.
+
+## 3. Jakarta Slang Typography Style
+- Gunakan bahasa slang/gaul Jakarta untuk semua tulisan (typography) di aplikasi (seperti "Gua", "Lo", "Pesen", "Udah kelar", "Bagi tagihan", "Pete-pete", dll.) agar terkesan kasual dan ramah bagi pengguna lokal.
 

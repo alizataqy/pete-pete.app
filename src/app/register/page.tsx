@@ -48,15 +48,15 @@ export default function RegisterPage() {
 
       <div className="w-full z-10 space-y-6 max-w-sm mx-auto">
         <div className="text-center space-y-1.5">
-          <Link href="/" className="text-2xl font-extrabold text-alice-blue-400">
+          <Link href="/" className="text-2xl font-extrabold text-primary-400">
             PETE-PETE
           </Link>
-          <h2 className="text-lg font-bold text-jet-black-50">Gabung yuk!</h2>
-          <p className="text-xs text-jet-black-300">Daftar dulu baru bisa split bill</p>
+          <h2 className="text-lg font-bold text-text-50">Gabung yuk!</h2>
+          <p className="text-xs text-text-300">Daftar dulu baru bisa split bill</p>
         </div>
 
         {error && (
-          <div className="p-3 text-xs text-lilac-ash-200 bg-lilac-ash-900 border border-lilac-ash-700 rounded-xl">
+          <div className="p-3 text-xs text-secondary-200 bg-secondary-900 border border-secondary-700 rounded-xl">
             {error}
           </div>
         )}
@@ -106,16 +106,16 @@ export default function RegisterPage() {
             isDisabled={loading}
             isLoading={loading}
             size="md"
-            className="w-full py-3 bg-alice-blue-600 hover:bg-alice-blue-700"
+            className="w-full py-3 bg-primary hover:bg-primary-700"
           >
             Daftar Sekarang!
           </Button>
         </form>
 
         <div className="text-center pt-1">
-          <p className="text-xs text-jet-black-300">
+          <p className="text-xs text-text-300">
             Udah punya akun?{" "}
-            <Link href="/login" className="text-alice-blue-400 hover:underline">
+            <Link href="/login" className="text-primary-400 hover:underline">
               Masuk aja
             </Link>
           </p>

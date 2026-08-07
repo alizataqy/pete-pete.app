@@ -10,10 +10,13 @@ import { authClient } from "@/lib/auth-client";
 import { ArrowLeft, Plus, Wallet03 } from "@untitledui/icons";
 import { toast } from "sonner";
 
+import { Avatar } from "@/components/base/avatar/avatar";
+
 interface ProfileData {
   id: string;
   name: string;
   email: string;
+  avatar: string;
   banks: UserBankData[];
 }
 
@@ -26,6 +29,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
   // Profile states
   const [name, setName] = useState(initialData.name);
   const [email, setEmail] = useState(initialData.email);
+  const [avatar, setAvatar] = useState(initialData.avatar);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileSuccess, setProfileSuccess] = useState(false);
 
@@ -49,11 +53,18 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         userId: initialData.id,
         name,
         email,
+        avatar,
       });
 
       if (res.success) {
+        // Sinkronkan data profil ke session cookie better-auth secara client-side
+        await authClient.updateUser({
+          name,
+        });
+
         setProfileSuccess(true);
         toast.success("Profil berhasil diperbarui!");
+        router.refresh();
       } else {
         toast.error(res.error || "Gagal memperbarui profil.");
       }
@@ -106,9 +117,9 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
   };
 
   return (
-    <div className="flex flex-col flex-1 pb-16">
+    <div className="flex flex-col flex-1 min-h-0 h-full">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-lilac-ash-950/90 backdrop-blur-md border-b border-lilac-ash-800 px-4 py-4 flex items-center gap-3">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
         <Button
           onPress={() => router.push("/dashboard")}
           color="primary"
@@ -117,8 +128,8 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-sm font-extrabold text-jet-black-50">Profil lo</h1>
-          <p className="text-[10px] text-jet-black-300 mt-0.5">Atur akun &amp; info rekening lo</p>
+          <h1 className="text-sm font-extrabold text-text-50">Profil lo</h1>
+          <p className="text-[10px] text-text-300 mt-0.5">Atur akun &amp; info rekening lo</p>
         </div>
       </header>
 
@@ -126,62 +137,81 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
       <div className="flex-1 p-4 space-y-6 overflow-y-auto">
 
         {/* Card 1: Informasi Profil */}
-        <div className="p-4 rounded-xl border border-lilac-ash-800 bg-jet-black-900/60 space-y-4">
+        <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
           <div>
-            <h3 className="text-xs font-bold text-jet-black-100 uppercase tracking-wider">Info Akun</h3>
-            <p className="text-[10px] text-jet-black-300 mt-0.5">Ubah nama dan alamat email login lo.</p>
+            <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Info Akun</h3>
+            <p className="text-[10px] text-text-300 mt-0.5">Ubah nama dan alamat email login lo.</p>
           </div>
 
-          {profileSuccess && (
-            <div className="p-2.5 text-[10px] text-emerald-300 bg-emerald-950 border border-emerald-800 rounded-lg">
-              Kelar! Profil lo udah disimpen.
+          <div className="flex gap-2">
+            <div className="flex flex-col gap-2 items-center mt-4 ">
+              <Avatar
+                size="2xl"
+                src={avatar ? `https://api.dicebear.com/9.x/dylan/svg?seed=${encodeURIComponent(avatar)}` : undefined}
+                alt={name}
+                className="shadow-lg border-2 border-secondary-800"
+              />
+              <Button
+                type="button"
+                onPress={() => {
+                  const newSeed = Math.random().toString(36).substring(7);
+                  setAvatar(newSeed);
+                }}
+                color="secondary"
+                className="text-[10px] py-1 px-3 mt-1.5"
+              >
+                Acak Avatar
+              </Button>
             </div>
-          )}
 
-          <form onSubmit={handleUpdateProfile} className="space-y-3.5">
-            <Input
-              label="Nama lo"
-              isRequired
-              type="text"
-              value={name}
-              onChange={setName}
-              placeholder="Nama lengkap atau panggilan"
-              size="sm"
-            />
+            <div className="flex-1">
 
-            <Input
-              label="Alamat Email"
-              isRequired
-              type="email"
-              value={email}
-              onChange={setEmail}
-              placeholder="nama@email.com"
-              size="sm"
-              autoComplete="off"
-            />
+              <form onSubmit={handleUpdateProfile} className="space-y-3.5">
+                <Input
+                  label="Nama lo"
+                  isRequired
+                  type="text"
+                  value={name}
+                  onChange={setName}
+                  placeholder="Nama lengkap atau panggilan"
+                  size="sm"
+                />
 
-            <Button
-              type="submit"
-              isDisabled={profileLoading || profileSuccess}
-              isLoading={profileLoading}
-              className="w-full py-2.5 rounded-lg bg-alice-blue-600 hover:bg-alice-blue-700 text-white text-xs font-semibold mt-2"
-            >
-              Simpan
-            </Button>
-          </form>
+                <Input
+                  label="Alamat Email"
+                  isRequired
+                  type="email"
+                  value={email}
+                  onChange={setEmail}
+                  placeholder="nama@email.com"
+                  size="sm"
+                  autoComplete="off"
+                />
+
+                <Button
+                  type="submit"
+                  isDisabled={profileLoading || profileSuccess}
+                  isLoading={profileLoading}
+                  className="w-full py-2.5 text-white text-xs"
+                >
+                  Simpan
+                </Button>
+              </form>
+            </div>
+          </div>
         </div>
 
         {/* Card 2: Wallet Summary Block with Lihat Semua button */}
         <div className="space-y-4">
-          <div className="p-4 rounded-xl border border-lilac-ash-800 bg-jet-black-900/60 space-y-3">
+          <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-3">
             <div className="flex flex-row flex-nowrap items-center justify-between gap-4 w-full">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-alice-blue-900/40 border border-alice-blue-800 flex items-center justify-center shrink-0">
-                  <Wallet03 className="w-5 h-5 text-alice-blue-400" />
+                <div className="w-10 h-10 rounded-xl bg-primary-900/40 border border-primary-800 flex items-center justify-center shrink-0">
+                  <Wallet03 className="w-5 h-5 text-primary-400" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-jet-black-50 truncate">{banks.length} Wallet</p>
-                  <p className="text-[10px] text-jet-black-300 truncate">
+                  <p className="text-sm font-bold text-text-50 truncate">{banks.length} Wallet</p>
+                  <p className="text-[10px] text-text-300 truncate">
                     {banks.filter((b: UserBankData) => !["GoPay", "OVO", "Dana", "QRIS"].includes(b.bankName)).length} Bank
                     {" "}&bull;{" "}
                     {banks.filter((b: UserBankData) => ["GoPay", "OVO", "Dana"].includes(b.bankName)).length} E-Wallet
@@ -191,18 +221,20 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
               <Button
                 type="button"
                 onPress={() => router.push("/profile/banks/new")}
-                iconLeading={<Plus className="w-3.5 h-3.5" />}
-                className="bg-alice-blue-600 hover:bg-alice-blue-700 text-white text-[10px] py-1.5 px-3 rounded-lg shrink-0"
+                iconLeading={<Plus className="w-4 h-4 " />}
+                className="text-xs py-1.5 px-3"
+                color='primary'
               >
                 Tambah Bank
               </Button>
             </div>
 
             {banks.length > 0 && (
-              <div className="border-t border-lilac-ash-800/60 pt-3">
+              <div className="border-t border-secondary-800/60 pt-3">
                 <Button
                   onPress={() => router.push("/profile/banks")}
-                  className="w-full py-2.5 px-4 bg-jet-black-950 hover:bg-jet-black-800 border border-jet-black-800 text-jet-black-100 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
+                  className="w-full py-2.5 px-4 text-xs"
+                  color='primary'
                 >
                   Lihat Semua Wallet
                 </Button>
@@ -212,10 +244,10 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         </div>
 
         {/* Card 3: Ubah Kata Sandi */}
-        <div className="p-4 rounded-xl border border-lilac-ash-800 bg-jet-black-900/60 space-y-4">
+        <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
           <div>
-            <h3 className="text-xs font-bold text-jet-black-100 uppercase tracking-wider">Ganti Password</h3>
-            <p className="text-[10px] text-jet-black-300 mt-0.5">Jangan lupa ganti password secara berkala biar aman.</p>
+            <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Ganti Password</h3>
+            <p className="text-[10px] text-text-300 mt-0.5">Jangan lupa ganti password secara berkala biar aman.</p>
           </div>
 
           {passwordSuccess && (
@@ -259,7 +291,9 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
               type="submit"
               isDisabled={passwordLoading || passwordSuccess}
               isLoading={passwordLoading}
-              className="w-full py-2.5 rounded-lg bg-alice-blue-600 hover:bg-alice-blue-700 text-white text-xs font-semibold mt-2"
+              className="w-full text-xs"
+              size="sm"
+              color="primary"
             >
               Ganti Password
             </Button>

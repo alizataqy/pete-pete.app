@@ -69,13 +69,19 @@ export async function createBillSession(data: CreateSessionData) {
             totalPrice: item.totalPrice,
           })),
         },
-        // Otomatis tambahkan pembuat (organizer) sebagai anggota sesi pertama
+        // Otomatis tambahkan pembuat (organizer) sebagai anggota sesi pertama dan Teman 1 sebagai minimal 2 orang
         members: {
-          create: {
-            name: "Saya (Owner)",
-            shareAmount: 0,
-            userId: data.userId || null,
-          },
+          create: [
+            {
+              name: "Saya",
+              shareAmount: 0,
+              userId: data.userId || null,
+            },
+            {
+              name: "Sohib 1",
+              shareAmount: 0,
+            }
+          ],
         },
       },
       include: {
@@ -134,6 +140,28 @@ export async function removeSessionMember(memberId: string, sessionId: string) {
     return { success: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Gagal menghapus anggota";
+    return { success: false, error: message };
+  }
+}
+
+// Action untuk mengubah nama member/anggota sesi
+export async function renameSessionMember(memberId: string, name: string, sessionId: string) {
+  try {
+    const member = await prisma.billMember.update({
+      where: { id: memberId },
+      data: { name },
+    });
+    revalidatePath(`/pete-pete/${sessionId}/split`);
+    return {
+      success: true,
+      member: {
+        id: member.id,
+        name: member.name,
+        shareAmount: Number(member.shareAmount),
+      },
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Gagal mengubah nama anggota";
     return { success: false, error: message };
   }
 }
@@ -405,6 +433,105 @@ export async function completeBillSession(sessionId: string) {
   } catch (error) {
     console.error("Gagal menyelesaikan sesi:", error);
     const message = error instanceof Error ? error.message : "Gagal menyelesaikan sesi PETE-PETE";
+    return { success: false, error: message };
+  }
+}
+
+export interface CreateManualSessionData {
+  title: string;
+  description?: string;
+  merchantName?: string;
+  totalAmount: number;
+  taxAmount?: number;
+  tipAmount?: number;
+  userId?: string;
+  bankName?: string;
+  bankAccount?: string;
+  bankOwner?: string;
+  members: string[];
+  items: {
+    name: string;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+    allocations: { memberName: string; quantity: number }[];
+  }[];
+}
+
+export async function createManualBillSession(data: CreateManualSessionData) {
+  try {
+    const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+    // 1. Create session
+    const session = await prisma.billSession.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        merchantName: data.merchantName,
+        totalAmount: data.totalAmount,
+        taxAmount: data.taxAmount || 0,
+        tipAmount: data.tipAmount || 0,
+        inviteCode,
+        userId: data.userId || null,
+        bankName: data.bankName,
+        bankAccount: data.bankAccount ? encrypt(data.bankAccount) : null,
+        bankOwner: data.bankOwner,
+      },
+    });
+
+    // 2. Create members
+    const dbMembers = [];
+    for (const name of data.members) {
+      const isOwner = name.includes("Saya");
+      const m = await prisma.billMember.create({
+        data: {
+          name,
+          sessionId: session.id,
+          shareAmount: 0,
+          userId: isOwner ? (data.userId || null) : null,
+        },
+      });
+      dbMembers.push(m);
+    }
+
+    // 3. Create items and their allocations
+    for (const item of data.items) {
+      const dbItem = await prisma.billItem.create({
+        data: {
+          name: item.name,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          totalPrice: item.totalPrice,
+          sessionId: session.id,
+        },
+      });
+
+      // Create allocations
+      for (const alloc of item.allocations) {
+        if (alloc.quantity <= 0) continue;
+        const member = dbMembers.find((m) => m.name === alloc.memberName);
+        if (member) {
+          const fraction = alloc.quantity / item.quantity;
+          await prisma.itemAllocation.create({
+            data: {
+              itemId: dbItem.id,
+              memberId: member.id,
+              quantity: alloc.quantity,
+              splitFraction: fraction,
+            },
+          });
+        }
+      }
+    }
+
+    // 4. Recalculate session shares
+    await recalculateSessionShares(session.id);
+
+    revalidatePath("/dashboard");
+    return { success: true, session: { id: session.id } };
+  } catch (error) {
+    console.error("Gagal membuat sesi manual:", error);
+    const message = error instanceof Error ? error.message : "Gagal membuat sesi manual";
     return { success: false, error: message };
   }
 }

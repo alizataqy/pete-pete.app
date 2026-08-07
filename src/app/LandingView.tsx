@@ -36,7 +36,7 @@ export default function LandingView({ user }: UserSessionProp) {
     ocr: {
       title: "Scan Struk Pake AI",
       desc: "Foto struk makan-makan lo, AI langsung otomatis baca nama menu, jumlah, porsi, sampai ke pajaknya. Ga usah capek nulis ulang satu-satu!",
-      icon: <Camera01 className="w-5 h-5 text-alice-blue-400" />,
+      icon: <Camera01 className="w-5 h-5 text-primary-400" />,
       badge: "Otomatis 100%",
       detail: [
         "Deteksi nama item & harga presisi",
@@ -69,28 +69,28 @@ export default function LandingView({ user }: UserSessionProp) {
   };
 
   return (
-    <div data-landing-view className="flex-1 flex flex-col bg-powder-blue-950 text-jet-black-50 select-none pb-12 overflow-y-auto w-full items-center">
+    <div data-landing-view className="flex-1 flex flex-col bg-background text-text select-none pb-16 overflow-y-auto overflow-x-hidden w-full items-center relative">
       
       {/* Desktop Header Navigation */}
-      <header className="w-full max-w-5xl px-6 py-5 flex items-center justify-between z-30">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-alice-blue-600 flex items-center justify-center font-black text-white text-base">
+      <header className="w-full max-w-5xl px-6 py-6 flex items-center justify-between z-30">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center font-black text-text-950 text-base shadow-lg shadow-primary/30 transition-transform duration-300 group-hover:scale-105">
             P
           </div>
-          <span className="font-extrabold text-white text-base tracking-wider">PETE-PETE</span>
+          <span className="font-black text-text text-lg tracking-wider">PETE-PETE</span>
         </div>
         <div className="flex items-center gap-4">
           {user ? (
             <Button
               onPress={() => router.push("/dashboard")}
-              className="py-1.5 px-4 rounded-lg bg-alice-blue-600 hover:bg-alice-blue-700 text-white font-bold text-xs shadow-md transition-all"
+              className="py-2 px-5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs shadow-lg shadow-primary/20 transition-all hover:scale-[1.03] cursor-pointer"
             >
               Dashboard
             </Button>
           ) : (
             <Button
               onPress={() => router.push("/login")}
-              className="py-1.5 px-4 rounded-lg bg-alice-blue-600 hover:bg-alice-blue-700 text-white font-bold text-xs shadow-md transition-all"
+              className="py-2 px-5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs shadow-lg shadow-primary/20 transition-all hover:scale-[1.03] cursor-pointer"
             >
               Masuk
             </Button>
@@ -99,49 +99,49 @@ export default function LandingView({ user }: UserSessionProp) {
       </header>
 
       {/* Hero Section */}
-      <section className="relative px-6 pt-16 pb-20 text-center overflow-hidden w-full max-w-5xl flex flex-col items-center">
+      <section className="relative px-6 pt-16 pb-24 text-center overflow-hidden w-full max-w-5xl flex flex-col items-center z-10">
         
         {/* Badge */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-alice-blue-500/20 bg-alice-blue-950/80 text-alice-blue-400 text-xs font-semibold mb-8 animate-pulse">
-          <Camera01 className="w-3.5 h-3.5 text-alice-blue-400" />
-          <span>PETE-PETE &mdash; Akhir dari Drama Patungan</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary-500/20 bg-primary-950/60 backdrop-blur-md text-primary-400 text-xs font-semibold mb-10 shadow-inner">
+          <Camera01 className="w-3.5 h-3.5 text-primary-400 animate-pulse" />
+          <span className="tracking-wide">PETE-PETE &mdash; Akhir dari Drama Patungan</span>
         </div>
 
         {/* Desktop Container Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full text-left">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center w-full text-left">
           
           {/* Left Text */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left flex flex-col items-center lg:items-start">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
+          <div className="lg:col-span-7 space-y-8 text-center lg:text-left flex flex-col items-center lg:items-start">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-text leading-tight">
               Split Tagihan dari <br/>
-              <span className="text-alice-blue-400">
+              <span className="text-primary-400">
                 Foto Struk Makan lo!
               </span>
             </h1>
 
-            <p className="text-xs md:text-sm text-jet-black-300 leading-relaxed max-w-md">
+            <p className="text-xs sm:text-sm text-text-300 leading-relaxed max-w-lg">
               Gak perlu lagi hitung manual pake kalkulator. Foto struk belanjanya, tandain siapa makan apa, lalu share hasil patungan langsung ke WhatsApp temen lo. Cepat, presisi, anti drama!
             </p>
 
             {/* Trust highlights */}
-            <div className="flex flex-wrap items-center gap-4 text-[10px] text-jet-black-400 py-2 justify-center lg:justify-start">
-              <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-5 text-[11px] text-text-400 py-2 justify-center lg:justify-start">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-text-900/40 border border-secondary-800/20">
                 <Star01 className="w-3.5 h-3.5 text-amber-400" />
-                <span>4.9/5 Rating Squad</span>
+                <span className="font-semibold text-text">4.9/5 Rating Squad</span>
               </div>
-              <span className="text-jet-black-700">|</span>
-              <div className="flex items-center gap-1">
+              <span className="text-text-800 hidden sm:inline">|</span>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-text-900/40 border border-secondary-800/20">
                 <Lock01 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Tanpa Login/OTP</span>
+                <span className="font-semibold text-text">Tanpa Login/OTP</span>
               </div>
             </div>
 
             {/* CTA */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
+            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md pt-2">
               {user ? (
                 <Button
                   onPress={() => router.push("/dashboard")}
-                  className="w-full py-3.5 rounded-xl bg-alice-blue-600 hover:bg-alice-blue-700 text-white font-bold text-xs shadow-lg shadow-alice-blue-900/20 transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-4 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white font-extrabold text-sm shadow-xl shadow-primary/30 transition-all hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
                 >
                   Masuk ke Dashboard <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -149,14 +149,14 @@ export default function LandingView({ user }: UserSessionProp) {
                 <>
                   <Button
                     onPress={() => router.push("/pete-pete/new")}
-                    className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-alice-blue-600 hover:bg-alice-blue-700 text-white font-bold text-xs shadow-lg shadow-alice-blue-900/20 transition-all"
+                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white font-extrabold text-sm shadow-xl shadow-primary/30 transition-all hover:scale-[1.02] cursor-pointer"
                   >
                     Mulai Scan Struk Gratis
                   </Button>
                   <Button
                     onPress={() => router.push("/register")}
                     color="secondary"
-                    className="w-full sm:w-auto px-8 py-3 rounded-xl border border-lilac-ash-800 bg-transparent text-jet-black-100 hover:text-white hover:bg-jet-black-900 text-xs font-semibold"
+                    className="w-full sm:w-auto px-8 py-4 rounded-2xl border border-secondary-800 bg-text-950/40 text-text-100 hover:text-white hover:bg-text-900 text-sm font-bold transition-all hover:scale-[1.02] cursor-pointer"
                   >
                     Daftar Akun
                   </Button>
@@ -167,35 +167,40 @@ export default function LandingView({ user }: UserSessionProp) {
 
           {/* Right Live Interactive Mockup Simulator */}
           <div className="lg:col-span-5 flex justify-center relative">
-            
-            <div className="relative w-full max-w-[320px] bg-jet-black-950 border-[6px] border-jet-black-800 rounded-[36px] shadow-2xl p-5 overflow-hidden min-h-[460px] flex flex-col justify-between">
+
+            <div className="relative w-full max-w-[330px] bg-text-950/80 backdrop-blur-xl border-[6px] border-text-800/90 rounded-[44px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] p-6 overflow-hidden min-h-[480px] flex flex-col justify-between z-10">
               
+              {/* Phone Camera Punch-hole */}
+              <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-4 rounded-full bg-text-800 flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-text-950" />
+              </div>
+
               {/* Simulator Screen Header */}
-              <div className="flex items-center justify-between border-b border-jet-black-800 pb-3">
+              <div className="flex items-center justify-between border-b border-text-900 pb-3.5 mt-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded bg-alice-blue-900 flex items-center justify-center font-bold text-[9px] text-alice-blue-400">
+                  <div className="w-6 h-6 rounded-lg bg-primary-900/60 flex items-center justify-center font-bold text-[10px] text-primary-300">
                     P
                   </div>
-                  <span className="text-[10px] font-black text-white">Makan Ramen Geng 🍜</span>
+                  <span className="text-[11px] font-bold text-text-50 tracking-wide">Makan Ramen Geng 🍜</span>
                 </div>
-                <span className="text-[8px] bg-alice-blue-950 text-alice-blue-300 px-2 py-0.5 rounded border border-alice-blue-900/50">
+                <span className="text-[9px] font-semibold bg-primary-950 border border-primary-800/40 text-primary-400 px-2 py-0.5 rounded-full">
                   Live Demo
                 </span>
               </div>
 
               {/* Simulation Steps View */}
               {ocrStep === 0 && (
-                <div className="flex-1 flex flex-col items-center justify-center py-6 text-center space-y-4 animate-in fade-in duration-200">
-                  <div className="w-16 h-16 rounded-2xl bg-alice-blue-900/40 border border-alice-blue-800 flex items-center justify-center shadow-lg">
-                    <Camera01 className="w-7 h-7 text-alice-blue-400" />
+                <div className="flex-1 flex flex-col items-center justify-center py-8 text-center space-y-5 animate-in fade-in zoom-in-95 duration-300">
+                  <div className="w-16 h-16 rounded-2xl bg-primary-900/40 border border-primary-800/50 flex items-center justify-center shadow-lg relative group">
+                    <Camera01 className="w-8 h-8 text-primary-400" />
                   </div>
-                  <div className="space-y-1">
-                    <h4 className="text-xs font-bold text-white">Langkah 1: Upload Struk</h4>
-                    <p className="text-[10px] text-jet-black-300 max-w-[200px]">Simulasikan deteksi AI OCR dengan klik tombol di bawah.</p>
+                  <div className="space-y-1.5">
+                    <h4 className="text-xs font-bold text-text-50">Langkah 1: Upload Struk</h4>
+                    <p className="text-[10px] text-text-300 max-w-[200px] leading-relaxed">Simulasikan deteksi AI OCR dengan klik tombol di bawah.</p>
                   </div>
                   <Button
                     onPress={() => setOcrStep(1)}
-                    className="py-1.5 px-4 rounded-lg bg-alice-blue-600 text-white font-bold text-[10px]"
+                    className="py-2 px-5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-extrabold text-[10px] shadow-lg shadow-primary/30 transition-all hover:scale-105 cursor-pointer"
                   >
                     Simulasikan Scan Struk
                   </Button>
@@ -203,36 +208,39 @@ export default function LandingView({ user }: UserSessionProp) {
               )}
 
               {ocrStep === 1 && (
-                <div className="flex-1 flex flex-col justify-between py-4 text-left animate-in fade-in duration-200">
-                  <div className="space-y-3">
-                    <p className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest leading-none">&bull; AI OCR Membaca Data...</p>
-                    <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
-                      <div className="flex justify-between items-center bg-jet-black-900 p-2 rounded border border-jet-black-800">
+                <div className="flex-1 flex flex-col justify-between py-5 text-left animate-in fade-in zoom-in-95 duration-300">
+                  <div className="space-y-4">
+                    <p className="text-[9px] font-extrabold text-emerald-400 uppercase tracking-widest leading-none flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                      AI OCR Membaca Data...
+                    </p>
+                    <div className="space-y-2 max-h-[190px] overflow-y-auto pr-1 custom-scrollbar">
+                      <div className="flex justify-between items-center bg-text-900/60 p-2.5 rounded-xl border border-secondary-800/10">
                         <div>
-                          <p className="text-[10px] font-bold text-white">🍜 Spicy Miso Ramen</p>
-                          <p className="text-[8px] text-jet-black-400">Qty: 2 x Rp 45.000</p>
+                          <p className="text-[10px] font-bold text-text-50">🍜 Spicy Miso Ramen</p>
+                          <p className="text-[8px] text-text-400">Qty: 2 x Rp 45.000</p>
                         </div>
-                        <span className="text-[10px] font-bold text-white">Rp 90.000</span>
+                        <span className="text-[10px] font-bold text-text-50">Rp 90.000</span>
                       </div>
-                      <div className="flex justify-between items-center bg-jet-black-900 p-2 rounded border border-jet-black-800">
+                      <div className="flex justify-between items-center bg-text-900/60 p-2.5 rounded-xl border border-secondary-800/10">
                         <div>
-                          <p className="text-[10px] font-bold text-white">🥤 Ocha Cold (Refill)</p>
-                          <p className="text-[8px] text-jet-black-400">Qty: 3 x Rp 12.000</p>
+                          <p className="text-[10px] font-bold text-text-50">🥤 Ocha Cold (Refill)</p>
+                          <p className="text-[8px] text-text-400">Qty: 3 x Rp 12.000</p>
                         </div>
-                        <span className="text-[10px] font-bold text-white">Rp 36.000</span>
+                        <span className="text-[10px] font-bold text-text-50">Rp 36.000</span>
                       </div>
-                      <div className="flex justify-between items-center bg-jet-black-900 p-2 rounded border border-jet-black-800">
+                      <div className="flex justify-between items-center bg-text-900/60 p-2.5 rounded-xl border border-secondary-800/10">
                         <div>
-                          <p className="text-[10px] font-bold text-white">🥟 Gyoza Original</p>
-                          <p className="text-[8px] text-jet-black-400">Qty: 1 x Rp 28.000</p>
+                          <p className="text-[10px] font-bold text-text-50">🥟 Gyoza Original</p>
+                          <p className="text-[8px] text-text-400">Qty: 1 x Rp 28.000</p>
                         </div>
-                        <span className="text-[10px] font-bold text-white">Rp 28.000</span>
+                        <span className="text-[10px] font-bold text-text-50">Rp 28.000</span>
                       </div>
                     </div>
                   </div>
                   <Button
                     onPress={() => setOcrStep(2)}
-                    className="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px]"
+                    className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[10px] shadow-lg shadow-emerald-900/30 transition-all hover:scale-102 cursor-pointer"
                   >
                     Bagi Tagihan &bull; Langkah 2
                   </Button>
@@ -240,28 +248,31 @@ export default function LandingView({ user }: UserSessionProp) {
               )}
 
               {ocrStep === 2 && (
-                <div className="flex-1 flex flex-col justify-between py-4 text-left animate-in fade-in duration-200">
+                <div className="flex-1 flex flex-col justify-between py-5 text-left animate-in fade-in zoom-in-95 duration-300">
                   <div className="space-y-4">
-                    <p className="text-[9px] font-bold text-amber-400 uppercase tracking-widest leading-none">&bull; Tagihan Per Orang</p>
+                    <p className="text-[9px] font-extrabold text-amber-400 uppercase tracking-widest leading-none flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                      Tagihan Per Orang
+                    </p>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-2 rounded bg-alice-blue-900/10 border border-alice-blue-800/30">
-                        <span className="text-[10px] text-white font-medium">Budi (Ramen + Ocha)</span>
-                        <span className="text-[10px] font-bold text-alice-blue-300">Rp 57.000</span>
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-primary-950/40 border border-primary-900/35">
+                        <span className="text-[10px] text-text-50 font-medium">Budi (Ramen + Ocha)</span>
+                        <span className="text-[10px] font-bold text-primary-400">Rp 57.000</span>
                       </div>
-                      <div className="flex items-center justify-between p-2 rounded bg-alice-blue-900/10 border border-alice-blue-800/30">
-                        <span className="text-[10px] text-white font-medium">Ucup (Ramen + Gyoza)</span>
-                        <span className="text-[10px] font-bold text-alice-blue-300">Rp 73.000</span>
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-primary-950/40 border border-primary-900/35">
+                        <span className="text-[10px] text-text-50 font-medium">Ucup (Ramen + Gyoza)</span>
+                        <span className="text-[10px] font-bold text-primary-400">Rp 73.000</span>
                       </div>
-                      <div className="flex items-center justify-between p-2 rounded bg-alice-blue-900/10 border border-alice-blue-800/30">
-                        <span className="text-[10px] text-white font-medium">Siti (Ocha + Gyoza)</span>
-                        <span className="text-[10px] font-bold text-alice-blue-300">Rp 40.000</span>
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-primary-950/40 border border-primary-900/35">
+                        <span className="text-[10px] text-text-50 font-medium">Siti (Ocha + Gyoza)</span>
+                        <span className="text-[10px] font-bold text-primary-400">Rp 40.000</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex gap-2">
                     <Button
                       onPress={() => setOcrStep(0)}
-                      className="w-1/2 py-2 rounded-lg bg-jet-black-900 border border-jet-black-800 text-jet-black-100 font-bold text-[10px]"
+                      className="w-1/2 py-2.5 rounded-xl bg-text-900 border border-secondary-800/20 text-text-200 hover:text-white font-extrabold text-[10px] transition-all cursor-pointer"
                     >
                       Ulangi
                     </Button>
@@ -270,7 +281,7 @@ export default function LandingView({ user }: UserSessionProp) {
                         toast.success("Rincian tagihan WhatsApp disalin ke clipboard!");
                         setOcrStep(0);
                       }}
-                      className="w-1/2 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px]"
+                      className="w-1/2 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-[10px] shadow-lg shadow-amber-900/30 transition-all hover:scale-102 cursor-pointer"
                     >
                       Share WA
                     </Button>
@@ -279,9 +290,9 @@ export default function LandingView({ user }: UserSessionProp) {
               )}
 
               {/* Simulator Screen Footer */}
-              <div className="border-t border-jet-black-800 pt-3 flex items-center justify-between text-[8px] text-jet-black-400">
+              <div className="border-t border-text-900 pt-3.5 flex items-center justify-between text-[9px] text-text-400 font-medium">
                 <span>Total Struk: Rp 154.000</span>
-                <span>Tax &amp; Service Terdeteksi</span>
+                <span className="text-emerald-400 font-semibold">Tax Terhitung</span>
               </div>
 
             </div>
@@ -291,82 +302,181 @@ export default function LandingView({ user }: UserSessionProp) {
       </section>
 
       {/* Interactive Feature Showcases */}
-      <section className="px-4 py-6 w-full max-w-5xl">
-        <div className="p-5 md:p-8 rounded-2xl border border-lilac-ash-800/60 bg-jet-black-900/50 space-y-6">
-          <div className="text-left space-y-1">
-            <h2 className="text-xs font-bold text-alice-blue-400 uppercase tracking-widest flex items-center gap-1.5">
-              <Zap className="w-4 h-4" /> Alur Canggih
-            </h2>
-            <p className="text-sm md:text-base font-extrabold text-white">Gimana PETE-PETE Ngebantu Lo?</p>
-          </div>
-
-          {/* Tabs selector */}
-          <div className="grid grid-cols-3 gap-1 bg-jet-black-950 p-1.5 rounded-xl border border-jet-black-800 max-w-lg">
-            {Object.keys(features).map((key) => (
-              <Button
-                key={key}
-                type="button"
-                onPress={() => setActiveTab(key as "ocr" | "split" | "share")}
-                className={`py-2 rounded-lg text-[10px] md:text-xs font-bold transition-all text-center cursor-pointer ${
-                  activeTab === key
-                    ? "bg-alice-blue-900 text-alice-blue-300 border border-alice-blue-800/40"
-                    : "bg-transparent text-jet-black-300 hover:text-jet-black-50 border-0"
-                }`}
-              >
-                {key === "ocr" ? "1. Scan" : key === "split" ? "2. Split" : "3. Share"}
-              </Button>
-            ))}
-          </div>
-
-          {/* Active Tab Panel */}
-          <div className="p-5 rounded-xl bg-jet-black-950 border border-jet-black-800/80 space-y-4 text-left animate-in fade-in duration-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {features[activeTab].icon}
-                <h3 className="text-sm font-bold text-white">{features[activeTab].title}</h3>
-              </div>
-              <span className="text-[9px] font-semibold bg-emerald-950 border border-emerald-800 text-emerald-300 px-2 py-0.5 rounded-full">
-                {features[activeTab].badge}
-              </span>
+      <section className="px-6 py-8 w-full max-w-5xl z-10">
+        <div className="p-6 md:p-10 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md space-y-8 shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="text-left space-y-2">
+              <h2 className="text-xs font-black text-primary-400 uppercase tracking-widest flex items-center gap-2">
+                <Zap className="w-4 h-4 text-primary-400" /> Alur Canggih
+              </h2>
+              <p className="text-xl md:text-2xl font-extrabold text-text">Gimana PETE-PETE Ngebantu Lo?</p>
             </div>
 
-            <p className="text-xs text-jet-black-300 leading-relaxed max-w-2xl">
-              {features[activeTab].desc}
-            </p>
-
-            <div className="border-t border-jet-black-800 pt-4 space-y-2">
-              {features[activeTab].detail.map((detail, idx) => (
-                <div key={idx} className="flex items-center gap-2.5 text-xs text-jet-black-100">
-                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{detail}</span>
-                </div>
+            {/* Tabs selector */}
+            <div className="grid grid-cols-3 gap-1 bg-text-950/90 p-1 rounded-2xl border border-secondary-800/20 w-full max-w-xs md:max-w-sm">
+              {Object.keys(features).map((key) => (
+                <Button
+                  key={key}
+                  type="button"
+                  onPress={() => setActiveTab(key as "ocr" | "split" | "share")}
+                  className={`py-2 rounded-xl text-[10px] md:text-xs font-bold transition-all text-center cursor-pointer ${
+                    activeTab === key
+                      ? "bg-primary-600 text-white shadow-md shadow-primary/25 scale-[1.02]"
+                      : "bg-transparent text-text-400 hover:text-text-100"
+                  }`}
+                >
+                  {key === "ocr" ? "1. Scan" : key === "split" ? "2. Split" : "3. Share"}
+                </Button>
               ))}
             </div>
+          </div>
+
+          {/* Active Tab Panel with Side-by-Side Visuals */}
+          <div className="p-6 md:p-8 rounded-2xl bg-text-950/60 border border-secondary-800/20 grid grid-cols-1 md:grid-cols-12 gap-8 items-center animate-in fade-in slide-in-from-bottom-2 duration-300 shadow-inner">
+            
+            {/* Left Content (Text and info details) */}
+            <div className="md:col-span-7 space-y-6 text-left">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-text-900 border border-secondary-800/20 text-primary-400">
+                    {features[activeTab].icon}
+                  </div>
+                  <h3 className="text-lg font-bold text-text">{features[activeTab].title}</h3>
+                </div>
+                <span className="text-[10px] font-bold bg-emerald-950/80 border border-emerald-800/40 text-emerald-300 px-2.5 py-1 rounded-full">
+                  {features[activeTab].badge}
+                </span>
+              </div>
+
+              <p className="text-xs sm:text-sm text-text-300 leading-relaxed">
+                {features[activeTab].desc}
+              </p>
+
+              <div className="border-t border-secondary-900/60 pt-5 space-y-3">
+                {features[activeTab].detail.map((detail, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span className="text-xs text-text-100 font-medium">{detail}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Content (Visual mockup of the active feature) */}
+            <div className="md:col-span-5 flex justify-center bg-text-900/40 p-6 rounded-2xl border border-secondary-800/10 min-h-[220px]">
+              
+              {activeTab === "ocr" && (
+                <div className="w-full max-w-[240px] bg-text-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 relative overflow-hidden animate-in zoom-in-95 duration-300">
+                  {/* AI Scanning Beam Effect */}
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary animate-bounce" />
+                  
+                  <div className="flex items-center justify-between border-b border-text-800 pb-2">
+                    <span className="text-[9px] text-text-400 uppercase tracking-wider font-bold">Struk Belanja</span>
+                    <span className="text-[8px] bg-primary-950 text-primary-400 px-1.5 py-0.5 rounded border border-primary-900/40">AI OCR Active</span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-[10px]">
+                      <span className="text-text-50 font-medium">1. Spicy Miso Ramen</span>
+                      <span className="text-text-50 font-bold">Rp 45.000</span>
+                    </div>
+                    <div className="flex justify-between text-[10px]">
+                      <span className="text-text-50 font-medium">2. Original Gyoza</span>
+                      <span className="text-text-50 font-bold">Rp 28.000</span>
+                    </div>
+                    <div className="flex justify-between text-[10px]">
+                      <span className="text-text-50 font-medium">3. Ocha Cold (Refill)</span>
+                      <span className="text-text-50 font-bold">Rp 12.000</span>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-text-800 pt-2 flex justify-between text-[10px] text-emerald-400 font-bold">
+                    <span>Tax & Service (10%)</span>
+                    <span>Rp 8.500</span>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "split" && (
+                <div className="w-full max-w-[240px] bg-text-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 animate-in zoom-in-95 duration-300">
+                  <div className="border-b border-text-800 pb-2">
+                    <span className="text-[9px] text-text-400 uppercase tracking-wider font-bold">Menu & Anggota</span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="p-2 rounded-lg bg-text-900 border border-secondary-800/10 flex flex-col gap-1.5">
+                      <div className="flex justify-between text-[10px]">
+                        <span className="text-text-50 font-bold">Spicy Miso Ramen</span>
+                        <span className="text-text-300">Rp 45.000</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        <span className="text-[8px] bg-primary-900/60 border border-primary-800/50 text-primary-300 px-1.5 py-0.5 rounded-full font-medium">Budi</span>
+                        <span className="text-[8px] bg-emerald-950/60 border border-emerald-900/50 text-emerald-300 px-1.5 py-0.5 rounded-full font-medium">Ucup</span>
+                      </div>
+                    </div>
+
+                    <div className="p-2 rounded-lg bg-text-900 border border-secondary-800/10 flex flex-col gap-1.5">
+                      <div className="flex justify-between text-[10px]">
+                        <span className="text-text-50 font-bold">Original Gyoza</span>
+                        <span className="text-text-300">Rp 28.000</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        <span className="text-[8px] bg-primary-900/60 border border-primary-800/50 text-primary-300 px-1.5 py-0.5 rounded-full font-medium">Budi</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "share" && (
+                <div className="w-full max-w-[240px] bg-[#0b141a] p-3.5 rounded-xl border border-zinc-800 shadow-lg space-y-2.5 animate-in zoom-in-95 duration-300 relative">
+                  <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                    <span className="text-[9px] text-white font-bold">WhatsApp Send</span>
+                  </div>
+
+                  <div className="bg-[#202c33] p-2.5 rounded-xl text-[9px] text-white space-y-1.5 border-l-4 border-emerald-500 max-w-[90%]">
+                    <p className="font-extrabold text-emerald-400">PETE-PETE: Ramen Geng 🍜</p>
+                    <p>Total tagihan lo: <span className="font-bold text-white">Rp 73.000</span></p>
+                    <p className="text-[8px] text-zinc-400">Menu: 1x Spicy Miso Ramen + 1x Gyoza</p>
+                    <div className="mt-2 text-center bg-emerald-600 py-1.5 rounded font-extrabold text-white text-[8px]">
+                      Konfirmasi & Bayar
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
           </div>
         </div>
       </section>
 
       {/* Info Stats Section */}
-      <section className="px-4 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-5xl">
-        <div className="p-5 rounded-xl border border-lilac-ash-800/40 bg-jet-black-900/40 text-left space-y-3">
-          <Coins01 className="w-7 h-7 text-alice-blue-400" />
-          <h4 className="text-base font-bold text-white leading-none">Tanpa Biaya</h4>
-          <p className="text-xs text-jet-black-300 leading-relaxed">
+      <section className="px-6 py-6 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-5xl z-10">
+        <div className="p-6 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md text-left space-y-4 hover:border-primary-500/25 transition-all duration-300 hover:scale-[1.02] group">
+          <div className="p-3 rounded-2xl bg-primary-950 border border-primary-900/40 w-fit group-hover:scale-110 transition-transform">
+            <Coins01 className="w-6 h-6 text-primary-400" />
+          </div>
+          <h4 className="text-lg font-bold text-text leading-none">Tanpa Biaya</h4>
+          <p className="text-xs text-text-300 leading-relaxed">
             Pakai semua fitur scan struk &amp; kelola banyak rekening sepuasnya gratis tanpa dipungut biaya sepeser pun.
           </p>
         </div>
-        <div className="p-5 rounded-xl border border-lilac-ash-800/40 bg-jet-black-900/40 text-left space-y-3">
-          <Users01 className="w-7 h-7 text-emerald-400" />
-          <h4 className="text-base font-bold text-white leading-none">Geng Happy</h4>
-          <p className="text-xs text-jet-black-300 leading-relaxed">
+        <div className="p-6 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md text-left space-y-4 hover:border-emerald-500/25 transition-all duration-300 hover:scale-[1.02] group">
+          <div className="p-3 rounded-2xl bg-emerald-950 border border-emerald-900/40 w-fit group-hover:scale-110 transition-transform">
+            <Users01 className="w-6 h-6 text-emerald-400" />
+          </div>
+          <h4 className="text-lg font-bold text-text leading-none">Geng Happy</h4>
+          <p className="text-xs text-text-300 leading-relaxed">
             Nggak ada lagi rasa sungkan nagih patungan secara manual. Hubungan tongkrongan tetap asyik &amp; harmonis!
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="mt-12 text-center px-6 w-full max-w-5xl border-t border-jet-black-900 pt-6">
-        <p className="text-[10px] text-jet-black-400">
+      <footer className="mt-16 text-center px-6 w-full max-w-5xl border-t border-text-900/60 pt-8 z-10">
+        <p className="text-xs text-text-400 font-medium">
           PETE-PETE &mdash; Dibuat khusus biar patungan geng lo beres instan.
         </p>
       </footer>

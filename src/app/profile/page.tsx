@@ -22,6 +22,7 @@ export default async function ProfilePage() {
       id: true,
       name: true,
       email: true,
+      avatar: true,
       banks: {
         select: {
           id: true,
@@ -53,6 +54,7 @@ export default async function ProfilePage() {
     id: user.id,
     name: user.name,
     email: user.email,
+    avatar: user.avatar || "",
     banks: initialBanks,
   };
 

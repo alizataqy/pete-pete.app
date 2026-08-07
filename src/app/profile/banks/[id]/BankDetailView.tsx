@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteUserBank } from "@/app/actions/profile";
 import { ArrowLeft, Copy01, Share07, Trash01, Eye, EyeOff } from "@untitledui/icons";
 import { toast } from "sonner";
+import { Button } from "@/components/base/buttons/button";
 
 interface BankDetailProps {
   bank: {
@@ -54,14 +54,14 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
   return (
     <div className="flex flex-col flex-1 pb-16">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-lilac-ash-950/90 backdrop-blur-md border-b border-lilac-ash-800 px-4 py-4 flex items-center justify-center relative">
-        <Link
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-center relative">
+        <Button
           href="/profile/banks"
-          className="absolute left-4 p-2 rounded-lg border border-jet-black-700 text-jet-black-100 hover:bg-lilac-ash-800 active:scale-95 transition-all"
+          className="absolute left-4 p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all"
         >
           <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <h1 className="text-sm font-extrabold text-jet-black-50">Detail Rekening</h1>
+        </Button>
+        <h1 className="text-sm font-extrabold text-text-50">Detail Rekening</h1>
       </header>
 
       {/* Content */}
@@ -69,11 +69,15 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
         {/* Premium Bank Card */}
         <div
           className={`relative rounded-2xl p-5 overflow-hidden ${
-            isQris
-              ? "bg-gradient-to-br from-emerald-700 via-emerald-800 to-jet-black-950"
-              : isEWallet
-                ? "bg-gradient-to-br from-alice-blue-600 via-alice-blue-700 to-lilac-ash-950"
-                : "bg-gradient-to-br from-alice-blue-500 via-alice-blue-700 to-lilac-ash-950"
+              bank.bankName === "BCA" ? "bg-brand-bca text-white" :
+              bank.bankName === "Bank Mandiri" ? "bg-brand-mandiri text-white" :
+              bank.bankName === "BRI" ? "bg-brand-bri text-white" :
+              bank.bankName === "BNI" ? "bg-brand-bni text-white" :
+              bank.bankName === "GoPay" ? "bg-brand-gopay text-white" :
+              bank.bankName === "OVO" ? "bg-brand-ovo text-white" :
+              bank.bankName === "Dana" ? "bg-brand-dana text-white" :
+              bank.bankName === "QRIS" ? "bg-brand-qris text-white" :
+              "bg-primary text-text-950"
           }`}
         >
           {/* Badge */}
@@ -135,7 +139,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
               navigator.clipboard.writeText(bank.bankAccount);
               toast.success("Nomor rekening disalin!");
             }}
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-lilac-ash-800 bg-jet-black-900 text-jet-black-100 text-xs font-semibold hover:bg-jet-black-800 active:scale-95 transition-all"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-secondary-800 bg-text-900 text-text-100 text-xs font-semibold hover:bg-text-800 active:scale-95 transition-all"
           >
             <Copy01 className="w-4 h-4" /> Salin Nomor
           </button>
@@ -152,7 +156,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
         </div>
 
         {/* Delete Section */}
-        <div className="pt-4 border-t border-lilac-ash-800">
+        <div className="pt-4 border-t border-secondary-800">
           <button
             type="button"
             onClick={handleDelete}

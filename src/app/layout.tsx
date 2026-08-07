@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import MobileContainer from "@/components/MobileContainer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -68,11 +69,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.className} bg-powder-blue-950 text-jet-black-50 antialiased min-h-screen flex justify-center`} suppressHydrationWarning>
-        {/* Halaman landing page (mengandung LandingView) bebas dari constraint max-w-md agar tampil responsif desktop */}
-        <div className="w-full min-h-screen bg-lilac-ash-950 border-x border-lilac-ash-900 shadow-2xl relative flex flex-col has-data-landing-view:border-x-0 max-w-md">
+      <body className={`${inter.className} bg-background text-foreground antialiased min-h-screen`} suppressHydrationWarning>
+        <MobileContainer>
           {children}
-        </div>
+        </MobileContainer>
         <Toaster position="top-center" richColors theme="dark" />
       </body>
     </html>

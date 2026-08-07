@@ -42,16 +42,16 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
   };
 
   return (
-    <div className="p-4 rounded-xl border border-lilac-ash-800 bg-jet-black-900 space-y-3">
+    <div className="p-4 rounded-xl border border-secondary-800 bg-text-900 space-y-3">
       <div>
-        <h3 className="text-xs font-bold text-jet-black-100 uppercase tracking-wider">Gabung Sesi</h3>
-        <p className="text-[10px] text-jet-black-300 mt-0.5">
+        <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Gabung Sesi</h3>
+        <p className="text-[10px] text-text-300 mt-0.5">
           Minta kode 6 digit dari temen lo yang bikin sesi, terus masukin di sini.
         </p>
       </div>
 
       {error && (
-        <div className="p-2.5 text-[10px] text-lilac-ash-200 bg-lilac-ash-900 border border-lilac-ash-700 rounded-lg">
+        <div className="p-2.5 text-[10px] text-secondary-200 bg-secondary-900 border border-secondary-700 rounded-lg">
           {error}
         </div>
       )}

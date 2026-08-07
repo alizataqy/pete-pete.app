@@ -96,11 +96,12 @@ export const Avatar = ({
 }: AvatarProps) => {
     const [isFailed, setIsFailed] = useState(false);
 
-    const canShowImage = src && !isFailed;
+    const canShowImage = (src || alt || initials) && !isFailed;
 
     const renderMainContent = () => {
         if (canShowImage) {
-            return <img data-avatar-img className="size-full object-cover" src={src} alt={alt} onError={() => setIsFailed(true)} />;
+            const imageSrc = src || (alt || initials ? `https://api.dicebear.com/9.x/dylan/svg?seed=${encodeURIComponent(alt || initials || "")}` : undefined);
+            return <img data-avatar-img className="size-full object-cover" src={imageSrc} alt={alt} onError={() => setIsFailed(true)} />;
         }
 
         if (initials) {

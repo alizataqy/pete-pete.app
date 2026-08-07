@@ -4,6 +4,7 @@ import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/base/buttons/button";
+import { LogOut01 } from "@untitledui/icons";
 
 interface LogoutButtonProps {
   className?: string;
@@ -39,8 +40,8 @@ export default function LogoutButton({ className }: LogoutButtonProps) {
       color="secondary"
       size="sm"
       className={className}
-    >
-      Keluar
+      iconLeading={<LogOut01 />}
+    > Keluar
     </Button>
   );
 }

@@ -17,7 +17,7 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
   return (
     <div className="flex flex-col flex-1 pb-16">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-lilac-ash-950/90 backdrop-blur-md border-b border-lilac-ash-800 px-4 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button
             onPress={() => router.push("/profile")}
@@ -27,28 +27,29 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-sm font-extrabold text-jet-black-50">Semua Wallet</h1>
-            <p className="text-[10px] text-jet-black-300 mt-0.5">Daftar bank &amp; e-wallet terdaftar</p>
+            <h1 className="text-sm font-extrabold text-text-50">Semua Wallet</h1>
+            <p className="text-[10px] text-text-300 mt-0.5">Daftar bank &amp; e-wallet terdaftar</p>
           </div>
         </div>
         <Button
           type="button"
           onPress={() => router.push("/profile/banks/new")}
-          iconLeading={<Plus className="w-3.5 h-3.5" />}
-          className="bg-alice-blue-600 hover:bg-alice-blue-700 text-white text-[10px] py-1.5 px-3 rounded-lg shrink-0"
+          iconLeading={<Plus className="w-4 h-4" />}
+          className="text-xs py-1.5 px-3"
+          color="primary"
         >
           Tambah Bank
         </Button>
-      </header>
+      </header> 
 
       {/* Body */}
       <div className="flex-1 p-4 overflow-y-auto space-y-3">
         {banks.length === 0 ? (
-          <div className="p-6 rounded-xl border border-dashed border-jet-black-700 bg-jet-black-950 flex flex-col items-center justify-center gap-2">
-            <p className="text-xs text-jet-black-400">Belum ada rekening terdaftar</p>
+          <div className="p-6 rounded-xl border border-dashed border-text-700 bg-text-950 flex flex-col items-center justify-center gap-2">
+            <p className="text-xs text-text-400">Belum ada rekening terdaftar</p>
             <Button
               onPress={() => router.push("/profile/banks/new")}
-              className="text-[10px] font-bold text-alice-blue-400 hover:text-alice-blue-300 bg-transparent border-0"
+              className="text-[10px] font-bold text-primary-400 hover:text-primary-300 bg-transparent border-0"
             >
               Tambah rekening pertama lo
             </Button>
@@ -64,17 +65,22 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
                 : b.bankAccount;
 
             return (
-              <Button
+              <button
                 key={b.id}
-                onPress={() => router.push(`/profile/banks/${b.id}`)}
-                className="w-full text-left p-0 bg-transparent border-0 flex flex-col cursor-pointer"
+                onClick={() => router.push(`/profile/banks/${b.id}`)}
+                className="w-full text-left p-0 bg-transparent border-0 flex flex-col cursor-pointer focus:outline-none"
               >
                 <div
-                  className={`w-full relative rounded-2xl p-4 overflow-hidden transition-all active:scale-[0.98] ${isQris
-                      ? "bg-gradient-to-br from-emerald-800 via-emerald-900 to-jet-black-950"
-                      : isEWallet
-                        ? "bg-gradient-to-br from-alice-blue-700 via-alice-blue-800 to-lilac-ash-950"
-                        : "bg-gradient-to-br from-alice-blue-600 via-alice-blue-800 to-lilac-ash-950"
+                  className={`w-full relative rounded-2xl p-4 overflow-hidden transition-all active:scale-[0.98] ${
+                      b.bankName === "BCA" ? "bg-brand-bca text-white" :
+                      b.bankName === "Bank Mandiri" ? "bg-brand-mandiri text-white" :
+                      b.bankName === "BRI" ? "bg-brand-bri text-white" :
+                      b.bankName === "BNI" ? "bg-brand-bni text-white" :
+                      b.bankName === "GoPay" ? "bg-brand-gopay text-white" :
+                      b.bankName === "OVO" ? "bg-brand-ovo text-white" :
+                      b.bankName === "Dana" ? "bg-brand-dana text-white" :
+                      b.bankName === "QRIS" ? "bg-brand-qris text-white" :
+                      "bg-primary text-text-950"
                     }`}
                 >
                   <span className="absolute top-3 right-3 text-[8px] font-bold uppercase tracking-wider bg-white/15 backdrop-blur-sm text-white px-2 py-0.5 rounded-full">
@@ -99,7 +105,7 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
                     <p className="text-sm font-bold text-white tracking-wider mt-1">{maskedAccount}</p>
                   </div>
                 </div>
-              </Button>
+              </button>
             );
           })
         )}

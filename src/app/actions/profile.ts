@@ -66,7 +66,7 @@ export async function deleteUserBank(userId: string, bankId: string) {
   }
 }
 
-export async function updateUserProfile(data: { userId: string; name: string; email: string }) {
+export async function updateUserProfile(data: { userId: string; name: string; email: string; avatar?: string }) {
   try {
     if (data.email) {
       const existingUser = await prisma.user.findUnique({
@@ -82,6 +82,7 @@ export async function updateUserProfile(data: { userId: string; name: string; em
       data: {
         name: data.name,
         email: data.email,
+        avatar: data.avatar,
       },
     });
 

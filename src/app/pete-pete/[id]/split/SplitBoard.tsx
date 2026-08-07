@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   addSessionMember,
   removeSessionMember,
+  renameSessionMember,
   saveAllocations,
   addSessionItem,
   updateSessionItem,
@@ -12,8 +13,9 @@ import {
   completeBillSession
 } from "@/app/actions/session";
 import { Button } from "@/components/base/buttons/button";
-import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft } from "@untitledui/icons";
-import { redirect } from "next/navigation";
+import { Avatar } from "@/components/base/avatar/avatar";
+import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01 } from "@untitledui/icons";
+import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface Member {
@@ -54,6 +56,7 @@ export default function SplitBoard({
   items,
   initialAllocations,
 }: SplitBoardProps) {
+  const router = useRouter();
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [newMemberName, setNewMemberName] = useState("");
   const [allocations, setAllocations] = useState<{ itemId: string; memberId: string }[]>(initialAllocations);
@@ -62,6 +65,32 @@ export default function SplitBoard({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // States untuk Rename Member
+  const [editingMemberId, setEditingMemberId] = useState<string | null>(null);
+  const [editingMemberName, setEditingMemberName] = useState("");
+
+  const handleRenameMember = async (memberId: string) => {
+    if (!editingMemberName.trim()) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await renameSessionMember(memberId, editingMemberName.trim(), session.id);
+      if (res.success && res.member) {
+        setMembers((prev) =>
+          prev.map((m) => (m.id === memberId ? { ...m, name: res.member!.name } : m))
+        );
+        setEditingMemberId(null);
+        toast.success("Nama anggota berhasil diubah!");
+      } else {
+        setError(res.error || "Gagal mengubah nama anggota.");
+      }
+    } catch {
+      setError("Terjadi kesalahan.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // States untuk Tambah Menu Manual
   const [showAddForm, setShowAddForm] = useState(false);
@@ -318,41 +347,46 @@ Terima kasih! 🙏`;
   return (
     <div className="flex flex-col flex-1 pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-lilac-ash-950/90 backdrop-blur-md border-b border-lilac-ash-800 px-4 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button
-            href="/dashboard"
+            onPress={() => router.push("/dashboard")}
             color="primary"
             size="sm"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-sm font-extrabold text-slate-100 line-clamp-1">{session.title}</h1>
-            <p className="text-[9px] text-slate-400">
+            <h1 className="text-sm font-extrabold text-text line-clamp-1">{session.title}</h1>
+            <p className="text-[9px] text-text-300">
               Kode: {session.inviteCode}
             </p>
           </div>
         </div>
-        <Link
+        <Button
           href={`/pete-pete/${session.id}/items`}
-          className="px-2.5 py-1.5 rounded-lg border border-lilac-ash-800 hover:bg-jet-black-900 text-slate-400 text-[10px] font-semibold transition-all active:scale-95"
+          color="secondary"
+          className="px-2.5 py-1.5 rounded-lg border border-secondary-800 hover:bg-text-900 text-slate-400 text-[10px] font-semibold transition-all active:scale-95"
         >
           Review Struk
-        </Link>
+        </Button>
       </header>
 
       {/* Body Content */}
       <div className="p-4 space-y-5 overflow-y-auto">
         {error && (
-          <div className="p-3 text-xs text-lilac-ash-200 bg-lilac-ash-900 border border-lilac-ash-700 rounded-xl">
-            ⚠️ {error}
+          <div className="p-3 text-xs text-secondary-200 bg-secondary-900 border border-secondary-700 rounded-xl flex items-center gap-1.5">
+            <AlertTriangle className="w-4 h-4 text-secondary-400 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
         {/* 1. Manajemen Anggota */}
-        <div className="p-4 rounded-xl border border-lilac-ash-800 bg-jet-black-900/60 space-y-4">
-          <h2 className="text-xs font-semibold text-jet-black-100 uppercase tracking-wider">👥 Anggota Sesi</h2>
+        <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
+          <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
+            <Users01 className="w-4 h-4 text-text-300" />
+            <span>Anggota Sesi</span>
+          </h2>
 
           {session.status !== "COMPLETED" && (
             <form onSubmit={handleAddMember} className="flex gap-2">
@@ -361,7 +395,7 @@ Terima kasih! 🙏`;
                 required
                 value={newMemberName}
                 onChange={(e) => setNewMemberName(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg bg-jet-black-950 border border-jet-black-700 text-white placeholder-slate-600 focus:border-alice-blue-500 focus:ring-1 focus:ring-alice-blue-500 text-xs outline-none transition-all"
+                className="flex-1 px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-text placeholder-text-600 focus:border-primary focus:ring-1 focus:ring-primary text-xs outline-none transition-all"
                 placeholder="Nama teman..."
               />
               <Button
@@ -375,38 +409,85 @@ Terima kasih! 🙏`;
             </form>
           )}
 
-          <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-55 overflow-y-auto pr-1 scrollbar-hide">
             {members.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center justify-between p-3 rounded-xl bg-jet-black-950 border border-lilac-ash-800"
+                className="flex items-center justify-between p-3 rounded-xl bg-text-950 border border-secondary-800"
               >
-                <div className="space-y-0.5">
-                  <p className="font-semibold text-slate-200 text-xs">{member.name}</p>
-                  <p className="text-[10px] text-indigo-400 font-medium">
-                    Bagian: Rp {Number(member.shareAmount).toLocaleString("id-ID")}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2.5">
-                  <Button
-                    onPress={() => handleCopySummary(member)}
-                    color="link-color"
-                    className="text-[10px] text-alice-blue-500 hover:text-alice-blue-400 font-bold transition-all"
-                  >
-                    {copiedId === member.id ? "Tersalin!" : "📋 Salin"}
-                  </Button>
-                  {member.name !== "Saya (Owner)" && session.status !== "COMPLETED" && (
-                    <Button
-                      onPress={() => handleRemoveMember(member.id)}
-                      color="link-gray"
-                      className="text-[10px] text-jet-black-400 hover:text-lilac-ash-200 font-semibold transition-colors"
-                      iconLeading={Trash01}
-                    >
-                      Hapus
-                    </Button>
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <Avatar alt={member.name} size="sm" className="shadow-md border border-secondary-800" />
+                  {editingMemberId === member.id ? (
+                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                      <input
+                        type="text"
+                        value={editingMemberName}
+                        onChange={(e) => setEditingMemberName(e.target.value)}
+                        className="px-2 py-1 rounded bg-text-900 border border-text-700 text-xs text-text outline-none flex-1 min-w-0"
+                      />
+                      <Button
+                        onPress={() => handleRenameMember(member.id)}
+                        isDisabled={loading}
+                        color="primary"
+                        size="xs"
+                        className="px-2 py-1 text-[10px]"
+                      >
+                        Simpan
+                      </Button>
+                      <Button
+                        onPress={() => setEditingMemberId(null)}
+                        color="secondary"
+                        size="xs"
+                        className="px-2 py-1 text-[10px]"
+                      >
+                        Batal
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-0.5 min-w-0">
+                      <p className="font-semibold text-text text-xs truncate">{member.name}</p>
+                      <p className="text-[10px] text-indigo-400 font-medium">
+                        Bagian: Rp {Number(member.shareAmount).toLocaleString("id-ID")}
+                      </p>
+                    </div>
                   )}
                 </div>
+
+                {editingMemberId !== member.id && (
+                  <div className="flex items-center gap-2.5">
+                    <Button
+                      onPress={() => handleCopySummary(member)}
+                      color="link-color"
+                      className="text-[10px] text-primary-500 hover:text-primary-400 font-bold transition-all"
+                      iconLeading={copiedId === member.id ? Check : Copy01}
+                    >
+                      {copiedId === member.id ? "Tersalin!" : "Salin"}
+                    </Button>
+                    {member.name !== "Saya (Owner)" && session.status !== "COMPLETED" && (
+                      <>
+                        <Button
+                          onPress={() => {
+                            setEditingMemberId(member.id);
+                            setEditingMemberName(member.name);
+                          }}
+                          color="link-gray"
+                          className="text-[10px] text-text-400 hover:text-secondary-200 font-semibold transition-colors"
+                          iconLeading={Edit02}
+                        >
+                          Ubah
+                        </Button>
+                        <Button
+                          onPress={() => handleRemoveMember(member.id)}
+                          color="link-gray"
+                          className="text-[10px] text-text-400 hover:text-secondary-200 font-semibold transition-colors"
+                          iconLeading={Trash01}
+                        >
+                          Hapus
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -416,8 +497,11 @@ Terima kasih! 🙏`;
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h2 className="text-xs font-semibold text-jet-black-100 uppercase tracking-wider">🎯 Papan Alokasi Item</h2>
-              <p className="text-[10px] text-slate-500 leading-normal">
+              <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
+                <Target01 className="w-4 h-4 text-text-300" />
+                <span>Papan Alokasi Item</span>
+              </h2>
+              <p className="text-[10px] text-text-400 leading-normal">
                 Pilih nama teman yang memakan menu/item belanja di bawah ini.
               </p>
             </div>
@@ -436,8 +520,8 @@ Terima kasih! 🙏`;
 
           {/* Form Tambah Menu Manual */}
           {showAddForm && (
-            <form onSubmit={handleAddItem} className="p-3.5 rounded-xl bg-jet-black-900 border border-lilac-ash-800 space-y-3">
-              <h4 className="text-[10px] font-bold text-jet-black-100 uppercase tracking-wider">Tambah Menu Baru</h4>
+            <form onSubmit={handleAddItem} className="p-3.5 rounded-xl bg-text-900 border border-secondary-800 space-y-3">
+              <h4 className="text-[10px] font-bold text-text uppercase tracking-wider">Tambah Menu Baru</h4>
 
               <div className="space-y-2">
                 <input
@@ -445,31 +529,31 @@ Terima kasih! 🙏`;
                   required
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-jet-black-950 border border-jet-black-700 text-xs text-white outline-none"
+                  className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                   placeholder="Nama Menu (misal: Nasi Goreng)"
                 />
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <label className="text-[9px] text-jet-black-400 uppercase font-bold">Jumlah (Qty)</label>
+                    <label className="text-[9px] text-text-400 uppercase font-bold">Jumlah (Qty)</label>
                     <input
                       type="number"
                       required
                       min={1}
                       value={newItemQty}
                       onChange={(e) => setNewItemQty(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-lg bg-jet-black-950 border border-jet-black-700 text-xs text-white outline-none"
+                      className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[9px] text-jet-black-400 uppercase font-bold">Harga Satuan</label>
+                    <label className="text-[9px] text-text-400 uppercase font-bold">Harga Satuan</label>
                     <input
                       type="number"
                       required
                       min={0}
                       value={newItemPrice}
                       onChange={(e) => setNewItemPrice(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-jet-black-950 border border-jet-black-700 text-xs text-white outline-none"
+                      className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                       placeholder="Rp"
                     />
                   </div>
@@ -480,14 +564,14 @@ Terima kasih! 🙏`;
                 type="submit"
                 isDisabled={loading}
                 isLoading={loading}
-                className="w-full py-2 rounded-lg bg-alice-blue-500 hover:bg-alice-blue-600 text-jet-black-950 font-bold text-xs active:scale-95 transition-all"
+                className="w-full py-2 rounded-lg bg-primary hover:bg-primary-600 text-text-950 font-bold text-xs active:scale-95 transition-all"
               >
                 Tambah Menu
               </Button>
             </form>
           )}
 
-          <div className="space-y-3">
+          <div className="space-y-3 max-h-80 overflow-y-auto scrollbar-hide">
             {items.map((item) => {
               const allocatedToThisItem = allocations.filter((a) => a.itemId === item.id);
               const isEditing = editingItemId === item.id;
@@ -495,7 +579,7 @@ Terima kasih! 🙏`;
               return (
                 <div
                   key={item.id}
-                  className="p-3.5 rounded-xl bg-jet-black-900 border border-lilac-ash-800 space-y-3 shadow-sm hover:border-jet-black-700 transition-all"
+                  className="p-3.5 rounded-xl bg-text-900 border border-secondary-800 space-y-3 shadow-sm hover:border-text-700 transition-all"
                 >
                   {isEditing ? (
                     // Form Edit Item Inline
@@ -506,7 +590,7 @@ Terima kasih! 🙏`;
                           required
                           value={editItemName}
                           onChange={(e) => setEditItemName(e.target.value)}
-                          className="w-full px-3 py-1.5 rounded-lg bg-jet-black-950 border border-jet-black-700 text-xs text-white outline-none"
+                          className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                         />
                         <div className="grid grid-cols-2 gap-2">
                           <input
@@ -515,7 +599,7 @@ Terima kasih! 🙏`;
                             min={1}
                             value={editItemQty}
                             onChange={(e) => setEditItemQty(Number(e.target.value))}
-                            className="w-full px-3 py-1.5 rounded-lg bg-jet-black-950 border border-jet-black-700 text-xs text-white outline-none"
+                            className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                             placeholder="Qty"
                           />
                           <input
@@ -524,7 +608,7 @@ Terima kasih! 🙏`;
                             min={0}
                             value={editItemPrice}
                             onChange={(e) => setEditItemPrice(e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-lg bg-jet-black-950 border border-jet-black-700 text-xs text-white outline-none"
+                            className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                             placeholder="Harga Satuan"
                           />
                         </div>
@@ -535,7 +619,7 @@ Terima kasih! 🙏`;
                           onPress={() => setEditingItemId(null)}
                           color="secondary"
                           size="xs"
-                          className="px-3 py-1 rounded bg-jet-black-950 border border-jet-black-700 text-slate-400"
+                          className="px-3 py-1 rounded bg-text-950 border border-text-700 text-text-400"
                         >
                           Batal
                         </Button>
@@ -544,7 +628,7 @@ Terima kasih! 🙏`;
                           isDisabled={loading}
                           isLoading={loading}
                           size="xs"
-                          className="px-3 py-1 rounded bg-alice-blue-500 text-jet-black-950 font-bold"
+                          className="px-3 py-1 rounded bg-primary text-text-950 font-bold"
                         >
                           Simpan
                         </Button>
@@ -555,10 +639,10 @@ Terima kasih! 🙏`;
                     <>
                       <div className="flex justify-between items-start">
                         <div className="space-y-0.5">
-                          <h4 className="font-bold text-slate-200 text-xs flex items-center gap-1.5">
+                          <h4 className="font-bold text-text text-xs flex items-center gap-1.5">
                             <span>{item.name}</span>
                           </h4>
-                          <p className="text-[10px] text-slate-500">
+                          <p className="text-[10px] text-text-500">
                             {item.quantity}x • Rp {(Number(item.totalPrice) / item.quantity).toLocaleString("id-ID")}
                           </p>
                         </div>
@@ -567,11 +651,11 @@ Terima kasih! 🙏`;
                             Rp {Number(item.totalPrice).toLocaleString("id-ID")}
                           </span>
                           {session.status !== "COMPLETED" && (
-                            <div className="flex gap-2 text-[9px] font-bold text-jet-black-400">
+                            <div className="flex gap-2 text-[9px] font-bold text-text-400">
                               <Button
                                 onPress={() => startEditItem(item)}
                                 color="link-color"
-                                className="hover:text-alice-blue-400 transition-colors font-bold text-[9px]"
+                                className="hover:text-primary-400 transition-colors font-bold text-[9px]"
                                 iconLeading={Edit02}
                               >
                                 Edit
@@ -602,8 +686,8 @@ Terima kasih! 🙏`;
                               onPress={() => handleToggleAllocation(item.id, member.id)}
                               isDisabled={session.status === "COMPLETED"}
                               className={`px-3 py-1.5 rounded-full text-[10px] font-semibold transition-all active:scale-95 border ${isAllocated
-                                ? "bg-alice-blue-900 text-alice-blue-300 border-alice-blue-800"
-                                : "bg-jet-black-950 text-slate-400 border-lilac-ash-800 hover:border-slate-700"
+                                ? "bg-primary-900 text-primary-300 border-primary-800"
+                                : "bg-text-950 text-text-400 border-secondary-800 hover:border-text-700"
                                 }`}
                             >
                               {member.name}
@@ -613,7 +697,7 @@ Terima kasih! 🙏`;
                       </div>
 
                       {allocatedToThisItem.length > 0 && (
-                        <p className="text-[9px] text-[#98A2B3] italic">
+                        <p className="text-[9px] text-text-400 italic">
                           Dibagi ke {allocatedToThisItem.length} orang (Rp{" "}
                           {Math.round(Number(item.totalPrice) / allocatedToThisItem.length).toLocaleString("id-ID")}/org)
                         </p>
@@ -628,13 +712,14 @@ Terima kasih! 🙏`;
       </div>
 
       {/* Floating Bottom Actions (Mobile thumb friendly) */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-lilac-ash-800 bg-lilac-ash-950/95 backdrop-blur-md z-20">
+      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-secondary-800 bg-secondary-950/95 backdrop-blur-md z-20">
         {session.status === "COMPLETED" ? (
           <Button
             isDisabled
-            className="w-full py-3 px-4 rounded-xl bg-lilac-ash-800 text-slate-400 text-xs font-semibold"
+            className="w-full py-3 px-4 rounded-xl bg-secondary-800 text-text-300 text-xs font-semibold"
+            iconLeading={Check}
           >
-            ✓ Sesi PETE-PETE Selesai
+            Sesi PETE-PETE Selesai
           </Button>
         ) : (
           <div className="flex gap-2">
