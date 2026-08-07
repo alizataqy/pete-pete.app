@@ -6,8 +6,13 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ceban-pertama.vercel.app"),
   title: "PETE-PETE — Akhir dari Drama Patungan",
   description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
+  keywords: ["patungan", "split bill", "bagi tagihan", "ocr scan struk", "pete pete", "aplikasi patungan", "hitung patungan online", "scan struk patungan", "ceban pertama"],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "PETE-PETE — Akhir dari Drama Patungan",
     description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
@@ -15,7 +20,7 @@ export const metadata: Metadata = {
     siteName: "PETE-PETE",
     images: [
       {
-        url: "https://ceban-pertama.vercel.app/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "PETE-PETE Preview Image",
@@ -28,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PETE-PETE — Akhir dari Drama Patungan",
     description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
-    images: ["https://ceban-pertama.vercel.app/og-image.png"],
+    images: ["/og-image.png"],
   },
   verification: {
     google: "CtKabgz4N2_NiMCQ74QNaLx6QFZhGUfvUuIcyk03IKc",
@@ -40,11 +45,32 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PETE-PETE",
+    "url": "https://ceban-pertama.vercel.app",
+    "description": "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "IDR"
+    }
+  };
+
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${inter.className} bg-powder-blue-950 text-jet-black-50 antialiased min-h-screen flex justify-center`} suppressHydrationWarning>
         {/* Halaman landing page (mengandung LandingView) bebas dari constraint max-w-md agar tampil responsif desktop */}
-        <div className="w-full min-h-screen bg-lilac-ash-950 border-x border-lilac-ash-900 shadow-2xl relative flex flex-col has-[[data-landing-view]]:max-w-none has-[[data-landing-view]]:border-x-0 max-w-md">
+        <div className="w-full min-h-screen bg-lilac-ash-950 border-x border-lilac-ash-900 shadow-2xl relative flex flex-col has-data-landing-view:border-x-0 max-w-md">
           {children}
         </div>
         <Toaster position="top-center" richColors theme="dark" />
