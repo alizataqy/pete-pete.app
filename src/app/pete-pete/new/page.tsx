@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { createBillSession, createManualBillSession } from "@/app/actions/session";
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/base/buttons/button";
-import { Edit02, Camera01, Plus, ArrowLeft, AlertCircle, UploadCloud01, Check } from "@untitledui/icons";
+import { Edit02, Camera01, Plus, ArrowLeft, AlertCircle, UploadCloud01, Check, CreditCard01 } from "@untitledui/icons";
 import { getUserBanks, UserBankData } from "@/app/actions/profile";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";
+import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 
 interface ScanItem {
   name: string;
@@ -45,24 +46,24 @@ export default function NewSessionPage() {
   const { data: authSession, isPending } = useSession();
 
   // Mode selection
-  const [inputMode, setInputMode] = useState<InputMode | null>(null);
+  const [inputMode, setInputMode] = useSessionStorageState<InputMode | null>("pete-pete-new-input-mode", null);
 
   // Shared state
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [merchantName, setMerchantName] = useState("");
+  const [title, setTitle] = useSessionStorageState("pete-pete-new-title", "");
+  const [description, setDescription] = useSessionStorageState("pete-pete-new-description", "");
+  const [merchantName, setMerchantName] = useSessionStorageState("pete-pete-new-merchant-name", "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   // Bank details selection & inputs
   const [profileBanks, setProfileBanks] = useState<UserBankData[]>([]);
-  const [selectedBankId, setSelectedBankId] = useState<string>("custom");
-  const [useProfileBank, setUseProfileBank] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState("BCA");
-  const [bankName, setBankName] = useState("");
-  const [bankAccount, setBankAccount] = useState("");
-  const [bankOwner, setBankOwner] = useState("");
-  const [qrisUrl, setQrisUrl] = useState("");
+  const [selectedBankId, setSelectedBankId] = useSessionStorageState<string>("pete-pete-new-selected-bank-id", "custom");
+  const [useProfileBank, setUseProfileBank] = useSessionStorageState("pete-pete-new-use-profile-bank", false);
+  const [selectedTemplate, setSelectedTemplate] = useSessionStorageState("pete-pete-new-selected-template", "BCA");
+  const [bankName, setBankName] = useSessionStorageState("pete-pete-new-bank-name", "");
+  const [bankAccount, setBankAccount] = useSessionStorageState("pete-pete-new-bank-account", "");
+  const [bankOwner, setBankOwner] = useSessionStorageState("pete-pete-new-bank-owner", "");
+  const [qrisUrl, setQrisUrl] = useSessionStorageState("pete-pete-new-qris-url", "");
 
   // Fetch profile bank details
   useEffect(() => {
@@ -70,37 +71,69 @@ export default function NewSessionPage() {
       getUserBanks(authSession.user.id).then((res) => {
         if (res.success && res.banks && res.banks.length > 0) {
           setProfileBanks(res.banks);
-          setSelectedBankId(res.banks[0].id || "custom");
-          setUseProfileBank(true);
+          if (!sessionStorage.getItem("pete-pete-new-selected-bank-id")) {
+            setSelectedBankId(res.banks[0].id || "custom");
+          }
+          if (!sessionStorage.getItem("pete-pete-new-use-profile-bank")) {
+            setUseProfileBank(true);
+          }
         } else {
-          setUseProfileBank(false);
-          setSelectedBankId("custom");
+          if (!sessionStorage.getItem("pete-pete-new-use-profile-bank")) {
+            setUseProfileBank(false);
+          }
+          if (!sessionStorage.getItem("pete-pete-new-selected-bank-id")) {
+            setSelectedBankId("custom");
+          }
         }
       });
     }
-  }, [authSession]);
+  }, [authSession, setSelectedBankId, setUseProfileBank]);
 
   // Scan mode state
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
-  const [scanResult, setScanResult] = useState<ScanResult | null>(null);
+  const [scanResult, setScanResult] = useSessionStorageState<ScanResult | null>("pete-pete-new-scan-result", null);
   const [isDragOver, setIsDragOver] = useState(false);
 
   // Manual mode state — new item form
-  const [manualMembers, setManualMembers] = useState<string[]>(["Sohib 1"]);
+  const [manualMembers, setManualMembers] = useSessionStorageState<string[]>("pete-pete-new-manual-members", ["Sohib 1"]);
   const [newMemberInput, setNewMemberInput] = useState("");
   const [draftItemName, setDraftItemName] = useState("");
   const [draftItemAmount, setDraftItemAmount] = useState("");
   const [draftItemQty, setDraftItemQty] = useState("1");
-  const [manualItems, setManualItems] = useState<ScanItem[]>([]);
-  const [manualTax, setManualTax] = useState(0);
-  const [manualTip, setManualTip] = useState(0);
+  const [manualItems, setManualItems] = useSessionStorageState<ScanItem[]>("pete-pete-new-manual-items", []);
+  const [manualTax, setManualTax] = useSessionStorageState<number>("pete-pete-new-manual-tax", 0);
+  const [manualTip, setManualTip] = useSessionStorageState<number>("pete-pete-new-manual-tip", 0);
 
   const [editingManualIndex, setEditingManualIndex] = useState<number | null>(null);
   const [editingManualName, setEditingManualName] = useState("");
 
-  const [wizardStep, setWizardStep] = useState<number>(1);
-  const [manualItemAllocations, setManualItemAllocations] = useState<Record<number, Record<string, number>>>({});
+  const [wizardStep, setWizardStep] = useSessionStorageState<number>("pete-pete-new-wizard-step", 1);
+  const [manualItemAllocations, setManualItemAllocations] = useSessionStorageState<Record<number, Record<string, number>>>("pete-pete-new-manual-item-allocations", {});
+
+  const clearSessionStorage = () => {
+    const keys = [
+      "pete-pete-new-input-mode",
+      "pete-pete-new-title",
+      "pete-pete-new-description",
+      "pete-pete-new-merchant-name",
+      "pete-pete-new-scan-result",
+      "pete-pete-new-bank-name",
+      "pete-pete-new-bank-account",
+      "pete-pete-new-bank-owner",
+      "pete-pete-new-qris-url",
+      "pete-pete-new-selected-template",
+      "pete-pete-new-selected-bank-id",
+      "pete-pete-new-use-profile-bank",
+      "pete-pete-new-manual-members",
+      "pete-pete-new-manual-items",
+      "pete-pete-new-manual-tax",
+      "pete-pete-new-manual-tip",
+      "pete-pete-new-wizard-step",
+      "pete-pete-new-manual-item-allocations",
+    ];
+    keys.forEach((key) => sessionStorage.removeItem(key));
+  };
 
   const handleSaveManualRename = (index: number) => {
     if (!editingManualName.trim()) {
@@ -190,8 +223,19 @@ export default function NewSessionPage() {
 
   // --- Manual Mode Handlers ---
   const handleAddMember = () => {
-    const name = newMemberInput.trim();
-    if (!name || manualMembers.includes(name) || name === currentUserName) return;
+    let name = newMemberInput.trim();
+    if (!name) {
+      let nextNum = 1;
+      while (true) {
+        const potentialName = `Sohib ${nextNum}`;
+        if (!manualMembers.includes(potentialName) && potentialName !== currentUserName) {
+          name = potentialName;
+          break;
+        }
+        nextNum++;
+      }
+    }
+    if (manualMembers.includes(name) || name === currentUserName) return;
     setManualMembers((prev) => [...prev, name]);
     setNewMemberInput("");
   };
@@ -301,6 +345,7 @@ export default function NewSessionPage() {
         if (!res.success) {
           setError(res.error || "Gagal membuat sesi manual.");
         } else {
+          clearSessionStorage();
           router.push(`/pete-pete/${res.session?.id}/split`);
         }
       } else {
@@ -325,6 +370,7 @@ export default function NewSessionPage() {
         if (!res.success) {
           setError(res.error || "Gagal membuat sesi.");
         } else {
+          clearSessionStorage();
           router.push(`/pete-pete/${res.session?.id}/split`);
         }
       }
@@ -452,7 +498,10 @@ export default function NewSessionPage() {
         </div>
 
         <div className="border-t border-secondary-800 pt-3 space-y-3">
-          <h3 className="text-[11px] font-bold text-primary-400 uppercase tracking-wider">🏦 Rekening Transfer Sesi Ini</h3>
+          <h3 className="text-[11px] font-bold text-primary-400 uppercase tracking-wider flex items-center gap-1">
+            <CreditCard01 className="w-3.5 h-3.5" />
+            <span>Rekening Transfer Sesi Ini</span>
+          </h3>
 
           {profileBanks.length > 0 ? (
             <div className="space-y-3">

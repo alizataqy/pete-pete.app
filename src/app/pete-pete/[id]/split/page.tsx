@@ -24,12 +24,13 @@ export default async function SessionSplitPage({ params }: { params: Promise<{ i
   }
 
   // Petakan alokasi awal dari database agar sinkron setelah refresh halaman
-  const initialAllocations: { itemId: string; memberId: string }[] = [];
+  const initialAllocations: { itemId: string; memberId: string; quantity: number }[] = [];
   session.members.forEach((member) => {
     member.allocations.forEach((alloc) => {
       initialAllocations.push({
         itemId: alloc.itemId,
         memberId: alloc.memberId,
+        quantity: Number(alloc.quantity),
       });
     });
   });

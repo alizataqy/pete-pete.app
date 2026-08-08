@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import {
   addSessionMember,
@@ -14,9 +14,10 @@ import {
 } from "@/app/actions/session";
 import { Button } from "@/components/base/buttons/button";
 import { Avatar } from "@/components/base/avatar/avatar";
-import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01 } from "@untitledui/icons";
+import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01 } from "@untitledui/icons";
 import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 
 interface Member {
   id: string;
@@ -47,7 +48,7 @@ interface SplitBoardProps {
   };
   initialMembers: Member[];
   items: Item[];
-  initialAllocations: { itemId: string; memberId: string }[];
+  initialAllocations: { itemId: string; memberId: string; quantity?: number }[];
 }
 
 export default function SplitBoard({
@@ -59,7 +60,10 @@ export default function SplitBoard({
   const router = useRouter();
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [newMemberName, setNewMemberName] = useState("");
-  const [allocations, setAllocations] = useState<{ itemId: string; memberId: string }[]>(initialAllocations);
+  const [allocations, setAllocations] = useSessionStorageState<{ itemId: string; memberId: string; quantity: number }[]>(
+    `pete-pete-allocations-${session.id}`,
+    initialAllocations.map((a) => ({ itemId: a.itemId, memberId: a.memberId, quantity: a.quantity || 1 }))
+  );
 
   const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
@@ -97,20 +101,90 @@ export default function SplitBoard({
   const [newItemName, setNewItemName] = useState("");
   const [newItemQty, setNewItemQty] = useState(1);
   const [newItemPrice, setNewItemPrice] = useState("");
+  const [newItemTotal, setNewItemTotal] = useState("");
+
+  const handleNewItemQtyChange = (qty: number) => {
+    setNewItemQty(qty);
+    if (newItemPrice) {
+      setNewItemTotal(String(qty * Number(newItemPrice)));
+    } else if (newItemTotal) {
+      setNewItemPrice(String(Math.round(Number(newItemTotal) / qty)));
+    }
+  };
+
+  const handleNewItemPriceChange = (price: string) => {
+    setNewItemPrice(price);
+    if (price) {
+      setNewItemTotal(String(newItemQty * Number(price)));
+    } else {
+      setNewItemTotal("");
+    }
+  };
+
+  const handleNewItemTotalChange = (total: string) => {
+    setNewItemTotal(total);
+    if (total) {
+      setNewItemPrice(String(Math.round(Number(total) / newItemQty)));
+    } else {
+      setNewItemPrice("");
+    }
+  };
 
   // States untuk Edit Menu Inline
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editItemName, setEditItemName] = useState("");
   const [editItemQty, setEditItemQty] = useState(1);
   const [editItemPrice, setEditItemPrice] = useState("");
+  const [editItemTotal, setEditItemTotal] = useState("");
+
+  const handleEditItemQtyChange = (qty: number) => {
+    setEditItemQty(qty);
+    if (editItemPrice) {
+      setEditItemTotal(String(qty * Number(editItemPrice)));
+    } else if (editItemTotal) {
+      setEditItemPrice(String(Math.round(Number(editItemTotal) / qty)));
+    }
+  };
+
+  const handleEditItemPriceChange = (price: string) => {
+    setEditItemPrice(price);
+    if (price) {
+      setEditItemTotal(String(editItemQty * Number(price)));
+    } else {
+      setEditItemTotal("");
+    }
+  };
+
+  const handleEditItemTotalChange = (total: string) => {
+    setEditItemTotal(total);
+    if (total) {
+      setEditItemPrice(String(Math.round(Number(total) / editItemQty)));
+    } else {
+      setEditItemPrice("");
+    }
+  };
+
+  const [addPriceMode, setAddPriceMode] = useState<"unit" | "total">("unit");
+  const [editPriceMode, setEditPriceMode] = useState<"unit" | "total">("unit");
 
   const handleAddMember = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMemberName.trim()) return;
+    let name = newMemberName.trim();
+    if (!name) {
+      let nextNum = 1;
+      while (true) {
+        const potentialName = `Sohib ${nextNum}`;
+        if (!members.some((m) => m.name === potentialName)) {
+          name = potentialName;
+          break;
+        }
+        nextNum++;
+      }
+    }
 
     setLoading(true);
     try {
-      const res = await addSessionMember(session.id, newMemberName);
+      const res = await addSessionMember(session.id, name);
       if (res.success && res.member) {
         setMembers((prev) => [
           ...prev,
@@ -149,14 +223,39 @@ export default function SplitBoard({
     }
   };
 
-  // Toggle alokasi item ke member
-  const handleToggleAllocation = (itemId: string, memberId: string) => {
-    const exists = allocations.find((a) => a.itemId === itemId && a.memberId === memberId);
-    if (exists) {
-      setAllocations((prev) => prev.filter((a) => !(a.itemId === itemId && a.memberId === memberId)));
-    } else {
-      setAllocations((prev) => [...prev, { itemId, memberId }]);
+  // Increase allocation quantity (maxed by item total quantity)
+  const handleIncreaseAllocation = (itemId: string, memberId: string, maxQty: number) => {
+    const itemAllocations = allocations.filter((a) => a.itemId === itemId);
+    const totalAllocatedQty = itemAllocations.reduce((sum, a) => sum + a.quantity, 0);
+    if (totalAllocatedQty >= maxQty) {
+      toast.error("Porsi nggak boleh lebih dari Qty menu, Bos!");
+      return;
     }
+    setAllocations((prev) => {
+      const exists = prev.find((a) => a.itemId === itemId && a.memberId === memberId);
+      if (exists) {
+        return prev.map((a) =>
+          a.itemId === itemId && a.memberId === memberId ? { ...a, quantity: a.quantity + 1 } : a
+        );
+      } else {
+        return [...prev, { itemId, memberId, quantity: 1 }];
+      }
+    });
+  };
+
+  // Decrease allocation quantity
+  const handleDecreaseAllocation = (itemId: string, memberId: string) => {
+    setAllocations((prev) => {
+      const exists = prev.find((a) => a.itemId === itemId && a.memberId === memberId);
+      if (!exists) return prev;
+      if (exists.quantity <= 1) {
+        return prev.filter((a) => !(a.itemId === itemId && a.memberId === memberId));
+      } else {
+        return prev.map((a) =>
+          a.itemId === itemId && a.memberId === memberId ? { ...a, quantity: a.quantity - 1 } : a
+        );
+      }
+    });
   };
 
   // Simpan pembagian tagihan & hitung ulang shareAmount di DB
@@ -164,17 +263,19 @@ export default function SplitBoard({
     setError("");
     startTransition(async () => {
       const payload = allocations.map((a) => {
-        const totalPeopleAllocated = allocations.filter((x) => x.itemId === a.itemId).length;
+        const itemAllocations = allocations.filter((x) => x.itemId === a.itemId);
+        const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
         return {
           itemId: a.itemId,
           memberId: a.memberId,
-          quantity: 1,
-          fraction: 1 / totalPeopleAllocated,
+          quantity: a.quantity,
+          fraction: a.quantity / totalAllocatedQty,
         };
       });
 
       const res = await saveAllocations(session.id, payload);
       if (res.success) {
+        sessionStorage.removeItem(`pete-pete-allocations-${session.id}`);
         toast.success("Pembagian tagihan berhasil disimpan!");
         setTimeout(() => {
           window.location.reload();
@@ -266,6 +367,7 @@ export default function SplitBoard({
     setEditItemName(item.name);
     setEditItemQty(item.quantity);
     setEditItemPrice(String(Math.round(item.totalPrice / item.quantity)));
+    setEditItemTotal(String(item.totalPrice));
   };
 
   // Simpan Perubahan Edit Item
@@ -305,11 +407,12 @@ export default function SplitBoard({
     memberAllocations.forEach(alloc => {
       const item = items.find(i => i.id === alloc.itemId);
       if (item) {
-        const totalAllocated = allocations.filter(a => a.itemId === item.id).length;
-        const sharePrice = Math.round(Number(item.totalPrice) / totalAllocated);
+        const itemAllocations = allocations.filter(x => x.itemId === item.id);
+        const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
+        const sharePrice = Math.round((alloc.quantity / totalAllocatedQty) * Number(item.totalPrice));
         subtotal += sharePrice;
 
-        itemsText += `  - ${item.name} (bagi ${totalAllocated}): Rp ${sharePrice.toLocaleString("id-ID")}\n`;
+        itemsText += `  - ${item.name} (${alloc.quantity}/${totalAllocatedQty} porsi): Rp ${sharePrice.toLocaleString("id-ID")}\n`;
       }
     });
 
@@ -324,8 +427,8 @@ export default function SplitBoard({
     const grandTotal = subtotal + memberTaxAndTips;
 
     const bankDetails = session.bankName
-      ? `🏦 Transfer ke: ${session.bankName}\n💳 No. Rekening: ${session.bankAccount}\n👤 A/N: ${session.bankOwner}`
-      : "ℹ️ Silakan hubungi pembuat sesi untuk detail transfer.";
+      ? `Transfer ke: ${session.bankName}\n No. Rekening: ${session.bankAccount}\n👤 A/N: ${session.bankOwner}`
+      : "Silakan hubungi pembuat sesi untuk detail transfer.";
 
     const text = `📢 *TAGIHAN PETE-PETE: ${session.title}*
 ${session.merchantName ? `📍 ${session.merchantName}\n` : ""}
@@ -342,6 +445,56 @@ Terima kasih! 🙏`;
     navigator.clipboard.writeText(text);
     setCopiedId(member.id);
     setTimeout(() => setCopiedId(null), 2000);
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  // Menyalin rekap tagihan seluruh anggota sekaligus (untuk dikirim ke grup WhatsApp)
+  const handleCopyAllSummary = () => {
+    let allMembersShareText = "";
+
+    members.forEach((member) => {
+      const memberAllocations = allocations.filter(a => a.memberId === member.id);
+      let subtotal = 0;
+
+      memberAllocations.forEach(alloc => {
+        const item = items.find(i => i.id === alloc.itemId);
+        if (item) {
+          const itemAllocations = allocations.filter(x => x.itemId === item.id);
+          const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
+          const sharePrice = Math.round((alloc.quantity / totalAllocatedQty) * Number(item.totalPrice));
+          subtotal += sharePrice;
+        }
+      });
+
+      const totalSubtotal = items.reduce((acc, item) => {
+        const hasAlloc = allocations.some(a => a.itemId === item.id);
+        return acc + (hasAlloc ? Number(item.totalPrice) : 0);
+      }, 0);
+
+      const taxAndTips = Number(session.taxAmount) + Number(session.tipAmount);
+      const ratio = totalSubtotal > 0 ? taxAndTips / totalSubtotal : 0;
+      const memberTaxAndTips = Math.round(subtotal * ratio);
+      const grandTotal = subtotal + memberTaxAndTips;
+
+      allMembersShareText += `👤 *${member.name}* : Rp ${grandTotal.toLocaleString("id-ID")}\n`;
+    });
+
+    const bankDetails = session.bankName
+      ? `Transfer ke: ${session.bankName}\n No. Rekening: ${session.bankAccount}\n👤 A/N: ${session.bankOwner}`
+      : "Silakan hubungi pembuat sesi untuk detail transfer.";
+
+    const text = `📢 *REKAP TAGIHAN PETE-PETE: ${session.title}*
+${session.merchantName ? `📍 ${session.merchantName}\n` : ""}
+Total Tagihan Sesi: Rp ${session.totalAmount.toLocaleString("id-ID")}
+----------------------------------
+${allMembersShareText}----------------------------------
+${bankDetails}
+
+Ditunggu transferannya ya, Bos! Thank you 🙏`;
+
+    navigator.clipboard.writeText(text);
+    toast.success("Semua rekap tagihan disalin ke clipboard!");
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   return (
@@ -373,7 +526,7 @@ Terima kasih! 🙏`;
       </header>
 
       {/* Body Content */}
-      <div className="p-4 space-y-5 overflow-y-auto">
+      <div className="p-4 space-y-5 h-[calc(100vh-16rem)] overflow-y-auto">
         {error && (
           <div className="p-3 text-xs text-secondary-200 bg-secondary-900 border border-secondary-700 rounded-xl flex items-center gap-1.5">
             <AlertTriangle className="w-4 h-4 text-secondary-400 shrink-0" />
@@ -381,22 +534,65 @@ Terima kasih! 🙏`;
           </div>
         )}
 
+        {/* Detail Rekening Penerima */}
+        {session.bankName && (
+          <div className="p-3.5 rounded-xl border border-secondary-800 bg-primary-950/20 text-xs flex items-center justify-between gap-3">
+            <div className="space-y-0.5">
+              <p className="text-[10px] text-text-400 font-bold uppercase flex items-center gap-1">
+                <CreditCard01 className="w-3.5 h-3.5 text-text-400" />
+                <span>Rekening Transfer Sesi Ini</span>
+              </p>
+              <p className="font-bold text-text-50">
+                {session.bankName} - {session.bankAccount}
+              </p>
+              <p className="text-[10px] text-text-300">
+                A/N: {session.bankOwner}
+              </p>
+            </div>
+            <Button
+              onPress={() => {
+                if (session.bankAccount) {
+                  const textToCopy = `${session.bankName}\nNo. Rek: ${session.bankAccount}\nA/N: ${session.bankOwner}`;
+                  navigator.clipboard.writeText(textToCopy);
+                  toast.success("Info rekening disalin!");
+                }
+              }}
+              color="secondary"
+              size="xs"
+              className="px-2.5 py-1 text-[10px]"
+              iconLeading={Copy01}
+            >
+              Salin Rek
+            </Button>
+          </div>
+        )}
+
         {/* 1. Manajemen Anggota */}
         <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
-          <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
-            <Users01 className="w-4 h-4 text-text-300" />
-            <span>Anggota Sesi</span>
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
+              <Users01 className="w-4 h-4 text-text-300" />
+              <span>Siapa Aja yang Ikut PETE-PETE?</span>
+            </h2>
+            <Button
+              onPress={handleCopyAllSummary}
+              color="secondary"
+              size="xs"
+              className="px-2 py-1 text-[10px]"
+              iconLeading={Copy01}
+            >
+              Bagi tagihan group
+            </Button>
+          </div>
 
           {session.status !== "COMPLETED" && (
             <form onSubmit={handleAddMember} className="flex gap-2">
               <input
                 type="text"
-                required
                 value={newMemberName}
                 onChange={(e) => setNewMemberName(e.target.value)}
                 className="flex-1 px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-text placeholder-text-600 focus:border-primary focus:ring-1 focus:ring-primary text-xs outline-none transition-all"
-                placeholder="Nama teman..."
+                placeholder="Nama temen lo..."
               />
               <Button
                 type="submit"
@@ -404,7 +600,7 @@ Terima kasih! 🙏`;
                 isLoading={loading}
                 size="sm"
               >
-                Tambah
+                Tambahin
               </Button>
             </form>
           )}
@@ -426,28 +622,28 @@ Terima kasih! 🙏`;
                         className="px-2 py-1 rounded bg-text-900 border border-text-700 text-xs text-text outline-none flex-1 min-w-0"
                       />
                       <Button
+                        onPress={() => setEditingMemberId(null)}
+                        color="secondary"
+                        size="xs"
+                        className="text-xs"
+                      >
+                        Batal
+                      </Button>
+                      <Button
                         onPress={() => handleRenameMember(member.id)}
                         isDisabled={loading}
                         color="primary"
                         size="xs"
-                        className="px-2 py-1 text-[10px]"
+                        className="text-xs"
                       >
                         Simpan
-                      </Button>
-                      <Button
-                        onPress={() => setEditingMemberId(null)}
-                        color="secondary"
-                        size="xs"
-                        className="px-2 py-1 text-[10px]"
-                      >
-                        Batal
                       </Button>
                     </div>
                   ) : (
                     <div className="space-y-0.5 min-w-0">
                       <p className="font-semibold text-text text-xs truncate">{member.name}</p>
                       <p className="text-[10px] text-indigo-400 font-medium">
-                        Bagian: Rp {Number(member.shareAmount).toLocaleString("id-ID")}
+                        Patungan: Rp {Number(member.shareAmount).toLocaleString("id-ID")}
                       </p>
                     </div>
                   )}
@@ -461,7 +657,7 @@ Terima kasih! 🙏`;
                       className="text-[10px] text-primary-500 hover:text-primary-400 font-bold transition-all"
                       iconLeading={copiedId === member.id ? Check : Copy01}
                     >
-                      {copiedId === member.id ? "Tersalin!" : "Salin"}
+                      {copiedId === member.id ? "Udah disalin!" : "Bagi tagihan"}
                     </Button>
                     {member.name !== "Saya (Owner)" && session.status !== "COMPLETED" && (
                       <>
@@ -533,7 +729,7 @@ Terima kasih! 🙏`;
                   placeholder="Nama Menu (misal: Nasi Goreng)"
                 />
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <div className="space-y-1">
                     <label className="text-[9px] text-text-400 uppercase font-bold">Jumlah (Qty)</label>
                     <input
@@ -541,21 +737,58 @@ Terima kasih! 🙏`;
                       required
                       min={1}
                       value={newItemQty}
-                      onChange={(e) => setNewItemQty(Number(e.target.value))}
+                      onChange={(e) => handleNewItemQtyChange(Number(e.target.value))}
                       className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[9px] text-text-400 uppercase font-bold">Harga Satuan</label>
-                    <input
-                      type="number"
-                      required
-                      min={0}
-                      value={newItemPrice}
-                      onChange={(e) => setNewItemPrice(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
-                      placeholder="Rp"
-                    />
+                    <label className="text-[9px] text-text-400 uppercase font-bold">Tipe Harga</label>
+                    <div className="flex bg-text-950 p-0.5 rounded-lg border border-text-700 h-9 items-center">
+                      <button
+                        type="button"
+                        onClick={() => setAddPriceMode("unit")}
+                        className={`flex-1 h-full text-[10px] font-bold rounded-md transition-all cursor-pointer ${addPriceMode === "unit"
+                            ? "bg-primary text-text-950 shadow-sm"
+                            : "text-text-400 hover:text-text-300"
+                          }`}
+                      >
+                        Satuan
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAddPriceMode("total")}
+                        className={`flex-1 h-full text-[10px] font-bold rounded-md transition-all cursor-pointer ${addPriceMode === "total"
+                            ? "bg-primary text-text-950 shadow-sm"
+                            : "text-text-400 hover:text-text-300"
+                          }`}
+                      >
+                        Total
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[9px] text-text-400 uppercase font-bold">
+                      {addPriceMode === "unit" ? "Harga Satuan" : "Harga Total"}
+                    </label>
+                    {addPriceMode === "unit" ? (
+                      <input
+                        type="number"
+                        min={0}
+                        value={newItemPrice}
+                        onChange={(e) => handleNewItemPriceChange(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
+                        placeholder="Satuan"
+                      />
+                    ) : (
+                      <input
+                        type="number"
+                        min={0}
+                        value={newItemTotal}
+                        onChange={(e) => handleNewItemTotalChange(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
+                        placeholder="Total"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -592,25 +825,68 @@ Terima kasih! 🙏`;
                           onChange={(e) => setEditItemName(e.target.value)}
                           className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                         />
-                        <div className="grid grid-cols-2 gap-2">
-                          <input
-                            type="number"
-                            required
-                            min={1}
-                            value={editItemQty}
-                            onChange={(e) => setEditItemQty(Number(e.target.value))}
-                            className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
-                            placeholder="Qty"
-                          />
-                          <input
-                            type="number"
-                            required
-                            min={0}
-                            value={editItemPrice}
-                            onChange={(e) => setEditItemPrice(e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
-                            placeholder="Harga Satuan"
-                          />
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="space-y-1">
+                            <label className="text-[9px] text-text-400 uppercase font-bold">Jumlah (Qty)</label>
+                            <input
+                              type="number"
+                              required
+                              min={1}
+                              value={editItemQty}
+                              onChange={(e) => handleEditItemQtyChange(Number(e.target.value))}
+                              className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
+                              placeholder="Qty"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[9px] text-text-400 uppercase font-bold">Tipe Harga</label>
+                            <div className="flex bg-text-950 p-0.5 rounded-lg border border-text-700 h-9 items-center">
+                              <button
+                                type="button"
+                                onClick={() => setEditPriceMode("unit")}
+                                className={`flex-1 h-full text-[10px] font-bold rounded-md transition-all cursor-pointer ${editPriceMode === "unit"
+                                    ? "bg-primary text-text-950 shadow-sm"
+                                    : "text-text-400 hover:text-text-300"
+                                  }`}
+                              >
+                                Satuan
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditPriceMode("total")}
+                                className={`flex-1 h-full text-[10px] font-bold rounded-md transition-all cursor-pointer ${editPriceMode === "total"
+                                    ? "bg-primary text-text-950 shadow-sm"
+                                    : "text-text-400 hover:text-text-300"
+                                  }`}
+                              >
+                                Total
+                              </button>
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[9px] text-text-400 uppercase font-bold">
+                              {editPriceMode === "unit" ? "Harga Satuan" : "Harga Total"}
+                            </label>
+                            {editPriceMode === "unit" ? (
+                              <input
+                                type="number"
+                                min={0}
+                                value={editItemPrice}
+                                onChange={(e) => handleEditItemPriceChange(e.target.value)}
+                                className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
+                                placeholder="Satuan"
+                              />
+                            ) : (
+                              <input
+                                type="number"
+                                min={0}
+                                value={editItemTotal}
+                                onChange={(e) => handleEditItemTotalChange(e.target.value)}
+                                className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
+                                placeholder="Total"
+                              />
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="flex gap-2 justify-end text-[10px]">
@@ -619,7 +895,7 @@ Terima kasih! 🙏`;
                           onPress={() => setEditingItemId(null)}
                           color="secondary"
                           size="xs"
-                          className="px-3 py-1 rounded bg-text-950 border border-text-700 text-text-400"
+                          className="text-xs"
                         >
                           Batal
                         </Button>
@@ -628,7 +904,7 @@ Terima kasih! 🙏`;
                           isDisabled={loading}
                           isLoading={loading}
                           size="xs"
-                          className="px-3 py-1 rounded bg-primary text-text-950 font-bold"
+                          className="text-xs"
                         >
                           Simpan
                         </Button>
@@ -637,71 +913,112 @@ Terima kasih! 🙏`;
                   ) : (
                     // Display Item Info
                     <>
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-0.5">
-                          <h4 className="font-bold text-text text-xs flex items-center gap-1.5">
-                            <span>{item.name}</span>
-                          </h4>
-                          <p className="text-[10px] text-text-500">
-                            {item.quantity}x • Rp {(Number(item.totalPrice) / item.quantity).toLocaleString("id-ID")}
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                          <span className="text-xs font-bold text-indigo-400">
-                            Rp {Number(item.totalPrice).toLocaleString("id-ID")}
-                          </span>
-                          {session.status !== "COMPLETED" && (
-                            <div className="flex gap-2 text-[9px] font-bold text-text-400">
-                              <Button
-                                onPress={() => startEditItem(item)}
-                                color="link-color"
-                                className="hover:text-primary-400 transition-colors font-bold text-[9px]"
-                                iconLeading={Edit02}
-                              >
-                                Edit
-                              </Button>
-                              <Button
-                                onPress={() => handleDeleteItem(item.id)}
-                                color="link-gray"
-                                className="hover:text-rose-400 transition-colors font-bold text-[9px]"
-                                iconLeading={Trash01}
-                              >
-                                Hapus
-                              </Button>
+                      {(() => {
+                        const itemAllocations = allocations.filter((a) => a.itemId === item.id);
+                        const totalAllocatedCount = itemAllocations.reduce((sum, a) => sum + a.quantity, 0);
+                        const isComplete = totalAllocatedCount === item.quantity;
+
+                        return (
+                          <>
+                            <div className="flex justify-between items-start">
+                              <div className="space-y-0.5">
+                                <h4 className="font-bold text-text text-xs flex items-center gap-1.5">
+                                  <span>{item.name}</span>
+                                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${isComplete ? "bg-emerald-950 border border-emerald-800 text-emerald-300" : "bg-amber-950 border border-amber-800 text-amber-300"}`}>
+                                    Terbagi: {totalAllocatedCount} / {item.quantity}
+                                  </span>
+                                </h4>
+                                <p className="text-[10px] text-text-500">
+                                  {item.quantity}x • Rp {(Number(item.totalPrice) / item.quantity).toLocaleString("id-ID")}
+                                </p>
+                              </div>
+                              <div className="flex flex-col items-end gap-1">
+                                <span className="text-xs font-bold text-indigo-400">
+                                  Rp {Number(item.totalPrice).toLocaleString("id-ID")}
+                                </span>
+                                {session.status !== "COMPLETED" && (
+                                  <div className="flex gap-2 text-[9px] font-bold text-text-400">
+                                    <Button
+                                      onPress={() => startEditItem(item)}
+                                      color="link-color"
+                                      className="hover:text-primary-400 transition-colors font-bold text-[9px]"
+                                      iconLeading={Edit02}
+                                    >
+                                      Edit
+                                    </Button>
+                                    <Button
+                                      onPress={() => handleDeleteItem(item.id)}
+                                      color="link-gray"
+                                      className="hover:text-rose-400 transition-colors font-bold text-[9px]"
+                                      iconLeading={Trash01}
+                                    >
+                                      Hapus
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      </div>
 
-                      {/* Chips Pemilihan Anggota */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {members.map((member) => {
-                          const isAllocated = allocations.some(
-                            (a) => a.itemId === item.id && a.memberId === member.id
-                          );
+                            {/* Avatar Pemilihan Anggota */}
+                            <div className="flex flex-wrap gap-4 pt-1">
+                              {members.map((member) => {
+                                const alloc = allocations.find(
+                                  (a) => a.itemId === item.id && a.memberId === member.id
+                                );
+                                const qty = alloc ? alloc.quantity : 0;
 
-                          return (
-                            <Button
-                              key={member.id}
-                              onPress={() => handleToggleAllocation(item.id, member.id)}
-                              isDisabled={session.status === "COMPLETED"}
-                              className={`px-3 py-1.5 rounded-full text-[10px] font-semibold transition-all active:scale-95 border ${isAllocated
-                                ? "bg-primary-900 text-primary-300 border-primary-800"
-                                : "bg-text-950 text-text-400 border-secondary-800 hover:border-text-700"
-                                }`}
-                            >
-                              {member.name}
-                            </Button>
-                          );
-                        })}
-                      </div>
+                                return (
+                                  <div key={member.id} className="flex flex-col items-center gap-1.5 w-12 shrink-0 relative">
+                                    <div className="relative">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleIncreaseAllocation(item.id, member.id, item.quantity)}
+                                        disabled={session.status === "COMPLETED"}
+                                        className="focus:outline-none transition-transform active:scale-95 cursor-pointer"
+                                      >
+                                        <Avatar
+                                          alt={member.name}
+                                          size="md"
+                                          className={`shadow-md transition-all duration-200 ${qty > 0 ? "ring-2 ring-primary border-primary scale-105" : "opacity-40"}`}
+                                        />
+                                      </button>
+                                      {qty > 0 && session.status !== "COMPLETED" && (
+                                        <>
+                                          {/* Quantity Badge on Top Right */}
+                                          <span className="absolute -top-1 -right-1 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-md border border-text-950">
+                                            {qty}
+                                          </span>
+                                          {/* Tiny Minus Button on Bottom Right */}
+                                          <button
+                                            type="button"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleDecreaseAllocation(item.id, member.id);
+                                            }}
+                                            className="absolute -bottom-1 -right-1 bg-rose-600 hover:bg-rose-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold shadow-md cursor-pointer border border-text-950 active:scale-90"
+                                            title="Kurangi porsi"
+                                          >
+                                            -
+                                          </button>
+                                        </>
+                                      )}
+                                    </div>
+                                    <p className={`text-[10px] truncate w-full text-center font-semibold ${qty > 0 ? "text-text font-bold" : "text-text-400"}`}>
+                                      {member.name}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
 
-                      {allocatedToThisItem.length > 0 && (
-                        <p className="text-[9px] text-text-400 italic">
-                          Dibagi ke {allocatedToThisItem.length} orang (Rp{" "}
-                          {Math.round(Number(item.totalPrice) / allocatedToThisItem.length).toLocaleString("id-ID")}/org)
-                        </p>
-                      )}
+                            {itemAllocations.length > 0 && (
+                              <p className="text-[9px] text-text-400 italic">
+                                Terbagi: {totalAllocatedCount} / {item.quantity} porsi (Dibagi ke {itemAllocations.length} orang)
+                              </p>
+                            )}
+                          </>
+                        );
+                      })()}
                     </>
                   )}
                 </div>
