@@ -362,7 +362,7 @@ export default function NewSessionPage() {
         });
 
         const res = await createManualBillSession({
-          title: title || `PETE-PETE ${merchantName || "Sesi Patungan"}`,
+          title: title || `PETE-PETE ${merchantName || "Bill Patungan"}`,
           description,
           merchantName,
           totalAmount: manualTotal,
@@ -435,7 +435,7 @@ export default function NewSessionPage() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-base font-semibold text-text-50">Buat Sesi PETE-PETE</h1>
+            <h1 className="text-base font-semibold text-text-50">Bikin Bill PETE-PETE</h1>
             <p className="text-[10px] text-text-300">Pilih cara input menu</p>
           </div>
         </header>
@@ -494,11 +494,11 @@ export default function NewSessionPage() {
   const detailsForm = (
     <div className="bg-text-900 border border-secondary-800 rounded-xl p-4 shadow-sm space-y-4">
       <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">
-        2. Detail Sesi
+        2. Detail Bill
       </h2>
       <div className="space-y-3">
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-text-100">Judul Sesi</label>
+          <label className="text-xs font-semibold text-text-100">Judul Bill</label>
           <input
             type="text"
             required
@@ -561,7 +561,7 @@ export default function NewSessionPage() {
         <div className="border-t border-secondary-800 pt-3 space-y-3">
           <h3 className="text-[11px] font-bold text-primary-400 uppercase tracking-wider flex items-center gap-1">
             <CreditCard01 className="w-3.5 h-3.5" />
-            <span>Rekening Transfer Sesi Ini</span>
+            <span>Rekening Transfer Bill Ini</span>
           </h3>
 
           {profileBanks.length > 0 ? (
@@ -706,8 +706,8 @@ export default function NewSessionPage() {
           </h1>
           <p className="text-[10px] text-text-300">
             {inputMode === "scan"
-              ? (scanResult ? "Langkah 2: Detail Sesi" : "Langkah 1: Upload Foto")
-              : "Masukkan item & detail sesi"}
+              ? (scanResult ? "Langkah 2: Detail Bill" : "Langkah 1: Upload Foto")
+              : "Masukkan item & detail Bill"}
           </p>
         </div>
       </header>
@@ -1195,7 +1195,7 @@ export default function NewSessionPage() {
                 color="primary"
                 className="flex-1 py-3 text-white text-xs font-bold"
               >
-                Bikin Sesi Patungan
+                Bikin Bill Patungan
               </Button>
             )}
           </div>
@@ -1206,7 +1206,7 @@ export default function NewSessionPage() {
             isLoading={loading}
             className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-700 text-text-50 text-xs font-semibold"
           >
-            Buat Sesi &amp; Mulai Pembagian
+            Buat Bill &amp; Mulai Pembagian
           </Button>
         ) : null}
       </div>

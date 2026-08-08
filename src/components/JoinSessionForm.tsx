@@ -31,7 +31,7 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
         setSuccess(true);
         router.push(`/pete-pete/${res.sessionId}/split`);
       } else {
-        setError(res.error || "Gagal bergabung ke sesi.");
+        setError(res.error || "Gagal bergabung ke Bill.");
       }
     } catch (err) {
       console.log(err);
@@ -44,9 +44,9 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
   return (
     <div className="p-4 rounded-xl border border-secondary-800 bg-text-900 space-y-3">
       <div>
-        <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Gabung Sesi</h3>
+        <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Gabung Bill</h3>
         <p className="text-[10px] text-text-300 mt-0.5">
-          Minta kode 6 digit dari temen lo yang bikin sesi, terus masukin di sini.
+          Minta kode 6 digit dari temen lo yang bikin Bill, terus masukin di sini.
         </p>
       </div>
 

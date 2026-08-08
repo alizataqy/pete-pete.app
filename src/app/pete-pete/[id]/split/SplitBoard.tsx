@@ -70,6 +70,7 @@ export default function SplitBoard({
   const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showMembers, setShowMembers] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // States untuk Rename Member
@@ -284,12 +285,12 @@ export default function SplitBoard({
   };
 
   const handleCompleteSession = async () => {
-    if (!confirm("Apakah Anda yakin ingin menyelesaikan sesi PETE-PETE ini? Sesi yang selesai tidak dapat diubah lagi.")) return;
+    if (!confirm("Yakin mau kelarin Bill PETE-PETE ini? Kalo udah selesai gak bisa diotak-atik lagi ya!")) return;
     setLoading(true);
     try {
       const res = await completeBillSession(session.id);
       if (res.success) {
-        toast.success("Sesi PETE-PETE berhasil diselesaikan!");
+        toast.success("Bill PETE-PETE udah kelar, Bos!");
         setTimeout(() => {
           redirect("/tongkrongan");
         }, 1200);
@@ -487,7 +488,7 @@ Terima kasih! 🙏`;
 
     const text = `📢 *REKAP TAGIHAN PETE-PETE: ${cleanTitle}*
 ${session.merchantName ? `📍 ${session.merchantName}\n` : ""}
-Total Tagihan Sesi: Rp ${session.totalAmount.toLocaleString("id-ID")}
+Total Tagihan Bill: Rp ${session.totalAmount.toLocaleString("id-ID")}
 ----------------------------------
 ${allMembersShareText}----------------------------------
 ${bankDetails}
@@ -520,15 +521,15 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
         </div>
         <Button
           href={`/pete-pete/${session.id}/items`}
-          color="secondary"
-          className="px-2.5 py-1.5 rounded-lg border border-secondary-800 hover:bg-text-900 text-slate-400 text-[10px] font-semibold transition-all active:scale-95"
+          color="primary"
+          className="px-2.5 py-1.5 text-xs transition-all active:scale-95"
         >
-          Review Struk
+          Cek Struk
         </Button>
       </header>
 
       {/* Body Content */}
-      <div className="flex-1 p-4 space-y-5 flex flex-col overflow-hidden min-h-0">
+      <div className="flex-1 p-3.5 space-y-3.5 flex flex-col overflow-hidden min-h-0">
         {error && (
           <div className="p-3 text-xs text-secondary-200 bg-secondary-900 border border-secondary-700 rounded-xl flex items-center gap-1.5">
             <AlertTriangle className="w-4 h-4 text-secondary-400 shrink-0" />
@@ -538,17 +539,12 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
 
         {/* Detail Rekening Penerima */}
         {session.bankName && (
-          <div className="p-3.5 rounded-xl border border-secondary-800 bg-primary-950/20 text-xs flex items-center justify-between gap-3 shrink-0">
-            <div className="space-y-0.5">
-              <p className="text-[10px] text-text-400 font-bold uppercase flex items-center gap-1">
-                <CreditCard01 className="w-3.5 h-3.5 text-text-400" />
-                <span>Rekening Transfer Sesi Ini</span>
-              </p>
-              <p className="font-bold text-text-50">
-                {session.bankName} - {session.bankAccount}
-              </p>
-              <p className="text-[10px] text-text-300">
-                A/N: {session.bankOwner}
+          <div className="p-2 px-3 rounded-lg border border-secondary-800 bg-primary-950/10 text-[11px] flex items-center justify-between gap-3 shrink-0">
+            <div className="flex items-center gap-2 min-w-0 flex-1 text-text-200">
+              <CreditCard01 className="w-3.5 h-3.5 text-primary-400 shrink-0" />
+              <p className="truncate">
+                <span className="font-bold text-text-50">{session.bankName}</span>: {session.bankAccount}{" "}
+                <span className="text-[10px] text-text-400">(A/N: {session.bankOwner})</span>
               </p>
             </div>
             <Button
@@ -556,64 +552,75 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                 if (session.bankAccount) {
                   const textToCopy = `${session.bankName}\nNo. Rek: ${session.bankAccount}\nA/N: ${session.bankOwner}`;
                   navigator.clipboard.writeText(textToCopy);
-                  toast.success("Info rekening disalin!");
+                  toast.success("Rekening udah disalin, Bos!");
                 }
               }}
               color="secondary"
               size="xs"
-              className="px-2.5 py-1 text-[10px]"
-              iconLeading={Copy01}
+              className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center shrink-0"
             >
-              Salin Rek
+              <Copy01 className="w-3.5 h-3.5 text-primary-400" />
             </Button>
           </div>
         )}
 
         {/* 1. Manajemen Anggota */}
-        <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4 shrink-0">
+        <div className="p-3 rounded-xl border border-secondary-800 bg-text-900/60 space-y-2.5 shrink-0">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
               <Users01 className="w-4 h-4 text-text-300" />
-              <span>Siapa Aja yang Ikut PETE-PETE?</span>
+              <span>Sohib Lo ({members.length})</span>
             </h2>
-            <Button
-              onPress={handleCopyAllSummary}
-              color="secondary"
-              size="xs"
-              className="px-2 py-1 text-[10px]"
-              iconLeading={Copy01}
-            >
-              Bagi tagihan group
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onPress={handleCopyAllSummary}
+                color="secondary"
+                size="xs"
+                className="px-2 py-1 text-[10px]"
+                iconLeading={Copy01}
+              >
+                Bagi Group
+              </Button>
+              <Button
+                onPress={() => setShowMembers(!showMembers)}
+                color="secondary"
+                size="xs"
+                className="px-2 py-1 text-[10px]"
+              >
+                {showMembers ? "Tutup" : "Kelola"}
+              </Button>
+            </div>
           </div>
 
-          {session.status !== "COMPLETED" && (
-            <form onSubmit={handleAddMember} className="flex gap-2">
-              <input
-                type="text"
-                value={newMemberName}
-                onChange={(e) => setNewMemberName(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-text placeholder-text-600 focus:border-primary focus:ring-1 focus:ring-primary text-xs outline-none transition-all"
-                placeholder="Nama temen lo..."
-              />
-              <Button
-                type="submit"
-                isDisabled={loading}
-                isLoading={loading}
-                size="sm"
-              >
-                Tambahin
-              </Button>
-            </form>
-          )}
+          {showMembers && (
+            <>
+              {session.status !== "COMPLETED" && (
+                <form onSubmit={handleAddMember} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newMemberName}
+                    onChange={(e) => setNewMemberName(e.target.value)}
+                    className="flex-1 px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-text placeholder-text-600 focus:border-primary focus:ring-1 focus:ring-primary text-xs outline-none transition-all"
+                    placeholder="Ketik nama sohib lo..."
+                  />
+                  <Button
+                    type="submit"
+                    isDisabled={loading}
+                    isLoading={loading}
+                    size="sm"
+                  >
+                    Tambahin, Bos!
+                  </Button>
+                </form>
+              )}
 
-          <div className="space-y-2 max-h-55 overflow-y-auto pr-1 scrollbar-hide">
+              <div className="space-y-2 max-h-[120px] overflow-y-auto pr-1 scrollbar-hide">
             {members.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center justify-between p-3 rounded-xl bg-text-950 border border-secondary-800"
+                className="flex items-center justify-between p-2 px-3 rounded-xl bg-text-950 border border-secondary-800"
               >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="flex items-center gap-2.5 flex-1 min-w-0">
                   <Avatar alt={member.name} size="sm" className="shadow-md border border-secondary-800" />
                   {editingMemberId === member.id ? (
                     <div className="flex items-center gap-1.5 flex-1 min-w-0">
@@ -629,7 +636,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                         size="xs"
                         className="text-xs"
                       >
-                        Batal
+                        Gak Jadi
                       </Button>
                       <Button
                         onPress={() => handleRenameMember(member.id)}
@@ -642,9 +649,11 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                       </Button>
                     </div>
                   ) : (
-                    <div className="space-y-0.5 min-w-0">
-                      <p className="font-semibold text-text text-xs truncate">{member.name}</p>
-                      <p className="text-[10px] text-indigo-400 font-medium">
+                    <div className="flex flex-col min-w-0">
+                      <p className="font-semibold text-text text-xs truncate">
+                        {member.name} {member.userId === session.userId && <span className="text-[9px] font-normal text-text-400">(Owner)</span>}
+                      </p>
+                      <p className="text-[10px] text-primary-400 font-medium">
                         Patungan: Rp {Number(member.shareAmount).toLocaleString("id-ID")}
                       </p>
                     </div>
@@ -652,14 +661,14 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                 </div>
 
                 {editingMemberId !== member.id && (
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-1.5">
                     <Button
                       onPress={() => handleCopySummary(member)}
-                      color="link-color"
-                      className="text-[10px] text-primary-500 hover:text-primary-400 font-bold transition-all"
-                      iconLeading={copiedId === member.id ? Check : Copy01}
+                      color="secondary"
+                      size="xs"
+                      className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center"
                     >
-                      {copiedId === member.id ? "Udah disalin!" : "Bagi tagihan"}
+                      {copiedId === member.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy01 className="w-3.5 h-3.5 text-primary-400" />}
                     </Button>
                     {member.userId !== session.userId && session.status !== "COMPLETED" && (
                       <>
@@ -668,19 +677,19 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                             setEditingMemberId(member.id);
                             setEditingMemberName(member.name);
                           }}
-                          color="link-gray"
-                          className="text-[10px] text-text-400 hover:text-secondary-200 font-semibold transition-colors"
-                          iconLeading={Edit02}
+                          color="tertiary"
+                          size="xs"
+                          className="p-1.5 rounded-lg active:scale-95 transition-all text-text-400 hover:text-text-200 flex items-center justify-center"
                         >
-                          Ubah
+                          <Edit02 className="w-3.5 h-3.5" />
                         </Button>
                         <Button
                           onPress={() => handleRemoveMember(member.id)}
-                          color="link-gray"
-                          className="text-[10px] text-text-400 hover:text-secondary-200 font-semibold transition-colors"
-                          iconLeading={Trash01}
+                          color="tertiary"
+                          size="xs"
+                          className="p-1.5 rounded-lg active:scale-95 transition-all text-danger-400/80 hover:text-danger-400 flex items-center justify-center"
                         >
-                          Hapus
+                          <Trash01 className="w-3.5 h-3.5" />
                         </Button>
                       </>
                     )}
@@ -689,6 +698,8 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
               </div>
             ))}
           </div>
+          </>
+          )}
         </div>
 
         {/* 2. Papan Alokasi Item */}
@@ -697,10 +708,10 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
             <div className="space-y-1">
               <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
                 <Target01 className="w-4 h-4 text-text-300" />
-                <span>Papan Alokasi Item</span>
+                <span>Siapa Pesen Apa Nih?</span>
               </h2>
               <p className="text-[10px] text-text-400 leading-normal">
-                Pilih nama teman yang memakan menu/item belanja di bawah ini.
+                Klik avatar sohib lo buat bagi porsi makanannya, Bos!
               </p>
             </div>
             {session.status !== "COMPLETED" && (
@@ -711,7 +722,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                 className="px-2.5 py-1 text-[10px]"
                 iconLeading={showAddForm ? undefined : Plus}
               >
-                {showAddForm ? "Batal" : "Tambah Menu"}
+                {showAddForm ? "Gak Jadi" : "Tambah Menu"}
               </Button>
             )}
           </div>
@@ -1033,7 +1044,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
             className="w-full py-3 px-4 rounded-xl bg-secondary-800 text-text-300 text-xs font-semibold"
             iconLeading={Check}
           >
-            Sesi PETE-PETE Selesai
+            Bill PETE-PETE Selesai
           </Button>
         ) : (
           <div className="flex gap-2">

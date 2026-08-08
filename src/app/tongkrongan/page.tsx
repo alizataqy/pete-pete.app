@@ -133,7 +133,7 @@ export default async function TongkronganPage() {
                               : "bg-text-950 text-primary-400 border border-text-700"
                             }`}
                         >
-                          {session.status === "COMPLETED" ? "Udah Kelar" : session.status === "ACTIVE" ? "Masih Jalan" : "Draf"}
+                          {session.status === "COMPLETED" ? "Udah Kelar" : session.status === "ACTIVE" ? "Masih Jalan" : "Draft"}
                         </span>
                       </div>
 
