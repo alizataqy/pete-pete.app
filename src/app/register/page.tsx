@@ -25,13 +25,13 @@ export default function RegisterPage() {
         name,
         email,
         password,
-        callbackURL: "/dashboard",
+        callbackURL: "/tongkrongan",
       });
 
       if (response.error) {
         setError(response.error.message || "Gagal mendaftar. Email mungkin sudah terdaftar.");
       } else {
-        router.push("/dashboard");
+        router.push("/tongkrongan");
         router.refresh();
       }
     } catch (error) {

@@ -431,7 +431,7 @@ export default function NewSessionPage() {
     return (
       <main className="flex-1 flex flex-col bg-secondary-950">
         <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
-          <Button href={authSession ? "/dashboard" : "/"} color="primary" size="sm">
+          <Button href={authSession ? "/tongkrongan" : "/"} color="primary" size="sm">
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
@@ -530,6 +530,33 @@ export default function NewSessionPage() {
             rows={2}
           />
         </div>
+
+        {inputMode === "manual" && (
+          <div className="grid grid-cols-2 gap-3 pt-1.5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-text-100">Pajak / Tax (Rp)</label>
+              <input
+                type="number"
+                min={0}
+                value={manualTax || ""}
+                onChange={(e) => setManualTax(Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+                placeholder="Contoh: 10000"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-text-100">Servis / Tip (Rp)</label>
+              <input
+                type="number"
+                min={0}
+                value={manualTip || ""}
+                onChange={(e) => setManualTip(Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+                placeholder="Contoh: 5000"
+              />
+            </div>
+          </div>
+        )}
 
         <div className="border-t border-secondary-800 pt-3 space-y-3">
           <h3 className="text-[11px] font-bold text-primary-400 uppercase tracking-wider flex items-center gap-1">

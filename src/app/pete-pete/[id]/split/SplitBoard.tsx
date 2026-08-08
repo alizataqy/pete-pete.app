@@ -289,7 +289,7 @@ export default function SplitBoard({
       if (res.success) {
         toast.success("Sesi PETE-PETE berhasil diselesaikan!");
         setTimeout(() => {
-          redirect("/dashboard");
+          redirect("/tongkrongan");
         }, 1200);
       } else {
         setError(res.error || "Gagal menyelesaikan sesi.");
@@ -499,7 +499,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button
-            onPress={() => router.push("/dashboard")}
+            onPress={() => router.push("/tongkrongan")}
             color="primary"
             size="sm"
           >

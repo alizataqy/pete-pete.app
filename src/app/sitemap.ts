@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         "",
         "/login",
         "/register",
-        "/dashboard",
+        "/tongkrongan",
         "/profile",
         "/pete-pete/new",
     ];
@@ -17,6 +17,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: `${baseUrl}${route}`,
         lastModified: new Date(),
         changeFrequency: route === "" ? "daily" : "monthly",
-        priority: route === "" ? 1.0 : route.startsWith("/dashboard") || route.startsWith("/pete-pete") ? 0.8 : 0.5,
+        priority: route === "" ? 1.0 : route.startsWith("/tongkrongan") || route.startsWith("/pete-pete") ? 0.8 : 0.5,
     }));
 }

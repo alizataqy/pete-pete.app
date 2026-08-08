@@ -8,7 +8,7 @@ import { Button } from "@/components/base/buttons/button";
 import { User01, Plus } from "@untitledui/icons";
 import { Avatar } from "@/components/base/avatar/avatar";
 
-export default async function DashboardPage() {
+export default async function TongkronganPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -45,7 +45,7 @@ export default async function DashboardPage() {
     <main className="flex-1 flex flex-col relative overflow-hidden bg-transparent">
 
 
-      {/* Header Dashboard */}
+      {/* Header Tongkrongan */}
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
         <div className="flex gap-2 items-center">
           <Button
@@ -60,9 +60,9 @@ export default async function DashboardPage() {
             />
           </Button>
           <div className="flex-col flex">
-            <h1 className="text-sm font-extrabold text-text-50">Dashboard</h1>
+            <h1 className="text-sm font-extrabold text-text-50">Tongkrongan Gua</h1>
             <p className="text-[10px] text-text-300 mt-0.5">
-              Ey, <strong className="text-primary-400 font-medium">{session.user.name}</strong>!
+              Wassup, <strong className="text-primary-400 font-medium">{session.user.name}</strong>! Tongkrongan lo udah beres patungannya?
             </p>
           </div>
         </div>
@@ -73,22 +73,22 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      {/* Dashboard Body */}
+      {/* Tongkrongan Body */}
       <div className="flex-1 p-4 flex flex-col min-h-0 gap-5 overflow-hidden">
         {/* Statistik/Overview Ringkas */}
         <div className="grid grid-cols-3 gap-2">
           <div className="p-3 rounded-xl border border-secondary-800 bg-text-900 text-center">
-            <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Total</p>
+            <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Semua</p>
             <p className="text-lg font-bold text-text-50 mt-1">{mySessions.length}</p>
           </div>
           <div className="p-3 rounded-xl border border-secondary-800 bg-text-900 text-center">
-            <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Aktif</p>
+            <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Masih Jalan</p>
             <p className="text-lg font-bold text-primary-300 mt-1">
               {mySessions.filter((s) => s.status === "DRAFT" || s.status === "ACTIVE").length}
             </p>
           </div>
           <div className="p-3 rounded-xl border border-secondary-800 bg-text-900 text-center">
-            <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Selesai</p>
+            <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Udah Kelar</p>
             <p className="text-lg font-bold text-primary-300 mt-1">
               {mySessions.filter((s) => s.status === "COMPLETED").length}
             </p>
@@ -98,19 +98,19 @@ export default async function DashboardPage() {
 
         {/* Daftar Sesi Split Bill */}
         <div className="flex-1 flex flex-col min-h-0 gap-3">
-          <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">PETE-PETEAN lo</h2>
+          <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">List Pete-Petean Lo</h2>
           <div className="flex-1 flex flex-col min-h-0 border border-secondary-800 p-3 rounded-xl bg-text-900/10">
 
             {mySessions.length === 0 ? (
               <div className="p-8 text-center border border-dashed border-secondary-800 rounded-xl space-y-3 bg-text-900/40">
                 <p className="text-text-300 text-[10px] max-w-[200px] mx-auto leading-relaxed">
-                  Belum ada sesi nih. Yuk scan struk bareng geng lo!
+                  Sepi amat, belum ada patungan nih. Yuk scan struk bareng geng lo biar gak ada drama!
                 </p>
                 <Link
                   href="/pete-pete/new"
                   className="inline-block px-4 py-2 rounded-lg bg-primary-900 hover:bg-primary/20 border border-primary-500/30 text-primary-400 font-semibold text-[10px] transition-all"
                 >
-                  Mulai Scan Struk
+                  Scan Struk Sekarang
                 </Link>
               </div>
             ) : (
@@ -133,7 +133,7 @@ export default async function DashboardPage() {
                               : "bg-text-950 text-primary-400 border border-text-700"
                             }`}
                         >
-                          {session.status}
+                          {session.status === "COMPLETED" ? "Udah Kelar" : session.status === "ACTIVE" ? "Masih Jalan" : "Draf"}
                         </span>
                       </div>
 
@@ -152,15 +152,15 @@ export default async function DashboardPage() {
 
                     <div className="border-t border-secondary-800 pt-3 flex items-center justify-between text-xs text-text-300">
                       <div>
-                        <p className="text-[9px] text-text-400">Totalnya</p>
+                        <p className="text-[9px] text-text-400">Total Tagihan</p>
                         <p className="font-bold text-text-100 mt-0.5">
                           Rp {Number(session.totalAmount).toLocaleString("id-ID")}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[9px] text-text-400">Temen lo</p>
+                        <p className="text-[9px] text-text-400">Sohib Lo</p>
                         <p className="font-semibold text-text-200 mt-0.5">
-                          {session.members.length} orang ({session.members.filter((m) => m.isPaid).length} lunas)
+                          {session.members.length} orang ({session.members.filter((m) => m.isPaid).length} udah bayar)
                         </p>
                       </div>
                     </div>
@@ -178,7 +178,7 @@ export default async function DashboardPage() {
                         color="secondary"
                         className="w-full text-center py-2 rounded-lg text-text-100 text-[10px] font-semibold transition-all active:scale-[0.98]"
                       >
-                        Lihat Struk
+                        Cek Menu
                       </Button>
                     </div>
                   </div>

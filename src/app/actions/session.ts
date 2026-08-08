@@ -90,7 +90,7 @@ export async function createBillSession(data: CreateSessionData) {
       },
     });
 
-    revalidatePath("/dashboard");
+    revalidatePath("/tongkrongan");
     return { success: true, session: { id: session.id } };
   } catch (error) {
     console.error("Gagal membuat sesi:", error);
@@ -406,7 +406,7 @@ export async function joinSessionByCode(inviteCode: string, userId: string, user
     });
 
     revalidatePath(`/pete-pete/${session.id}/split`);
-    revalidatePath("/dashboard");
+    revalidatePath("/tongkrongan");
 
     return { success: true, sessionId: session.id };
   } catch (error) {
@@ -427,7 +427,7 @@ export async function completeBillSession(sessionId: string) {
     });
 
     revalidatePath(`/pete-pete/${sessionId}/split`);
-    revalidatePath("/dashboard");
+    revalidatePath("/tongkrongan");
 
     return { success: true };
   } catch (error) {
@@ -527,7 +527,7 @@ export async function createManualBillSession(data: CreateManualSessionData) {
     // 4. Recalculate session shares
     await recalculateSessionShares(session.id);
 
-    revalidatePath("/dashboard");
+    revalidatePath("/tongkrongan");
     return { success: true, session: { id: session.id } };
   } catch (error) {
     console.error("Gagal membuat sesi manual:", error);

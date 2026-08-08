@@ -86,7 +86,7 @@ export async function updateUserProfile(data: { userId: string; name: string; em
       },
     });
 
-    revalidatePath("/dashboard");
+    revalidatePath("/tongkrongan");
     revalidatePath("/profile");
     return { success: true };
   } catch (error) {

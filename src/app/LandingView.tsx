@@ -79,10 +79,10 @@ export default function LandingView({ user }: UserSessionProp) {
         <div className="flex items-center gap-4">
           {user ? (
             <Button
-              onPress={() => router.push("/dashboard")}
+              onPress={() => router.push("/tongkrongan")}
               className="py-2 px-5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs shadow-lg shadow-primary/20 transition-all hover:scale-[1.03] cursor-pointer"
             >
-              Dashboard
+              Tongkrongan Gua
             </Button>
           ) : (
             <Button
@@ -137,10 +137,11 @@ export default function LandingView({ user }: UserSessionProp) {
             <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md pt-2">
               {user ? (
                 <Button
-                  onPress={() => router.push("/dashboard")}
+                  onPress={() => router.push("/tongkrongan")}
+                  iconTrailing={ArrowRight}
                   className="w-full py-4 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white font-extrabold text-sm shadow-xl shadow-primary/30 transition-all hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  Masuk ke Dashboard <ArrowRight className="w-4 h-4" />
+                  Masuk ke Tongkrongan
                 </Button>
               ) : (
                 <>

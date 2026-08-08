@@ -28,7 +28,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button 
-            href="/dashboard" 
+            href="/tongkrongan" 
             color="secondary"
             className="p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all"
           >
@@ -42,7 +42,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
         <Button
           href={`/pete-pete/${session.id}/split`}
           color="primary"
-          className="px-3.5 py-2 rounded-lg text-text-50 font-semibold text-[10px] transition-all active:scale-95 shadow-md shadow-primary/10"
+          className="px-3.5 py-2 text-xs transition-all active:scale-95 shadow-md shadow-primary/10"
         >
           Bagi
         </Button>

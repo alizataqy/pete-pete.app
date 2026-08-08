@@ -24,13 +24,13 @@ export default function LoginPage() {
       const response = await signIn.email({
         email,
         password,
-        callbackURL: "/dashboard",
+        callbackURL: "/tongkrongan",
       });
 
       if (response.error) {
         setError(response.error.message || "Gagal masuk. Silakan cek kembali email & password Anda.");
       } else {
-        router.push("/dashboard");
+        router.push("/tongkrongan");
         router.refresh();
       }
     } catch (error) {

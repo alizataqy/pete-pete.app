@@ -121,7 +121,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
       {/* Header */}
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
         <Button
-          onPress={() => router.push("/dashboard")}
+          onPress={() => router.push("/tongkrongan")}
           color="primary"
           size="sm"
         >
