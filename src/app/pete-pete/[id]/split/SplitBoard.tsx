@@ -23,6 +23,7 @@ interface Member {
   id: string;
   name: string;
   shareAmount: number;
+  userId?: string | null;
 }
 
 interface Item {
@@ -45,6 +46,7 @@ interface SplitBoardProps {
     bankAccount?: string;
     bankOwner?: string;
     status: string;
+    userId?: string | null;
   };
   initialMembers: Member[];
   items: Item[];
@@ -424,7 +426,9 @@ export default function SplitBoard({
       ? `Transfer ke: ${session.bankName}\n No. Rekening: ${session.bankAccount}\n👤 A/N: ${session.bankOwner}`
       : "Silakan hubungi pembuat sesi untuk detail transfer.";
 
-    const text = `📢 *TAGIHAN PETE-PETE: ${session.title}*
+    const cleanTitle = session.title.replace(/^PETE-PETE\s+/i, "");
+
+    const text = `📢 *TAGIHAN PETE-PETE: ${cleanTitle}*
 ${session.merchantName ? `📍 ${session.merchantName}\n` : ""}
 Halo *${member.name}*, berikut rincian tagihan kamu:
 ${itemsText || "  - Belum memilih menu makanan\n"}----------------------------------
@@ -479,7 +483,9 @@ Terima kasih! 🙏`;
       ? `Transfer ke: ${session.bankName}\n No. Rekening: ${session.bankAccount}\n👤 A/N: ${session.bankOwner}`
       : "Silakan hubungi pembuat sesi untuk detail transfer.";
 
-    const text = `📢 *REKAP TAGIHAN PETE-PETE: ${session.title}*
+    const cleanTitle = session.title.replace(/^PETE-PETE\s+/i, "");
+
+    const text = `📢 *REKAP TAGIHAN PETE-PETE: ${cleanTitle}*
 ${session.merchantName ? `📍 ${session.merchantName}\n` : ""}
 Total Tagihan Sesi: Rp ${session.totalAmount.toLocaleString("id-ID")}
 ----------------------------------
@@ -655,7 +661,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                     >
                       {copiedId === member.id ? "Udah disalin!" : "Bagi tagihan"}
                     </Button>
-                    {member.name !== "Saya (Owner)" && session.status !== "COMPLETED" && (
+                    {member.userId !== session.userId && session.status !== "COMPLETED" && (
                       <>
                         <Button
                           onPress={() => {

@@ -48,12 +48,14 @@ export default async function SessionSplitPage({ params }: { params: Promise<{ i
     bankAccount: session.bankAccount ? decrypt(session.bankAccount) : "",
     bankOwner: session.bankOwner || "",
     status: session.status,
+    userId: session.userId,
   };
 
   const formattedMembers = session.members.map((m) => ({
     id: m.id,
     name: m.name,
     shareAmount: Number(m.shareAmount),
+    userId: m.userId,
   }));
 
   const formattedItems = session.items.map((i) => ({

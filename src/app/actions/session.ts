@@ -30,10 +30,12 @@ export async function createBillSession(data: CreateSessionData) {
 
     // Ambil info rekening dari profil user pembuat sesi
     let firstBank = null;
+    let creatorName = "Saya";
     if (data.userId) {
       const creator = await prisma.user.findUnique({
         where: { id: data.userId },
         select: {
+          name: true,
           banks: {
             select: {
               bankName: true,
@@ -45,6 +47,9 @@ export async function createBillSession(data: CreateSessionData) {
         },
       });
       firstBank = creator?.banks?.[0];
+      if (creator?.name) {
+        creatorName = creator.name;
+      }
     }
 
     const session = await prisma.billSession.create({
@@ -73,7 +78,7 @@ export async function createBillSession(data: CreateSessionData) {
         members: {
           create: [
             {
-              name: "Saya",
+              name: creatorName,
               shareAmount: 0,
               userId: data.userId || null,
             },
@@ -481,8 +486,9 @@ export async function createManualBillSession(data: CreateManualSessionData) {
 
     // 2. Create members
     const dbMembers = [];
-    for (const name of data.members) {
-      const isOwner = name.includes("Saya");
+    for (let i = 0; i < data.members.length; i++) {
+      const name = data.members[i];
+      const isOwner = i === 0;
       const m = await prisma.billMember.create({
         data: {
           name,
