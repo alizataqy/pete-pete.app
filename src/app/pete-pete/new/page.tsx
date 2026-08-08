@@ -101,6 +101,39 @@ export default function NewSessionPage() {
   const [draftItemName, setDraftItemName] = useState("");
   const [draftItemAmount, setDraftItemAmount] = useState("");
   const [draftItemQty, setDraftItemQty] = useState("1");
+  const [draftItemPrice, setDraftItemPrice] = useState("");
+  const [addPriceMode, setAddPriceMode] = useState<"unit" | "total">("total");
+
+  const handleDraftItemQtyChange = (qty: string) => {
+    setDraftItemQty(qty);
+    const q = parseFloat(qty) || 0;
+    if (addPriceMode === "unit" && draftItemPrice) {
+      setDraftItemAmount(String(q * Number(draftItemPrice)));
+    } else if (addPriceMode === "total" && draftItemAmount && q > 0) {
+      setDraftItemPrice(String(Math.round(Number(draftItemAmount) / q)));
+    }
+  };
+
+  const handleDraftItemPriceChange = (price: string) => {
+    setDraftItemPrice(price);
+    const q = parseFloat(draftItemQty) || 1;
+    if (price) {
+      setDraftItemAmount(String(q * Number(price)));
+    } else {
+      setDraftItemAmount("");
+    }
+  };
+
+  const handleDraftItemAmountChange = (amount: string) => {
+    setDraftItemAmount(amount);
+    const q = parseFloat(draftItemQty) || 1;
+    if (amount && q > 0) {
+      setDraftItemPrice(String(Math.round(Number(amount) / q)));
+    } else {
+      setDraftItemPrice("");
+    }
+  };
+
   const [manualItems, setManualItems] = useSessionStorageState<ScanItem[]>("pete-pete-new-manual-items", []);
   const [manualTax, setManualTax] = useSessionStorageState<number>("pete-pete-new-manual-tax", 0);
   const [manualTip, setManualTip] = useSessionStorageState<number>("pete-pete-new-manual-tip", 0);
@@ -251,6 +284,7 @@ export default function NewSessionPage() {
     ]);
     setDraftItemName("");
     setDraftItemAmount("");
+    setDraftItemPrice("");
     setDraftItemQty("1");
   };
 
@@ -791,27 +825,63 @@ export default function NewSessionPage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-3 gap-2">
                       <div className="space-y-1">
                         <label className="text-[9px] font-bold text-text-400 uppercase">Porsi / Qty</label>
                         <input
                           type="number"
                           min={1}
                           value={draftItemQty}
-                          onChange={(e) => setDraftItemQty(e.target.value)}
+                          onChange={(e) => handleDraftItemQtyChange(e.target.value)}
                           className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 outline-none focus:border-primary-500 transition-all"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-text-400 uppercase">Total Harga (Rp)</label>
-                        <input
-                          type="number"
-                          min={0}
-                          value={draftItemAmount}
-                          onChange={(e) => setDraftItemAmount(e.target.value)}
-                          className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
-                          placeholder="Contoh: 50000"
-                        />
+                        <label className="text-[9px] font-bold text-text-400 uppercase">Tipe Harga</label>
+                        <div className="grid grid-cols-2 gap-1 bg-text-950/80 p-1 rounded-xl border border-secondary-800/40 h-9 items-center">
+                          <Button
+                            type="button"
+                            onPress={() => setAddPriceMode("unit")}
+                            color={addPriceMode === "unit" ? "primary" : "tertiary"}
+                            size="xs"
+                            className="h-full text-[10px] font-bold rounded-lg"
+                          >
+                            Satuan
+                          </Button>
+                          <Button
+                            type="button"
+                            onPress={() => setAddPriceMode("total")}
+                            color={addPriceMode === "total" ? "primary" : "tertiary"}
+                            size="xs"
+                            className="h-full text-[10px] font-bold rounded-lg"
+                          >
+                            Total
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-text-400 uppercase">
+                          {addPriceMode === "unit" ? "Harga Satuan" : "Harga Total"}
+                        </label>
+                        {addPriceMode === "unit" ? (
+                          <input
+                            type="number"
+                            min={0}
+                            value={draftItemPrice}
+                            onChange={(e) => handleDraftItemPriceChange(e.target.value)}
+                            className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
+                            placeholder="Satuan"
+                          />
+                        ) : (
+                          <input
+                            type="number"
+                            min={0}
+                            value={draftItemAmount}
+                            onChange={(e) => handleDraftItemAmountChange(e.target.value)}
+                            className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
+                            placeholder="Total"
+                          />
+                        )}
                       </div>
                     </div>
 
@@ -948,7 +1018,7 @@ export default function NewSessionPage() {
                     {manualItems.map((item, idx) => {
                       const itemAlloc = manualItemAllocations[idx] || {};
                       const allocatedCount = Object.values(itemAlloc).reduce((a, b) => a + b, 0);
-                      const isComplete = allocatedCount === item.quantity;
+                      const isComplete = allocatedCount > 0;
 
                       return (
                         <div key={idx} className="p-3.5 rounded-xl border border-secondary-800 bg-text-950/40 space-y-3">
@@ -960,7 +1030,7 @@ export default function NewSessionPage() {
                               </p>
                             </div>
                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isComplete ? "bg-emerald-950 border border-emerald-800 text-emerald-300" : "bg-amber-950 border border-amber-800 text-amber-300"}`}>
-                              Terbagi: {allocatedCount} / {item.quantity}
+                              {isComplete ? `Udah dibagi: ${allocatedCount} porsi` : "Belum dibagi"}
                             </span>
                           </div>
 
@@ -973,10 +1043,6 @@ export default function NewSessionPage() {
                                     <button
                                       type="button"
                                       onClick={() => {
-                                        if (allocatedCount >= item.quantity) {
-                                          toast.error("Porsi nggak boleh lebih dari Qty menu, Bos!");
-                                          return;
-                                        }
                                         setManualItemAllocations((prev) => ({
                                           ...prev,
                                           [idx]: {
@@ -1086,13 +1152,13 @@ export default function NewSessionPage() {
             ) : (
               <Button
                 onPress={() => {
-                  // Validate that all items are fully allocated
+                  // Validate that all items have at least one allocation
                   const unallocatedItem = manualItems.find((item, idx) => {
                     const allocatedCount = Object.values(manualItemAllocations[idx] || {}).reduce((a, b) => a + b, 0);
-                    return allocatedCount !== item.quantity;
+                    return allocatedCount === 0;
                   });
                   if (unallocatedItem) {
-                    toast.error(`Porsi buat "${unallocatedItem.name}" belum pas nih (harus dibagi ${unallocatedItem.quantity} porsi)!`);
+                    toast.error(`Menu "${unallocatedItem.name}" belum dibagi ke siapa-siapa, Bos!`);
                     return;
                   }
                   handleCreate();

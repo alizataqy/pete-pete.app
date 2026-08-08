@@ -74,9 +74,6 @@ export default function LandingView({ user }: UserSessionProp) {
       {/* Desktop Header Navigation */}
       <header className="w-full max-w-5xl px-6 py-6 flex items-center justify-between z-30">
         <div className="flex items-center gap-3 group cursor-pointer">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center font-black text-text-950 text-base shadow-lg shadow-primary/30 transition-transform duration-300 group-hover:scale-105">
-            P
-          </div>
           <span className="font-black text-text text-lg tracking-wider">PETE-PETE</span>
         </div>
         <div className="flex items-center gap-4">
@@ -321,8 +318,8 @@ export default function LandingView({ user }: UserSessionProp) {
                   onPress={() => setActiveTab(key as "ocr" | "split" | "share")}
                   className={`py-2 rounded-xl text-[10px] md:text-xs font-bold transition-all text-center cursor-pointer ${
                     activeTab === key
-                      ? "bg-primary-600 text-white shadow-md shadow-primary/25 scale-[1.02]"
-                      : "bg-transparent text-text-400 hover:text-text-100"
+                      ? "shadow-md shadow-primary/25 scale-[1.02]"
+                      : "text-primary hover:text-white bg-transparent "
                   }`}
                 >
                   {key === "ocr" ? "1. Scan" : key === "split" ? "2. Split" : "3. Share"}

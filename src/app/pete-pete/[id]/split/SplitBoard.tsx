@@ -223,14 +223,8 @@ export default function SplitBoard({
     }
   };
 
-  // Increase allocation quantity (maxed by item total quantity)
-  const handleIncreaseAllocation = (itemId: string, memberId: string, maxQty: number) => {
-    const itemAllocations = allocations.filter((a) => a.itemId === itemId);
-    const totalAllocatedQty = itemAllocations.reduce((sum, a) => sum + a.quantity, 0);
-    if (totalAllocatedQty >= maxQty) {
-      toast.error("Porsi nggak boleh lebih dari Qty menu, Bos!");
-      return;
-    }
+  // Increase allocation quantity
+  const handleIncreaseAllocation = (itemId: string, memberId: string) => {
     setAllocations((prev) => {
       const exists = prev.find((a) => a.itemId === itemId && a.memberId === memberId);
       if (exists) {
@@ -455,6 +449,7 @@ Terima kasih! 🙏`;
     members.forEach((member) => {
       const memberAllocations = allocations.filter(a => a.memberId === member.id);
       let subtotal = 0;
+      let memberItemsText = "";
 
       memberAllocations.forEach(alloc => {
         const item = items.find(i => i.id === alloc.itemId);
@@ -463,6 +458,7 @@ Terima kasih! 🙏`;
           const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
           const sharePrice = Math.round((alloc.quantity / totalAllocatedQty) * Number(item.totalPrice));
           subtotal += sharePrice;
+          memberItemsText += `  • ${item.name} (${alloc.quantity}/${totalAllocatedQty} porsi)\n`;
         }
       });
 
@@ -476,7 +472,7 @@ Terima kasih! 🙏`;
       const memberTaxAndTips = Math.round(subtotal * ratio);
       const grandTotal = subtotal + memberTaxAndTips;
 
-      allMembersShareText += `👤 *${member.name}* : Rp ${grandTotal.toLocaleString("id-ID")}\n`;
+      allMembersShareText += `👤 *${member.name}* : Rp ${grandTotal.toLocaleString("id-ID")}\n${memberItemsText || "  • Belum pilih menu\n"}\n`;
     });
 
     const bankDetails = session.bankName
@@ -498,7 +494,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
   };
 
   return (
-    <div className="flex flex-col flex-1 pb-24">
+    <div className="flex flex-col flex-1 pb-16 overflow-hidden min-h-0 relative">
       {/* Header */}
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -526,7 +522,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
       </header>
 
       {/* Body Content */}
-      <div className="p-4 space-y-5 h-[calc(100vh-16rem)] overflow-y-auto">
+      <div className="flex-1 p-4 space-y-5 flex flex-col overflow-hidden min-h-0">
         {error && (
           <div className="p-3 text-xs text-secondary-200 bg-secondary-900 border border-secondary-700 rounded-xl flex items-center gap-1.5">
             <AlertTriangle className="w-4 h-4 text-secondary-400 shrink-0" />
@@ -536,7 +532,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
 
         {/* Detail Rekening Penerima */}
         {session.bankName && (
-          <div className="p-3.5 rounded-xl border border-secondary-800 bg-primary-950/20 text-xs flex items-center justify-between gap-3">
+          <div className="p-3.5 rounded-xl border border-secondary-800 bg-primary-950/20 text-xs flex items-center justify-between gap-3 shrink-0">
             <div className="space-y-0.5">
               <p className="text-[10px] text-text-400 font-bold uppercase flex items-center gap-1">
                 <CreditCard01 className="w-3.5 h-3.5 text-text-400" />
@@ -568,7 +564,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
         )}
 
         {/* 1. Manajemen Anggota */}
-        <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
+        <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4 shrink-0">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
               <Users01 className="w-4 h-4 text-text-300" />
@@ -690,7 +686,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
         </div>
 
         {/* 2. Papan Alokasi Item */}
-        <div className="space-y-3">
+        <div className="space-y-3 flex-1 flex flex-col min-h-0 overflow-hidden">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
@@ -743,27 +739,25 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                   </div>
                   <div className="space-y-1">
                     <label className="text-[9px] text-text-400 uppercase font-bold">Tipe Harga</label>
-                    <div className="flex bg-text-950 p-0.5 rounded-lg border border-text-700 h-9 items-center">
-                      <button
+                    <div className="grid grid-cols-2 gap-1 bg-text-950/80 p-1 rounded-xl border border-secondary-800/40 h-9 items-center">
+                      <Button
                         type="button"
-                        onClick={() => setAddPriceMode("unit")}
-                        className={`flex-1 h-full text-[10px] font-bold rounded-md transition-all cursor-pointer ${addPriceMode === "unit"
-                            ? "bg-primary text-text-950 shadow-sm"
-                            : "text-text-400 hover:text-text-300"
-                          }`}
+                        onPress={() => setAddPriceMode("unit")}
+                        color={addPriceMode === "unit" ? "primary" : "tertiary"}
+                        size="xs"
+                        className="h-full text-[10px] font-bold rounded-lg"
                       >
                         Satuan
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
-                        onClick={() => setAddPriceMode("total")}
-                        className={`flex-1 h-full text-[10px] font-bold rounded-md transition-all cursor-pointer ${addPriceMode === "total"
-                            ? "bg-primary text-text-950 shadow-sm"
-                            : "text-text-400 hover:text-text-300"
-                          }`}
+                        onPress={() => setAddPriceMode("total")}
+                        color={addPriceMode === "total" ? "primary" : "tertiary"}
+                        size="xs"
+                        className="h-full text-[10px] font-bold rounded-lg"
                       >
                         Total
-                      </button>
+                      </Button>
                     </div>
                   </div>
                   <div className="space-y-1">
@@ -797,16 +791,15 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                 type="submit"
                 isDisabled={loading}
                 isLoading={loading}
-                className="w-full py-2 rounded-lg bg-primary hover:bg-primary-600 text-text-950 font-bold text-xs active:scale-95 transition-all"
+                className="w-full text-xs active:scale-95 transition-all"
               >
                 Tambah Menu
               </Button>
             </form>
           )}
 
-          <div className="space-y-3 max-h-80 overflow-y-auto scrollbar-hide">
+          <div className="space-y-3 flex-1 overflow-y-auto scrollbar-hide min-h-0">
             {items.map((item) => {
-              const allocatedToThisItem = allocations.filter((a) => a.itemId === item.id);
               const isEditing = editingItemId === item.id;
 
               return (
@@ -840,27 +833,25 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                           </div>
                           <div className="space-y-1">
                             <label className="text-[9px] text-text-400 uppercase font-bold">Tipe Harga</label>
-                            <div className="flex bg-text-950 p-0.5 rounded-lg border border-text-700 h-9 items-center">
-                              <button
+                            <div className="grid grid-cols-2 gap-1 bg-text-950/80 p-1 rounded-xl border border-secondary-800/40 h-9 items-center">
+                              <Button
                                 type="button"
-                                onClick={() => setEditPriceMode("unit")}
-                                className={`flex-1 h-full text-[10px] font-bold rounded-md transition-all cursor-pointer ${editPriceMode === "unit"
-                                    ? "bg-primary text-text-950 shadow-sm"
-                                    : "text-text-400 hover:text-text-300"
-                                  }`}
+                                onPress={() => setEditPriceMode("unit")}
+                                color={editPriceMode === "unit" ? "primary" : "tertiary"}
+                                size="xs"
+                                className="h-full text-[10px] font-bold rounded-lg"
                               >
                                 Satuan
-                              </button>
-                              <button
+                              </Button>
+                              <Button
                                 type="button"
-                                onClick={() => setEditPriceMode("total")}
-                                className={`flex-1 h-full text-[10px] font-bold rounded-md transition-all cursor-pointer ${editPriceMode === "total"
-                                    ? "bg-primary text-text-950 shadow-sm"
-                                    : "text-text-400 hover:text-text-300"
-                                  }`}
+                                onPress={() => setEditPriceMode("total")}
+                                color={editPriceMode === "total" ? "primary" : "tertiary"}
+                                size="xs"
+                                className="h-full text-[10px] font-bold rounded-lg"
                               >
                                 Total
-                              </button>
+                              </Button>
                             </div>
                           </div>
                           <div className="space-y-1">
@@ -916,7 +907,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                       {(() => {
                         const itemAllocations = allocations.filter((a) => a.itemId === item.id);
                         const totalAllocatedCount = itemAllocations.reduce((sum, a) => sum + a.quantity, 0);
-                        const isComplete = totalAllocatedCount === item.quantity;
+                        const isComplete = totalAllocatedCount > 0;
 
                         return (
                           <>
@@ -925,7 +916,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                                 <h4 className="font-bold text-text text-xs flex items-center gap-1.5">
                                   <span>{item.name}</span>
                                   <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${isComplete ? "bg-emerald-950 border border-emerald-800 text-emerald-300" : "bg-amber-950 border border-amber-800 text-amber-300"}`}>
-                                    Terbagi: {totalAllocatedCount} / {item.quantity}
+                                    {isComplete ? `Udah dibagi: ${totalAllocatedCount} porsi` : "Belum dibagi"}
                                   </span>
                                 </h4>
                                 <p className="text-[10px] text-text-500">
@@ -972,7 +963,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                                     <div className="relative">
                                       <button
                                         type="button"
-                                        onClick={() => handleIncreaseAllocation(item.id, member.id, item.quantity)}
+                                        onClick={() => handleIncreaseAllocation(item.id, member.id)}
                                         disabled={session.status === "COMPLETED"}
                                         className="focus:outline-none transition-transform active:scale-95 cursor-pointer"
                                       >
@@ -1013,7 +1004,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
 
                             {itemAllocations.length > 0 && (
                               <p className="text-[9px] text-text-400 italic">
-                                Terbagi: {totalAllocatedCount} / {item.quantity} porsi (Dibagi ke {itemAllocations.length} orang)
+                                Dibagi ke {itemAllocations.length} orang ({totalAllocatedCount} porsi)
                               </p>
                             )}
                           </>
