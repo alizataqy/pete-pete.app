@@ -974,7 +974,7 @@ export default function NewSessionPage() {
                   <div className="flex flex-col items-center gap-1.5 w-16 shrink-0">
                     <Avatar alt={currentUserName} size="lg" className="shadow-md border border-primary-700 ring-2 ring-primary-900" />
                     <p className="text-[10px] text-text font-bold truncate w-full text-center">
-                      {currentUserName} <span className="text-[9px] opacity-60 font-normal">(lo)</span>
+                      {currentUserName} <span className="text-[9px] opacity-60 font-normal">(Gua)</span>
                     </p>
                   </div>
                   {/* Added Friends */}

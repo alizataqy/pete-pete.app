@@ -14,10 +14,12 @@ import {
 } from "@/app/actions/session";
 import { Button } from "@/components/base/buttons/button";
 import { Avatar } from "@/components/base/avatar/avatar";
-import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01 } from "@untitledui/icons";
+import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus } from "@untitledui/icons";
 import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
+import { Dot } from "@/components/foundations/dot-icon";
+import DeleteConfirmation from "@/components/application/modals/DeleteConfirmation";
 
 interface Member {
   id: string;
@@ -72,6 +74,80 @@ export default function SplitBoard({
   const [error, setError] = useState("");
   const [showMembers, setShowMembers] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
+  const [showAccount, setShowAccount] = useState(false);
+  const [deleteConfig, setDeleteConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    confirmText?: string;
+    onConfirm: () => void;
+  } | null>(null);
+
+  // Hitung patungan member secara real-time di client
+  const getMemberShareAmount = (memberId: string) => {
+    const memberAllocations = allocations.filter((a) => a.memberId === memberId);
+    let subtotal = 0;
+
+    memberAllocations.forEach((alloc) => {
+      const item = items.find((i) => i.id === alloc.itemId);
+      if (item) {
+        const itemAllocations = allocations.filter((x) => x.itemId === item.id);
+        const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
+        if (totalAllocatedQty > 0) {
+          const sharePrice = Math.round((alloc.quantity / totalAllocatedQty) * Number(item.totalPrice));
+          subtotal += sharePrice;
+        }
+      }
+    });
+
+    const totalSubtotal = items.reduce((acc, item) => {
+      const hasAlloc = allocations.some((a) => a.itemId === item.id);
+      return acc + (hasAlloc ? Number(item.totalPrice) : 0);
+    }, 0);
+
+    const taxAndTips = Number(session.taxAmount) + Number(session.tipAmount);
+    const ratio = totalSubtotal > 0 ? taxAndTips / totalSubtotal : 0;
+    const memberTaxAndTips = Math.round(subtotal * ratio);
+    return subtotal + memberTaxAndTips;
+  };
+
+  // Debounced auto-save allocations ke DB
+  useEffect(() => {
+    const statusTimer = setTimeout(() => {
+      setSaveStatus("saving");
+    }, 0);
+
+    const timer = setTimeout(async () => {
+      const payload = allocations.map((a) => {
+        const itemAllocations = allocations.filter((x) => x.itemId === a.itemId);
+        const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
+        return {
+          itemId: a.itemId,
+          memberId: a.memberId,
+          quantity: a.quantity,
+          fraction: a.quantity / totalAllocatedQty,
+        };
+      });
+
+      try {
+        const res = await saveAllocations(session.id, payload);
+        if (res.success) {
+          setSaveStatus("saved");
+        } else {
+          setSaveStatus("error");
+        }
+      } catch (err) {
+        console.error("Gagal auto-save:", err);
+        setSaveStatus("error");
+      }
+    }, 1000);
+
+    return () => {
+      clearTimeout(statusTimer);
+      clearTimeout(timer);
+    };
+  }, [allocations, session.id]);
 
   // States untuk Rename Member
   const [editingMemberId, setEditingMemberId] = useState<string | null>(null);
@@ -288,8 +364,23 @@ export default function SplitBoard({
     if (!confirm("Yakin mau kelarin Bill PETE-PETE ini? Kalo udah selesai gak bisa diotak-atik lagi ya!")) return;
     setLoading(true);
     try {
+      const payload = allocations.map((a) => {
+        const itemAllocations = allocations.filter((x) => x.itemId === a.itemId);
+        const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
+        return {
+          itemId: a.itemId,
+          memberId: a.memberId,
+          quantity: a.quantity,
+          fraction: a.quantity / totalAllocatedQty,
+        };
+      });
+
+      // Simpan alokasi terakhir sebelum menyelesaikan sesi
+      await saveAllocations(session.id, payload);
+
       const res = await completeBillSession(session.id);
       if (res.success) {
+        sessionStorage.removeItem(`pete-pete-allocations-${session.id}`);
         toast.success("Bill PETE-PETE udah kelar, Bos!");
         setTimeout(() => {
           redirect("/tongkrongan");
@@ -335,7 +426,6 @@ export default function SplitBoard({
 
   // Hapus Item
   const handleDeleteItem = async (itemId: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus menu ini?")) return;
     setLoading(true);
     try {
       const res = await deleteSessionItem(itemId, session.id);
@@ -355,6 +445,7 @@ export default function SplitBoard({
       toast.error("Gagal menghapus item.");
     } finally {
       setLoading(false);
+      setDeleteConfig(null);
     }
   };
 
@@ -514,8 +605,8 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
           </Button>
           <div>
             <h1 className="text-sm font-extrabold text-text line-clamp-1">{session.title}</h1>
-            <p className="text-[9px] text-text-300">
-              Kode: {session.inviteCode}
+            <p className="text-[9px] text-text-300 flex items-center gap-1.5">
+              <span>Kode: {session.inviteCode}</span>
             </p>
           </div>
         </div>
@@ -543,35 +634,60 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
             <div className="flex items-center gap-2 min-w-0 flex-1 text-text-200">
               <CreditCard01 className="w-3.5 h-3.5 text-primary-400 shrink-0" />
               <p className="truncate">
-                <span className="font-bold text-text-50">{session.bankName}</span>: {session.bankAccount}{" "}
+                <span className="font-bold text-text-50">{session.bankName}</span>:{" "}
+                {showAccount
+                  ? session.bankAccount
+                  : (session.bankAccount && session.bankAccount.length > 4
+                    ? `••••${session.bankAccount.slice(-4)}`
+                    : session.bankAccount)}{" "}
                 <span className="text-[10px] text-text-400">(A/N: {session.bankOwner})</span>
               </p>
             </div>
-            <Button
-              onPress={() => {
-                if (session.bankAccount) {
-                  const textToCopy = `${session.bankName}\nNo. Rek: ${session.bankAccount}\nA/N: ${session.bankOwner}`;
-                  navigator.clipboard.writeText(textToCopy);
-                  toast.success("Rekening udah disalin, Bos!");
-                }
-              }}
-              color="secondary"
-              size="xs"
-              className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center shrink-0"
-            >
-              <Copy01 className="w-3.5 h-3.5 text-primary-400" />
-            </Button>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Button
+                onPress={() => setShowAccount(!showAccount)}
+                color="secondary"
+                size="xs"
+                className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center"
+              >
+                {showAccount ? (
+                  <EyeOff className="w-3.5 h-3.5 text-primary-400" />
+                ) : (
+                  <Eye className="w-3.5 h-3.5 text-primary-400" />
+                )}
+              </Button>
+              <Button
+                onPress={() => {
+                  if (session.bankAccount) {
+                    const textToCopy = `${session.bankName}\nNo. Rek: ${session.bankAccount}\nA/N: ${session.bankOwner}`;
+                    navigator.clipboard.writeText(textToCopy);
+                    toast.success("Rekening udah disalin, Bos!");
+                  }
+                }}
+                color="secondary"
+                size="xs"
+                className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center"
+              >
+                <Copy01 className="w-3.5 h-3.5 text-primary-400" />
+              </Button>
+            </div>
           </div>
         )}
 
         {/* 1. Manajemen Anggota */}
-        <div className="p-3 rounded-xl border border-secondary-800 bg-text-900/60 space-y-2.5 shrink-0">
+        <div
+          onClick={() => setShowMembers(!showMembers)}
+          className="p-3 rounded-xl border border-secondary-800 bg-text-900/60 space-y-2.5 shrink-0 cursor-pointer select-none"
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
               <Users01 className="w-4 h-4 text-text-300" />
               <span>Sohib Lo ({members.length})</span>
+              {saveStatus === "saving" && <span className="text-text-400 font-medium"> <Dot color="primary" /> </span>}
+              {saveStatus === "saved" && <span className="text-emerald-500 font-medium"> <Dot color="success" /> </span>}
+              {saveStatus === "error" && <span className="text-rose-500 font-medium"> <Dot color="danger" /> </span>}
             </h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
               <Button
                 onPress={handleCopyAllSummary}
                 color="secondary"
@@ -584,121 +700,133 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
               <Button
                 onPress={() => setShowMembers(!showMembers)}
                 color="secondary"
-                size="xs"
-                className="px-2 py-1 text-[10px]"
+                className="px-2 py-1"
               >
-                {showMembers ? "Tutup" : "Kelola"}
+                {showMembers ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
               </Button>
             </div>
           </div>
 
           {showMembers && (
-            <>
-              {session.status !== "COMPLETED" && (
-                <form onSubmit={handleAddMember} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={newMemberName}
-                    onChange={(e) => setNewMemberName(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-text placeholder-text-600 focus:border-primary focus:ring-1 focus:ring-primary text-xs outline-none transition-all"
-                    placeholder="Ketik nama sohib lo..."
-                  />
-                  <Button
-                    type="submit"
-                    isDisabled={loading}
-                    isLoading={loading}
-                    size="sm"
-                  >
-                    Tambahin, Bos!
-                  </Button>
-                </form>
-              )}
-
-              <div className="space-y-2 max-h-[120px] overflow-y-auto pr-1 scrollbar-hide">
-            {members.map((member) => (
-              <div
-                key={member.id}
-                className="flex items-center justify-between p-2 px-3 rounded-xl bg-text-950 border border-secondary-800"
-              >
-                <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                  <Avatar alt={member.name} size="sm" className="shadow-md border border-secondary-800" />
-                  {editingMemberId === member.id ? (
-                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                      <input
-                        type="text"
-                        value={editingMemberName}
-                        onChange={(e) => setEditingMemberName(e.target.value)}
-                        className="px-2 py-1 rounded bg-text-900 border border-text-700 text-xs text-text outline-none flex-1 min-w-0"
-                      />
-                      <Button
-                        onPress={() => setEditingMemberId(null)}
-                        color="secondary"
-                        size="xs"
-                        className="text-xs"
-                      >
-                        Gak Jadi
-                      </Button>
-                      <Button
-                        onPress={() => handleRenameMember(member.id)}
-                        isDisabled={loading}
-                        color="primary"
-                        size="xs"
-                        className="text-xs"
-                      >
-                        Simpan
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col min-w-0">
-                      <p className="font-semibold text-text text-xs truncate">
-                        {member.name} {member.userId === session.userId && <span className="text-[9px] font-normal text-text-400">(Owner)</span>}
-                      </p>
-                      <p className="text-[10px] text-primary-400 font-medium">
-                        Patungan: Rp {Number(member.shareAmount).toLocaleString("id-ID")}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {editingMemberId !== member.id && (
-                  <div className="flex items-center gap-1.5">
+            <div onClick={(e) => e.stopPropagation()} className="space-y-2.5">
+              <>
+                {session.status !== "COMPLETED" && (
+                  <form onSubmit={handleAddMember} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newMemberName}
+                      onChange={(e) => setNewMemberName(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-text placeholder-text-600 focus:border-primary focus:ring-1 focus:ring-primary text-xs outline-none transition-all"
+                      placeholder="Ketik nama sohib lo..."
+                    />
                     <Button
-                      onPress={() => handleCopySummary(member)}
-                      color="secondary"
-                      size="xs"
-                      className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center"
+                      type="submit"
+                      isDisabled={loading}
+                      isLoading={loading}
+                      size="sm"
                     >
-                      {copiedId === member.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy01 className="w-3.5 h-3.5 text-primary-400" />}
+                      Tambahin
                     </Button>
-                    {member.userId !== session.userId && session.status !== "COMPLETED" && (
-                      <>
-                        <Button
-                          onPress={() => {
-                            setEditingMemberId(member.id);
-                            setEditingMemberName(member.name);
-                          }}
-                          color="tertiary"
-                          size="xs"
-                          className="p-1.5 rounded-lg active:scale-95 transition-all text-text-400 hover:text-text-200 flex items-center justify-center"
-                        >
-                          <Edit02 className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button
-                          onPress={() => handleRemoveMember(member.id)}
-                          color="tertiary"
-                          size="xs"
-                          className="p-1.5 rounded-lg active:scale-95 transition-all text-danger-400/80 hover:text-danger-400 flex items-center justify-center"
-                        >
-                          <Trash01 className="w-3.5 h-3.5" />
-                        </Button>
-                      </>
-                    )}
-                  </div>
+                  </form>
                 )}
-              </div>
-            ))}
-          </div>
-          </>
+
+                <div className="space-y-2 max-h-30 overflow-y-auto pr-1 scrollbar-hide">
+                  {members.map((member) => (
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between p-2 px-3 rounded-xl bg-text-950 border border-secondary-800"
+                    >
+                      <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                        <Avatar alt={member.name} size="sm" className="shadow-md border border-secondary-800" />
+                        {editingMemberId === member.id ? (
+                          <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                            <input
+                              type="text"
+                              value={editingMemberName}
+                              onChange={(e) => setEditingMemberName(e.target.value)}
+                              className="px-2 py-1 rounded bg-text-900 border border-text-700 text-xs text-text outline-none flex-1 min-w-0"
+                            />
+                            <Button
+                              onPress={() => setEditingMemberId(null)}
+                              color="secondary"
+                              size="xs"
+                              className="text-xs"
+                            >
+                              Gak Jadi
+                            </Button>
+                            <Button
+                              onPress={() => handleRenameMember(member.id)}
+                              isDisabled={loading}
+                              color="primary"
+                              size="xs"
+                              className="text-xs"
+                            >
+                              Simpan
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col min-w-0">
+                            <p className="font-semibold text-text text-xs truncate">
+                              {member.name} {member.userId === session.userId && <span className="text-[9px] font-normal text-text-400">(Gua)</span>}
+                            </p>
+                            <p className="text-[10px] text-primary-400 font-medium">
+                              Patungan: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {editingMemberId !== member.id && (
+                        <div className="flex items-center gap-1.5">
+                          <Button
+                            onPress={() => handleCopySummary(member)}
+                            color="secondary"
+                            size="xs"
+                            className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center"
+                          >
+                            {copiedId === member.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy01 className="w-3.5 h-3.5 text-primary-400" />}
+                          </Button>
+                          {member.userId !== session.userId && session.status !== "COMPLETED" && (
+                            <>
+                              <Button
+                                onPress={() => {
+                                  setEditingMemberId(member.id);
+                                  setEditingMemberName(member.name);
+                                }}
+                                color="tertiary"
+                                size="xs"
+                                className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
+                              >
+                                <Edit02 className="w-3.5 h-3.5" />
+                              </Button>
+                              <Button
+                                onPress={() => {
+                                  setDeleteConfig({
+                                    isOpen: true,
+                                    title: "Hapus Sohib?",
+                                    description: `Beneran mau hapus ${member.name} dari pete-pete ini? Semua alokasi menu dia bakal diapus juga, lho.`,
+                                    confirmText: "Hapus Teman",
+                                    onConfirm: async () => {
+                                      await handleRemoveMember(member.id);
+                                      setDeleteConfig(null);
+                                    },
+                                  });
+                                }}
+                                color="tertiary"
+                                size="xs"
+                                className="p-1.5 rounded-lg active:scale-95 transition-all text-danger-400/80 hover:text-danger-400 flex items-center justify-center"
+                              >
+                                <Trash01 className="w-3.5 h-3.5" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            </div>
           )}
         </div>
 
@@ -941,26 +1069,34 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                                 </p>
                               </div>
                               <div className="flex flex-col items-end gap-1">
-                                <span className="text-xs font-bold text-indigo-400">
+                                <span className="text-xs font-bold text-text-400">
                                   Rp {Number(item.totalPrice).toLocaleString("id-ID")}
                                 </span>
                                 {session.status !== "COMPLETED" && (
                                   <div className="flex gap-2 text-[9px] font-bold text-text-400">
                                     <Button
                                       onPress={() => startEditItem(item)}
-                                      color="link-color"
-                                      className="hover:text-primary-400 transition-colors font-bold text-[9px]"
-                                      iconLeading={Edit02}
+                                      color="tertiary"
+                                      size="xs"
+                                      className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
                                     >
-                                      Edit
+                                      <Edit02 className="w-4 h-4" />
                                     </Button>
                                     <Button
-                                      onPress={() => handleDeleteItem(item.id)}
-                                      color="link-gray"
-                                      className="hover:text-rose-400 transition-colors font-bold text-[9px]"
-                                      iconLeading={Trash01}
+                                      onPress={() => {
+                                        setDeleteConfig({
+                                          isOpen: true,
+                                          title: "Hapus Menu Makanan?",
+                                          description: `Beneran mau hapus menu "${item.name}"? Porsi/alokasi temen-temen lo buat menu ini bakal ilang.`,
+                                          confirmText: "Hapus Menu",
+                                          onConfirm: () => handleDeleteItem(item.id),
+                                        });
+                                      }}
+                                      color="tertiary"
+                                      size="xs"
+                                      className="p-1.5 rounded-lg active:scale-95 transition-all text-danger-400/80 hover:text-danger-400 flex items-center justify-center"
                                     >
-                                      Hapus
+                                      <Trash01 className="w-4 h-4" />
                                     </Button>
                                   </div>
                                 )}
@@ -1003,10 +1139,10 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                                               e.stopPropagation();
                                               handleDecreaseAllocation(item.id, member.id);
                                             }}
-                                            className="absolute -bottom-1 -right-1 bg-rose-600 hover:bg-rose-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold shadow-md cursor-pointer border border-text-950 active:scale-90"
+                                            className="absolute -bottom-1 rounded-full -right-1 bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center shadow-md cursor-pointer active:scale-90"
                                             title="Kurangi porsi"
                                           >
-                                            -
+                                            <Minus className="w-4 h-4 stroke-[3px]" />
                                           </button>
                                         </>
                                       )}
@@ -1047,29 +1183,28 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
             Bill PETE-PETE Selesai
           </Button>
         ) : (
-          <div className="flex gap-2">
-            <Button
-              onPress={handleSaveAndCalculate}
-              isDisabled={isPending || loading}
-              isLoading={isPending || loading}
-              color="secondary"
-              className="flex-1 py-3 px-4 rounded-xl text-xs font-semibold"
-              iconLeading={Save01}
-            >
-              Simpan & Hitung
-            </Button>
-            <Button
-              onPress={handleCompleteSession}
-              isDisabled={isPending || loading}
-              isLoading={isPending || loading}
-              className="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold"
-              iconLeading={Check}
-            >
-              Selesai
-            </Button>
-          </div>
+          <Button
+            onPress={handleCompleteSession}
+            isDisabled={isPending || loading}
+            isLoading={isPending || loading}
+            className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold"
+            iconLeading={Check}
+          >
+            Selesai
+          </Button>
         )}
       </div>
+      {deleteConfig && (
+        <DeleteConfirmation
+          isOpen={deleteConfig.isOpen}
+          onClose={() => setDeleteConfig(null)}
+          onConfirm={deleteConfig.onConfirm}
+          title={deleteConfig.title}
+          description={deleteConfig.description}
+          confirmText={deleteConfig.confirmText}
+          isLoading={loading}
+        />
+      )}
     </div>
   );
 }

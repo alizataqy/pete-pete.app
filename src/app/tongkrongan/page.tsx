@@ -79,10 +79,10 @@ export default async function TongkronganPage() {
         <div className="grid grid-cols-3 gap-2">
           <div className="p-3 rounded-xl border border-secondary-800 bg-text-900 text-center">
             <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Semua</p>
-            <p className="text-lg font-bold text-text-50 mt-1">{mySessions.length}</p>
+            <p className="text-lg font-bold text-primary-300 mt-1">{mySessions.length}</p>
           </div>
           <div className="p-3 rounded-xl border border-secondary-800 bg-text-900 text-center">
-            <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Masih Jalan</p>
+            <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">On Going</p>
             <p className="text-lg font-bold text-primary-300 mt-1">
               {mySessions.filter((s) => s.status === "DRAFT" || s.status === "ACTIVE").length}
             </p>
@@ -118,65 +118,71 @@ export default async function TongkronganPage() {
                 {mySessions.map((session) => (
                   <div
                     key={session.id}
-                    className="p-4 rounded-xl border border-secondary-800 bg-text-900 hover:bg-text-800 transition-all flex flex-col space-y-3 group"
+                    className="p-3.5 rounded-xl border border-secondary-800 bg-text-900 hover:bg-text-800 transition-all flex flex-col space-y-2 group"
                   >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-semibold px-2 py-0.5 rounded bg-text-950 text-text-300 border border-text-700">
-                          {session.inviteCode}
-                        </span>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-sm text-text-50 group-hover:text-primary-400 transition-colors truncate">
+                          {session.title}
+                        </h3>
+                        {session.merchantName ? (
+                          <p className="text-[10px] text-text-400 truncate">
+                            {session.merchantName}
+                          </p>
+                        ) : (
+                          <p className="text-[10px] text-text-400">Kode: {session.inviteCode}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
+                        {session.merchantName && (
+                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-text-950 text-text-300 border border-text-700">
+                            {session.inviteCode}
+                          </span>
+                        )}
                         <span
-                          className={`text-[9px] font-semibold px-2 py-0.5 rounded ${session.status === "COMPLETED"
+                          className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${session.status === "COMPLETED"
                             ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
                             : session.status === "ACTIVE"
                               ? "bg-primary-950 text-primary-300 border border-primary-800"
                               : "bg-text-950 text-primary-400 border border-text-700"
                             }`}
                         >
-                          {session.status === "COMPLETED" ? "Udah Kelar" : session.status === "ACTIVE" ? "Masih Jalan" : "Draft"}
+                          {session.status === "COMPLETED" ? "Kelar" : session.status === "ACTIVE" ? "Jalan" : "Draft"}
                         </span>
                       </div>
-
-                      <h3 className="font-bold text-sm text-text-50 group-hover:text-primary-400 transition-colors">
-                        {session.title}
-                      </h3>
-                      {session.merchantName && (
-                        <p className="text-[10px] text-text-400">
-                          {session.merchantName}
-                        </p>
-                      )}
-                      {session.description && (
-                        <p className="text-[10px] text-text-300 line-clamp-1">{session.description}</p>
-                      )}
                     </div>
 
-                    <div className="border-t border-secondary-800 pt-3 flex items-center justify-between text-xs text-text-300">
-                      <div>
-                        <p className="text-[9px] text-text-400">Total Tagihan</p>
-                        <p className="font-bold text-text-100 mt-0.5">
+                    <div className="flex items-center justify-between text-[11px] text-text-300 pt-0.5">
+                      <div className="flex items-center gap-1">
+                        <span className="text-text-400">Tagihan:</span>
+                        <span className="font-bold text-text-100">
                           Rp {Number(session.totalAmount).toLocaleString("id-ID")}
-                        </p>
+                        </span>
                       </div>
-                      <div className="text-right">
-                        <p className="text-[9px] text-text-400">Sohib Lo</p>
-                        <p className="font-semibold text-text-200 mt-0.5">
-                          {session.members.length} orang ({session.members.filter((m) => m.isPaid).length} udah bayar)
-                        </p>
+                      <div className="text-text-400 text-right">
+                        <span className="font-semibold text-text-200">
+                          {session.members.length} Sohib
+                        </span>
+                        {session.members.filter((m) => m.isPaid).length > 0 && (
+                          <span className="text-emerald-400 font-medium ml-1">
+                            ({session.members.filter((m) => m.isPaid).length} bayar)
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 pt-1.5">
+                    <div className="grid grid-cols-2 gap-2 pt-1">
                       <Button
                         href={`/pete-pete/${session.id}/split`}
                         color="primary"
-                        className="w-full text-center py-2 rounded-lg text-text-950 font-bold text-[10px] transition-all active:scale-[0.98]"
+                        className="w-full text-center py-1.5 rounded-lg text-text-950 font-bold text-[10px] transition-all active:scale-[0.98]"
                       >
                         Bagi Tagihan
                       </Button>
                       <Button
                         href={`/pete-pete/${session.id}/items`}
                         color="secondary"
-                        className="w-full text-center py-2 rounded-lg text-text-100 text-[10px] font-semibold transition-all active:scale-[0.98]"
+                        className="w-full text-center py-1.5 rounded-lg text-text-100 text-[10px] font-semibold transition-all active:scale-[0.98]"
                       >
                         Cek Menu
                       </Button>

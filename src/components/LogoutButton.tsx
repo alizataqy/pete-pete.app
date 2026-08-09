@@ -41,7 +41,7 @@ export default function LogoutButton({ className }: LogoutButtonProps) {
       size="sm"
       className={className}
       iconLeading={<LogOut01 />}
-    > Keluar
+    > Logout
     </Button>
   );
 }

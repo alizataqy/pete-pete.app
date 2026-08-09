@@ -3,6 +3,15 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { encrypt } from "@/lib/encryption";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+async function getCurrentUser() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  return session?.user?.name || null;
+}
 
 interface CreateSessionData {
   title: string;
@@ -27,10 +36,14 @@ interface CreateSessionData {
 export async function createBillSession(data: CreateSessionData) {
   try {
     const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const user = await getCurrentUser();
+    if (!user) {
+      return { success: false, error: "User tidak ditemukan" };
+    }
 
     // Ambil info rekening dari profil user pembuat sesi
     let firstBank = null;
-    let creatorName = "Saya";
+    let creatorName = user;
     if (data.userId) {
       const creator = await prisma.user.findUnique({
         where: { id: data.userId },

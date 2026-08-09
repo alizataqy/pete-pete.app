@@ -6,6 +6,7 @@ import { deleteUserBank } from "@/app/actions/profile";
 import { ArrowLeft, Copy01, Share07, Trash01, Eye, EyeOff } from "@untitledui/icons";
 import { toast } from "sonner";
 import { Button } from "@/components/base/buttons/button";
+import DeleteConfirmation from "@/components/application/modals/DeleteConfirmation";
 
 interface BankDetailProps {
   bank: {
@@ -22,6 +23,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
   const router = useRouter();
   const [showAccount, setShowAccount] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const isEWallet = ["GoPay", "OVO", "Dana"].includes(bank.bankName);
   const isQris = bank.bankName === "QRIS";
@@ -33,7 +35,6 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
       : bank.bankAccount;
 
   const handleDelete = async () => {
-    if (!confirm("Yakin mau hapus rekening ini?")) return;
     setDeleting(true);
     try {
       const res = await deleteUserBank(userId, bank.id);
@@ -48,6 +49,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
       toast.error("Gagal menghapus rekening.");
     } finally {
       setDeleting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -159,13 +161,23 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
         <div className="pt-4 border-t border-secondary-800">
           <button
             type="button"
-            onClick={handleDelete}
+            onClick={() => setShowDeleteConfirm(true)}
             disabled={deleting}
-            className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-rose-400 hover:text-rose-300 disabled:opacity-50 transition-all"
+            className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-rose-400 hover:text-rose-300 disabled:opacity-50 transition-all cursor-pointer"
           >
             <Trash01 className="w-4 h-4" /> Hapus Rekening
           </button>
         </div>
+
+        <DeleteConfirmation
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={handleDelete}
+          title="Hapus Rekening Bank?"
+          description={`Beneran mau hapus rekening ${bank.bankName} (${bank.bankOwner})? Kalo lo apus, lo gabisa milih rekening ini pas bikin pete-pete baru.`}
+          confirmText="Hapus Rekening"
+          isLoading={deleting}
+        />
       </div>
     </div>
   );
