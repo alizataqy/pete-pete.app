@@ -47,7 +47,7 @@ export default function LandingView({ user }: UserSessionProp) {
     split: {
       title: "Split Bill Ga Kaku",
       desc: "Bebas atur siapa bayar apa. Bisa bagi rata, bagi per item menu, atau custom porsi. Bahkan bisa pilih siapa yang nalangin duluan gampang banget!",
-      icon: <Users01 className="w-5 h-5 text-emerald-400" />,
+      icon: <Users01 className="w-5 h-5 text-primary-200" />,
       badge: "Suka-suka lo",
       detail: [
         "Tandai menu per anggota geng",
@@ -82,7 +82,7 @@ export default function LandingView({ user }: UserSessionProp) {
               onPress={() => router.push("/tongkrongan")}
               className="py-2 px-5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs shadow-lg shadow-primary/20 transition-all hover:scale-[1.03] cursor-pointer"
             >
-              Tongkrongan Gua
+              Sokin Masuk Aje
             </Button>
           ) : (
             <Button
@@ -128,7 +128,7 @@ export default function LandingView({ user }: UserSessionProp) {
               </div>
               <span className="text-text-800 hidden sm:inline">|</span>
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-text-900/40 border border-secondary-800/20">
-                <Lock01 className="w-3.5 h-3.5 text-emerald-400" />
+                <Lock01 className="w-3.5 h-3.5 text-text-200" />
                 <span className="font-semibold text-text">Tanpa Login/OTP</span>
               </div>
             </div>
@@ -141,7 +141,7 @@ export default function LandingView({ user }: UserSessionProp) {
                   iconTrailing={ArrowRight}
                   className="w-full py-4 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white font-extrabold text-sm shadow-xl shadow-primary/30 transition-all hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  Masuk ke Tongkrongan
+                  Sokin Masuk Aje
                 </Button>
               ) : (
                 <>
@@ -208,8 +208,8 @@ export default function LandingView({ user }: UserSessionProp) {
               {ocrStep === 1 && (
                 <div className="flex-1 flex flex-col justify-between py-5 text-left animate-in fade-in zoom-in-95 duration-300">
                   <div className="space-y-4">
-                    <p className="text-[9px] font-extrabold text-emerald-400 uppercase tracking-widest leading-none flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <p className="text-[9px] font-extrabold text-primary-200 uppercase tracking-widest leading-none flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
                       AI OCR Membaca Data...
                     </p>
                     <div className="space-y-2 max-h-[190px] overflow-y-auto pr-1 custom-scrollbar">
@@ -238,7 +238,7 @@ export default function LandingView({ user }: UserSessionProp) {
                   </div>
                   <Button
                     onPress={() => setOcrStep(2)}
-                    className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[10px] shadow-lg shadow-emerald-900/30 transition-all hover:scale-102 cursor-pointer"
+                    className="w-full py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-extrabold text-[10px] shadow-lg shadow-primary/30 transition-all hover:scale-102 cursor-pointer"
                   >
                     Bagi Tagihan &bull; Langkah 2
                   </Button>
@@ -290,7 +290,7 @@ export default function LandingView({ user }: UserSessionProp) {
               {/* Simulator Screen Footer */}
               <div className="border-t border-text-900 pt-3.5 flex items-center justify-between text-[9px] text-text-400 font-medium">
                 <span>Total Struk: Rp 154.000</span>
-                <span className="text-emerald-400 font-semibold">Tax Terhitung</span>
+                <span className="text-primary-200 font-semibold">Tax Terhitung</span>
               </div>
 
             </div>
@@ -341,7 +341,7 @@ export default function LandingView({ user }: UserSessionProp) {
                   </div>
                   <h3 className="text-lg font-bold text-text">{features[activeTab].title}</h3>
                 </div>
-                <span className="text-[10px] font-bold bg-emerald-950/80 border border-emerald-800/40 text-emerald-300 px-2.5 py-1 rounded-full">
+                <span className="text-[10px] font-bold bg-primary-950/80 border border-primary-900/40 text-primary-200 px-2.5 py-1 rounded-full">
                   {features[activeTab].badge}
                 </span>
               </div>
@@ -353,7 +353,7 @@ export default function LandingView({ user }: UserSessionProp) {
               <div className="border-t border-secondary-900/60 pt-5 space-y-3">
                 {features[activeTab].detail.map((detail, idx) => (
                   <div key={idx} className="flex items-center gap-3">
-                    <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-primary-200 shrink-0" />
                     <span className="text-xs text-text-100 font-medium">{detail}</span>
                   </div>
                 ))}
@@ -388,7 +388,7 @@ export default function LandingView({ user }: UserSessionProp) {
                     </div>
                   </div>
 
-                  <div className="border-t border-text-800 pt-2 flex justify-between text-[10px] text-emerald-400 font-bold">
+                  <div className="border-t border-text-800 pt-2 flex justify-between text-[10px] text-primary-200 font-bold">
                     <span>Tax & Service (10%)</span>
                     <span>Rp 8.500</span>
                   </div>
@@ -409,7 +409,7 @@ export default function LandingView({ user }: UserSessionProp) {
                       </div>
                       <div className="flex flex-wrap gap-1">
                         <span className="text-[8px] bg-primary-900/60 border border-primary-800/50 text-primary-300 px-1.5 py-0.5 rounded-full font-medium">Budi</span>
-                        <span className="text-[8px] bg-emerald-950/60 border border-emerald-900/50 text-emerald-300 px-1.5 py-0.5 rounded-full font-medium">Ucup</span>
+                        <span className="text-[8px] bg-primary-950/60 border border-primary-900/50 text-primary-200 px-1.5 py-0.5 rounded-full font-medium">Ucup</span>
                       </div>
                     </div>
 
@@ -429,15 +429,15 @@ export default function LandingView({ user }: UserSessionProp) {
               {activeTab === "share" && (
                 <div className="w-full max-w-[240px] bg-[#0b141a] p-3.5 rounded-xl border border-zinc-800 shadow-lg space-y-2.5 animate-in zoom-in-95 duration-300 relative">
                   <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-primary" />
                     <span className="text-[9px] text-white font-bold">WhatsApp Send</span>
                   </div>
 
-                  <div className="bg-[#202c33] p-2.5 rounded-xl text-[9px] text-white space-y-1.5 border-l-4 border-emerald-500 max-w-[90%]">
-                    <p className="font-extrabold text-emerald-400">PETE-PETE: Ramen Geng 🍜</p>
+                  <div className="bg-[#202c33] p-2.5 rounded-xl text-[9px] text-white space-y-1.5 border-l-4 border-primary max-w-[90%]">
+                    <p className="font-extrabold text-primary-200">PETE-PETE: Ramen Geng 🍜</p>
                     <p>Total tagihan lo: <span className="font-bold text-white">Rp 73.000</span></p>
                     <p className="text-[8px] text-zinc-400">Menu: 1x Spicy Miso Ramen + 1x Gyoza</p>
-                    <div className="mt-2 text-center bg-emerald-600 py-1.5 rounded font-extrabold text-white text-[8px]">
+                    <div className="mt-2 text-center bg-primary-600 py-1.5 rounded font-extrabold text-white text-[8px]">
                       Konfirmasi & Bayar
                     </div>
                   </div>
@@ -461,11 +461,11 @@ export default function LandingView({ user }: UserSessionProp) {
             Pakai semua fitur scan struk &amp; kelola banyak rekening sepuasnya gratis tanpa dipungut biaya sepeser pun.
           </p>
         </div>
-        <div className="p-6 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md text-left space-y-4 hover:border-emerald-500/25 transition-all duration-300 hover:scale-[1.02] group">
-          <div className="p-3 rounded-2xl bg-emerald-950 border border-emerald-900/40 w-fit group-hover:scale-110 transition-transform">
-            <Users01 className="w-6 h-6 text-emerald-400" />
+        <div className="p-6 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md text-left space-y-4 hover:border-primary-500/25 transition-all duration-300 hover:scale-[1.02] group">
+          <div className="p-3 rounded-2xl bg-primary-950 border border-primary-900/40 w-fit group-hover:scale-110 transition-transform">
+            <Users01 className="w-6 h-6 text-primary-400" />
           </div>
-          <h4 className="text-lg font-bold text-text leading-none">Geng Happy</h4>
+          <h4 className="text-lg font-bold text-text-200 leading-none">Geng Happy</h4>
           <p className="text-xs text-text-300 leading-relaxed">
             Nggak ada lagi rasa sungkan nagih patungan secara manual. Hubungan tongkrongan tetap asyik &amp; harmonis!
           </p>

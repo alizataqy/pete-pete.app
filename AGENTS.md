@@ -25,3 +25,6 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## 3. Jakarta Slang Typography Style
 - Gunakan bahasa slang/gaul Jakarta untuk semua tulisan (typography) di aplikasi (seperti "Gua", "Lo", "Pesen", "Udah kelar", "Bagi tagihan", "Pete-pete", dll.) agar terkesan kasual dan ramah bagi pengguna lokal.
 
+## 4. No Manual Emojis
+- Do NOT use or insert emojis manually in any typography, component, or user interface elements. Rely on designated icons or clean text to preserve design consistency.
+

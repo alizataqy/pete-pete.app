@@ -41,6 +41,26 @@ const BANK_TEMPLATES = [
   { name: "QRIS", logo: "/bank-logos/qris.svg", placeholder: "Paste URL gambar QRIS lo di sini" },
 ];
 
+const formatRupiah = (value: number | string): string => {
+  if (value === undefined || value === null || value === "") return "";
+  const str = String(value);
+  const isNegative = str.startsWith("-") || (typeof value === "number" && value < 0);
+  const cleaned = str.replace(/[^0-9]/g, "");
+  if (!cleaned) {
+    if (str === "0") return "Rp 0";
+    return isNegative ? "Rp -" : "";
+  }
+  const formatted = cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `Rp ${isNegative ? "-" : ""}${formatted}`;
+};
+
+const parseRupiah = (formatted: string): string => {
+  if (!formatted) return "";
+  const isNegative = formatted.includes("-");
+  const cleaned = formatted.replace(/[^0-9]/g, "");
+  return isNegative ? `-${cleaned}` : cleaned;
+};
+
 export default function NewSessionPage() {
   const router = useRouter();
   const { data: authSession, isPending } = useSession();
@@ -536,23 +556,21 @@ export default function NewSessionPage() {
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-text-100">Pajak / Tax (Rp)</label>
               <input
-                type="number"
-                min={0}
-                value={manualTax || ""}
-                onChange={(e) => setManualTax(Number(e.target.value))}
+                type="text"
+                value={formatRupiah(manualTax)}
+                onChange={(e) => setManualTax(Number(parseRupiah(e.target.value)) || 0)}
                 className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
-                placeholder="Contoh: 10000"
+                placeholder="Contoh: Rp 10.000"
               />
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-text-100">Servis / Tip (Rp)</label>
               <input
-                type="number"
-                min={0}
-                value={manualTip || ""}
-                onChange={(e) => setManualTip(Number(e.target.value))}
+                type="text"
+                value={formatRupiah(manualTip)}
+                onChange={(e) => setManualTip(Number(parseRupiah(e.target.value)) || 0)}
                 className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
-                placeholder="Contoh: 5000"
+                placeholder="Contoh: Rp 5.000"
               />
             </div>
           </div>
@@ -892,21 +910,19 @@ export default function NewSessionPage() {
                         </label>
                         {addPriceMode === "unit" ? (
                           <input
-                            type="number"
-                            min={0}
-                            value={draftItemPrice}
-                            onChange={(e) => handleDraftItemPriceChange(e.target.value)}
+                            type="text"
+                            value={formatRupiah(draftItemPrice)}
+                            onChange={(e) => handleDraftItemPriceChange(parseRupiah(e.target.value))}
                             className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
-                            placeholder="Satuan"
+                            placeholder="Rp Satuan"
                           />
                         ) : (
                           <input
-                            type="number"
-                            min={0}
-                            value={draftItemAmount}
-                            onChange={(e) => handleDraftItemAmountChange(e.target.value)}
+                            type="text"
+                            value={formatRupiah(draftItemAmount)}
+                            onChange={(e) => handleDraftItemAmountChange(parseRupiah(e.target.value))}
                             className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
-                            placeholder="Total"
+                            placeholder="Rp Total"
                           />
                         )}
                       </div>

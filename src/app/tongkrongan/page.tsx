@@ -5,8 +5,10 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import LogoutButton from "@/components/LogoutButton";
 import { Button } from "@/components/base/buttons/button";
-import { User01, Plus } from "@untitledui/icons";
+import { User01, Plus, Compass, Coins01 } from "@untitledui/icons";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { toast } from "sonner";
+import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 
 export default async function TongkronganPage() {
   const session = await auth.api.getSession({
@@ -95,6 +97,27 @@ export default async function TongkronganPage() {
           </div>
         </div>
 
+        {/* Link ke Vacation / Agenda Plans */}
+        <Link
+          href="/agenda"
+          className="relative p-3.5 rounded-xl border border-secondary-800 bg-secondary-950/15 hover:bg-secondary-950/30 transition-all flex items-center justify-between gap-3 shrink-0"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-2 bg-text-950 rounded-lg border border-secondary-800 shrink-0">
+              <Compass className="w-4 h-4 text-primary-400" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-text-50">Make a Plan</p>
+              <p className="text-[9px] text-text-400 truncate">Bikin plan liburan, BBQ, atau agenda kumpul bareng sohib biar ga pusing pete-peteannya</p>
+            </div>
+          </div>
+          <span className="text-[9px] font-bold bg-primary-950 text-primary-400 border border-primary-900/60 px-2.5 py-1 rounded-full shrink-0">
+            Coba
+          </span>
+          <span className="absolute -top-2.5 -right-3.5 text-[8px] font-extrabold bg-danger-300 text-white px-2 py-0.5 rounded-full border border-danger shadow-lg shadow-danger-500/50 uppercase tracking-wider rotate-30">
+            New
+          </span>
+        </Link>
 
         {/* Daftar Sesi Split Bill */}
         <div className="flex-1 flex flex-col min-h-0 gap-3">
@@ -103,7 +126,7 @@ export default async function TongkronganPage() {
 
             {mySessions.length === 0 ? (
               <div className="p-8 text-center border border-dashed border-secondary-800 rounded-xl space-y-3 bg-text-900/40">
-                <p className="text-text-300 text-[10px] max-w-[200px] mx-auto leading-relaxed">
+                <p className="text-text-300 text-[10px] max-w-50 mx-auto leading-relaxed">
                   Sepi amat, belum ada patungan nih. Yuk scan struk bareng geng lo biar gak ada drama!
                 </p>
                 <Link

@@ -21,6 +21,26 @@ import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 import { Dot } from "@/components/foundations/dot-icon";
 import DeleteConfirmation from "@/components/application/modals/DeleteConfirmation";
 
+const formatRupiah = (value: number | string): string => {
+  if (value === undefined || value === null || value === "") return "";
+  const str = String(value);
+  const isNegative = str.startsWith("-") || (typeof value === "number" && value < 0);
+  const cleaned = str.replace(/[^0-9]/g, "");
+  if (!cleaned) {
+    if (str === "0") return "Rp 0";
+    return isNegative ? "Rp -" : "";
+  }
+  const formatted = cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `Rp ${isNegative ? "-" : ""}${formatted}`;
+};
+
+const parseRupiah = (formatted: string): string => {
+  if (!formatted) return "";
+  const isNegative = formatted.includes("-");
+  const cleaned = formatted.replace(/[^0-9]/g, "");
+  return isNegative ? `-${cleaned}` : cleaned;
+};
+
 interface Member {
   id: string;
   name: string;
@@ -178,23 +198,25 @@ export default function SplitBoard({
   // States untuk Tambah Menu Manual
   const [showAddForm, setShowAddForm] = useState(false);
   const [newItemName, setNewItemName] = useState("");
-  const [newItemQty, setNewItemQty] = useState(1);
+  const [newItemQty, setNewItemQty] = useState("1");
   const [newItemPrice, setNewItemPrice] = useState("");
   const [newItemTotal, setNewItemTotal] = useState("");
 
-  const handleNewItemQtyChange = (qty: number) => {
+  const handleNewItemQtyChange = (qty: string) => {
     setNewItemQty(qty);
+    const q = parseFloat(qty) || 0;
     if (newItemPrice) {
-      setNewItemTotal(String(qty * Number(newItemPrice)));
-    } else if (newItemTotal) {
-      setNewItemPrice(String(Math.round(Number(newItemTotal) / qty)));
+      setNewItemTotal(String(q * Number(newItemPrice)));
+    } else if (newItemTotal && q > 0) {
+      setNewItemPrice(String(Math.round(Number(newItemTotal) / q)));
     }
   };
 
   const handleNewItemPriceChange = (price: string) => {
     setNewItemPrice(price);
-    if (price) {
-      setNewItemTotal(String(newItemQty * Number(price)));
+    const q = parseFloat(newItemQty) || 0;
+    if (price && q > 0) {
+      setNewItemTotal(String(q * Number(price)));
     } else {
       setNewItemTotal("");
     }
@@ -202,8 +224,9 @@ export default function SplitBoard({
 
   const handleNewItemTotalChange = (total: string) => {
     setNewItemTotal(total);
-    if (total) {
-      setNewItemPrice(String(Math.round(Number(total) / newItemQty)));
+    const q = parseFloat(newItemQty) || 0;
+    if (total && q > 0) {
+      setNewItemPrice(String(Math.round(Number(total) / q)));
     } else {
       setNewItemPrice("");
     }
@@ -212,23 +235,25 @@ export default function SplitBoard({
   // States untuk Edit Menu Inline
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editItemName, setEditItemName] = useState("");
-  const [editItemQty, setEditItemQty] = useState(1);
+  const [editItemQty, setEditItemQty] = useState("1");
   const [editItemPrice, setEditItemPrice] = useState("");
   const [editItemTotal, setEditItemTotal] = useState("");
 
-  const handleEditItemQtyChange = (qty: number) => {
+  const handleEditItemQtyChange = (qty: string) => {
     setEditItemQty(qty);
+    const q = parseFloat(qty) || 0;
     if (editItemPrice) {
-      setEditItemTotal(String(qty * Number(editItemPrice)));
-    } else if (editItemTotal) {
-      setEditItemPrice(String(Math.round(Number(editItemTotal) / qty)));
+      setEditItemTotal(String(q * Number(editItemPrice)));
+    } else if (editItemTotal && q > 0) {
+      setEditItemPrice(String(Math.round(Number(editItemTotal) / q)));
     }
   };
 
   const handleEditItemPriceChange = (price: string) => {
     setEditItemPrice(price);
-    if (price) {
-      setEditItemTotal(String(editItemQty * Number(price)));
+    const q = parseFloat(editItemQty) || 0;
+    if (price && q > 0) {
+      setEditItemTotal(String(q * Number(price)));
     } else {
       setEditItemTotal("");
     }
@@ -236,8 +261,9 @@ export default function SplitBoard({
 
   const handleEditItemTotalChange = (total: string) => {
     setEditItemTotal(total);
-    if (total) {
-      setEditItemPrice(String(Math.round(Number(total) / editItemQty)));
+    const q = parseFloat(editItemQty) || 0;
+    if (total && q > 0) {
+      setEditItemPrice(String(Math.round(Number(total) / q)));
     } else {
       setEditItemPrice("");
     }
@@ -405,7 +431,7 @@ export default function SplitBoard({
 
     setLoading(true);
     try {
-      const res = await addSessionItem(session.id, newItemName, newItemQty, Number(newItemPrice));
+      const res = await addSessionItem(session.id, newItemName, Number(newItemQty) || 1, Number(newItemPrice));
       if (res.success) {
         toast.success("Menu makanan berhasil ditambahkan!");
         setTimeout(() => {
@@ -453,7 +479,7 @@ export default function SplitBoard({
   const startEditItem = (item: Item) => {
     setEditingItemId(item.id);
     setEditItemName(item.name);
-    setEditItemQty(item.quantity);
+    setEditItemQty(String(item.quantity));
     setEditItemPrice(String(Math.round(item.totalPrice / item.quantity)));
     setEditItemTotal(String(item.totalPrice));
   };
@@ -465,7 +491,7 @@ export default function SplitBoard({
 
     setLoading(true);
     try {
-      const res = await updateSessionItem(itemId, session.id, editItemName, editItemQty, Number(editItemPrice));
+      const res = await updateSessionItem(itemId, session.id, editItemName, Number(editItemQty) || 1, Number(editItemPrice));
       if (res.success) {
         toast.success("Menu makanan berhasil diperbarui!");
         setTimeout(() => {
@@ -874,11 +900,10 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                   <div className="space-y-1">
                     <label className="text-[9px] text-text-400 uppercase font-bold">Jumlah (Qty)</label>
                     <input
-                      type="number"
+                      type="text"
                       required
-                      min={1}
                       value={newItemQty}
-                      onChange={(e) => handleNewItemQtyChange(Number(e.target.value))}
+                      onChange={(e) => handleNewItemQtyChange(e.target.value)}
                       className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                     />
                   </div>
@@ -911,21 +936,19 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                     </label>
                     {addPriceMode === "unit" ? (
                       <input
-                        type="number"
-                        min={0}
-                        value={newItemPrice}
-                        onChange={(e) => handleNewItemPriceChange(e.target.value)}
+                        type="text"
+                        value={formatRupiah(newItemPrice)}
+                        onChange={(e) => handleNewItemPriceChange(parseRupiah(e.target.value))}
                         className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
-                        placeholder="Satuan"
+                        placeholder="Rp Satuan"
                       />
                     ) : (
                       <input
-                        type="number"
-                        min={0}
-                        value={newItemTotal}
-                        onChange={(e) => handleNewItemTotalChange(e.target.value)}
+                        type="text"
+                        value={formatRupiah(newItemTotal)}
+                        onChange={(e) => handleNewItemTotalChange(parseRupiah(e.target.value))}
                         className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
-                        placeholder="Total"
+                        placeholder="Rp Total"
                       />
                     )}
                   </div>
@@ -967,11 +990,10 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                           <div className="space-y-1">
                             <label className="text-[9px] text-text-400 uppercase font-bold">Jumlah (Qty)</label>
                             <input
-                              type="number"
+                              type="text"
                               required
-                              min={1}
                               value={editItemQty}
-                              onChange={(e) => handleEditItemQtyChange(Number(e.target.value))}
+                              onChange={(e) => handleEditItemQtyChange(e.target.value)}
                               className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
                               placeholder="Qty"
                             />
@@ -1005,21 +1027,19 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                             </label>
                             {editPriceMode === "unit" ? (
                               <input
-                                type="number"
-                                min={0}
-                                value={editItemPrice}
-                                onChange={(e) => handleEditItemPriceChange(e.target.value)}
+                                type="text"
+                                value={formatRupiah(editItemPrice)}
+                                onChange={(e) => handleEditItemPriceChange(parseRupiah(e.target.value))}
                                 className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
-                                placeholder="Satuan"
+                                placeholder="Rp Satuan"
                               />
                             ) : (
                               <input
-                                type="number"
-                                min={0}
-                                value={editItemTotal}
-                                onChange={(e) => handleEditItemTotalChange(e.target.value)}
+                                type="text"
+                                value={formatRupiah(editItemTotal)}
+                                onChange={(e) => handleEditItemTotalChange(parseRupiah(e.target.value))}
                                 className="w-full px-3 py-1.5 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none"
-                                placeholder="Total"
+                                placeholder="Rp Total"
                               />
                             )}
                           </div>
