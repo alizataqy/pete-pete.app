@@ -1084,9 +1084,17 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                                     {isComplete ? `Udah dibagi: ${totalAllocatedCount} porsi` : "Belum dibagi"}
                                   </span>
                                 </h4>
-                                <p className="text-[10px] text-text-500">
-                                  {item.quantity}x • Rp {(Number(item.totalPrice) / item.quantity).toLocaleString("id-ID")}
-                                </p>
+                                <div className="flex items-center gap-3">
+
+                                  <p className="text-[10px] text-text-500">
+                                    {item.quantity}x • Rp {(Number(item.totalPrice) / item.quantity).toLocaleString("id-ID")}
+                                  </p>
+                                  {itemAllocations.length > 0 && (
+                                    <p className="text-[9px] text-text-400 italic">
+                                      Dibagi ke {itemAllocations.length} orang ({totalAllocatedCount} porsi)
+                                    </p>
+                                  )}
+                                </div>
                               </div>
                               <div className="flex flex-col items-end gap-1">
                                 <span className="text-xs font-bold text-text-400">
@@ -1124,7 +1132,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                             </div>
 
                             {/* Avatar Pemilihan Anggota */}
-                            <div className="flex flex-wrap gap-4 pt-1">
+                            <div className="flex flex-wrap gap-4">
                               {members.map((member) => {
                                 const alloc = allocations.find(
                                   (a) => a.itemId === item.id && a.memberId === member.id
@@ -1175,11 +1183,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                               })}
                             </div>
 
-                            {itemAllocations.length > 0 && (
-                              <p className="text-[9px] text-text-400 italic">
-                                Dibagi ke {itemAllocations.length} orang ({totalAllocatedCount} porsi)
-                              </p>
-                            )}
+
                           </>
                         );
                       })()}
