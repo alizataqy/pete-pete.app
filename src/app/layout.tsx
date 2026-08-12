@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://ceban-pertama.vercel.app"),
   title: "PETE-PETE — Akhir dari Drama Patungan",
   description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
+  robots: {
+    index: true,
+    follow: true,
+  },
   keywords: ["patungan", "split bill", "bagi tagihan", "ocr scan struk", "pete pete", "aplikasi patungan", "hitung patungan online", "scan struk patungan", "ceban pertama"],
   alternates: {
     canonical: "/",
