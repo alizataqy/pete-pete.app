@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
@@ -9,7 +8,6 @@ import { addUserBank } from "@/app/actions/profile";
 import { ArrowLeft, Plus } from "@untitledui/icons";
 import { toast } from "sonner";
 
-// Gambar SVG / Logo Bank Mandiri, BCA, BRI, BNI, GoPay, OVO, Dana, QRIS
 const BANK_TEMPLATES = [
   { name: "BCA", logo: "/bank-logos/bca.svg", placeholder: "Contoh: 1234567890" },
   { name: "Bank Mandiri", logo: "/bank-logos/mandiri.svg", placeholder: "Contoh: 1370012345678" },
@@ -18,7 +16,6 @@ const BANK_TEMPLATES = [
   { name: "GoPay", logo: "/bank-logos/gopay.svg", placeholder: "Contoh: 081234567890" },
   { name: "OVO", logo: "/bank-logos/ovo.svg", placeholder: "Contoh: 081234567890" },
   { name: "Dana", logo: "/bank-logos/dana.svg", placeholder: "Contoh: 081234567890" },
-  { name: "QRIS", logo: "/bank-logos/qris.svg", placeholder: "Paste URL gambar QRIS lo di sini" },
 ];
 
 interface AddBankFormProps {
@@ -86,7 +83,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
         </Button>
         <div>
           <h1 className="text-sm font-extrabold text-text-50">Tambah Rekening Baru</h1>
-          <p className="text-[10px] text-text-300 mt-0.5">Daftarkan bank, e-wallet, atau QRIS lo</p>
+          <p className="text-[10px] text-text-300 mt-0.5">Daftarkan bank atau e-wallet lo</p>
         </div>
       </header>
 

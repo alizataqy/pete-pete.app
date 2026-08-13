@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createBillSession, createManualBillSession } from "@/app/actions/session";
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/base/buttons/button";
+import { Badge } from "@/components/base/badges/badges";
 import { Edit02, Camera01, Plus, ArrowLeft, AlertCircle, UploadCloud01, Check, CreditCard01 } from "@untitledui/icons";
 import { getUserBanks, UserBankData } from "@/app/actions/profile";
 import { Avatar } from "@/components/base/avatar/avatar";
@@ -38,7 +39,6 @@ const BANK_TEMPLATES = [
   { name: "GoPay", logo: "/bank-logos/gopay.svg", placeholder: "Contoh: 081234567890" },
   { name: "OVO", logo: "/bank-logos/ovo.svg", placeholder: "Contoh: 081234567890" },
   { name: "Dana", logo: "/bank-logos/dana.svg", placeholder: "Contoh: 081234567890" },
-  { name: "QRIS", logo: "/bank-logos/qris.svg", placeholder: "Paste URL gambar QRIS lo di sini" },
 ];
 
 const formatRupiah = (value: number | string): string => {
@@ -787,9 +787,9 @@ export default function NewSessionPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">Menu yang ketauan</h2>
-                  <span className="text-[10px] font-medium bg-secondary-800 text-text-100 px-2 py-0.5 rounded-full border border-text-700">
+                  <Badge color="gray" size="sm" type="pill-color" className="inline-flex font-semibold">
                     {scanResult.items.length} Menu
-                  </span>
+                  </Badge>
                 </div>
 
                 <div className="space-y-2">
@@ -1072,9 +1072,9 @@ export default function NewSessionPage() {
                                 Qty: {item.quantity}x • Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/org
                               </p>
                             </div>
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isComplete ? "bg-emerald-950 border border-emerald-800 text-emerald-300" : "bg-amber-950 border border-amber-800 text-amber-300"}`}>
+                            <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold">
                               {isComplete ? `Udah dibagi: ${allocatedCount} porsi` : "Belum dibagi"}
-                            </span>
+                            </Badge>
                           </div>
 
                           <div className="flex flex-wrap gap-4 pt-1">

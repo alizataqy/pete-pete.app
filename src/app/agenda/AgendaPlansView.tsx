@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createVacationPlan } from "@/app/actions/vacation";
 import { Button } from "@/components/base/buttons/button";
+import { Badge } from "@/components/base/badges/badges";
 import { Plus, ArrowLeft, CreditCard01, Users01, Compass } from "@untitledui/icons";
 import { ModalOverlay, Modal, Dialog } from "@/components/application/modals/modal";
 import { Heading } from "react-aria-components";
@@ -197,9 +198,9 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                       {plan.description || "Gak ada deskripsi plan."}
                     </p>
                   </div>
-                  <span className="text-[9px] font-bold bg-primary-950 text-primary-400 border border-primary-800/40 px-2 py-0.5 rounded-full">
+                  <Badge color="brand" size="sm" type="pill-color" className="font-bold">
                     {plan.membersCount} Sohib
-                  </span>
+                  </Badge>
                 </div>
 
                 <div className="pt-2 border-t border-secondary-900/60 flex items-center justify-between text-[10px] text-text-400">
@@ -290,14 +291,17 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     </div>
 
                     <div className="flex flex-wrap gap-1.5 max-h-[80px] overflow-y-auto pr-1">
-                      <span className="text-[9px] font-bold bg-primary-950/60 text-primary-400 border border-primary-900 px-2 py-0.5 rounded-full flex items-center gap-1.5">
+                      <Badge color="brand" size="sm" type="pill-color" className="flex items-center gap-1.5 font-bold">
                         <Avatar alt={userName} size="xs" />
                         {userName} (Gua)
-                      </span>
+                      </Badge>
                       {members.map((m) => (
-                        <span
+                        <Badge
                           key={m}
-                          className="text-[9px] font-bold bg-text-950 text-text-400 border border-text-700 px-2 py-0.5 rounded-full flex items-center gap-1.5"
+                          color="gray"
+                          size="sm"
+                          type="pill-color"
+                          className="flex items-center gap-1.5 font-bold"
                         >
                           <Avatar alt={m} size="xs" />
                           {m}
@@ -308,7 +312,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                           >
                             &times;
                           </button>
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   </div>

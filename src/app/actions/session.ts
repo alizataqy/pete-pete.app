@@ -555,3 +555,26 @@ export async function createManualBillSession(data: CreateManualSessionData) {
   }
 }
 
+// Action untuk mengubah status pembayaran member (isPaid)
+export async function toggleMemberPaidStatus(memberId: string, isPaid: boolean, sessionId: string) {
+  try {
+    const member = await prisma.billMember.update({
+      where: { id: memberId },
+      data: { isPaid },
+    });
+    revalidatePath(`/pete-pete/${sessionId}/split`);
+    revalidatePath("/tongkrongan");
+    return {
+      success: true,
+      member: {
+        id: member.id,
+        isPaid: member.isPaid,
+      },
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Gagal mengubah status pembayaran";
+    return { success: false, error: message };
+  }
+}
+
+

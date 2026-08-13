@@ -11,6 +11,7 @@ import {
   renameVacationMember,
 } from "@/app/actions/vacation";
 import { Button } from "@/components/base/buttons/button";
+import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
 import {
   Plus,
@@ -746,13 +747,16 @@ export default function VacationPlanDetailView({
                     </div>
                     <div className="flex flex-wrap gap-1">
                       {exp.shares.map((sh) => (
-                        <span
+                        <Badge
                           key={sh.memberId}
-                          className="text-[8px] bg-secondary-950 text-text-400 px-1.5 py-0.5 rounded-md border border-secondary-800/40 flex items-center gap-1"
+                          color="gray"
+                          size="sm"
+                          type="color"
+                          className="flex items-center gap-1 text-[8px] font-semibold"
                         >
                           <Avatar alt={sh.memberName} size="xs" className="h-4 w-4 min-w-[16px]" />
                           {sh.memberName} ({formatRupiah(sh.amount)})
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   </div>

@@ -10,9 +10,11 @@ import {
   addSessionItem,
   updateSessionItem,
   deleteSessionItem,
-  completeBillSession
+  completeBillSession,
+  toggleMemberPaidStatus
 } from "@/app/actions/session";
 import { Button } from "@/components/base/buttons/button";
+import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus } from "@untitledui/icons";
 import { redirect, useRouter } from "next/navigation";
@@ -46,6 +48,7 @@ interface Member {
   name: string;
   shareAmount: number;
   userId?: string | null;
+  isPaid?: boolean;
 }
 
 interface Item {
@@ -325,6 +328,24 @@ export default function SplitBoard({
       toast.error("Gagal menghapus anggota");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTogglePaid = async (memberId: string, currentStatus: boolean) => {
+    try {
+      const newStatus = !currentStatus;
+      const res = await toggleMemberPaidStatus(memberId, newStatus, session.id);
+      if (res.success) {
+        setMembers((prev) =>
+          prev.map((m) => (m.id === memberId ? { ...m, isPaid: newStatus } : m))
+        );
+        const memberName = members.find((m) => m.id === memberId)?.name || "Sohib";
+        toast.success(newStatus ? `${memberName} udah bayar, mantap!` : `Tandai ${memberName} belum bayar!`);
+      } else {
+        toast.error(res.error || "Gagal mengubah status pembayaran");
+      }
+    } catch {
+      toast.error("Terjadi kesalahan.");
     }
   };
 
@@ -805,6 +826,19 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                       {editingMemberId !== member.id && (
                         <div className="flex items-center gap-1.5">
                           <Button
+                            onPress={() => handleTogglePaid(member.id, !!member.isPaid)}
+                            color={member.isPaid ? "primary" : "secondary"}
+                            size="xs"
+                            iconLeading={member.isPaid ? Check : Circle}
+                            className={`text-[10px] font-bold tracking-wide transition-all duration-300 ${
+                              member.isPaid 
+                                ? "shadow-sm shadow-emerald-950/20" 
+                                : "opacity-80 hover:opacity-100"
+                            }`}
+                          >
+                            {member.isPaid ? "Udah Bayar" : "Belum Bayar"}
+                          </Button>
+                          <Button
                             onPress={() => handleCopySummary(member)}
                             color="secondary"
                             size="xs"
@@ -1080,9 +1114,9 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                               <div className="space-y-0.5">
                                 <h4 className="font-bold text-text text-xs flex items-center gap-1.5">
                                   <span>{item.name}</span>
-                                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${isComplete ? "bg-emerald-950 border border-emerald-800 text-emerald-300" : "bg-amber-950 border border-amber-800 text-amber-300"}`}>
+                                  <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold">
                                     {isComplete ? `Udah dibagi: ${totalAllocatedCount} porsi` : "Belum dibagi"}
-                                  </span>
+                                  </Badge>
                                 </h4>
                                 <div className="flex items-center gap-3">
 

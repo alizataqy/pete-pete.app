@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import LogoutButton from "@/components/LogoutButton";
 import { Button } from "@/components/base/buttons/button";
+import { Badge } from "@/components/base/badges/badges";
 import { User01, Plus, Compass, Coins01 } from "@untitledui/icons";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";
@@ -111,12 +112,12 @@ export default async function TongkronganPage() {
               <p className="text-[9px] text-text-400 truncate">Bikin plan liburan, BBQ, atau agenda kumpul bareng sohib biar ga pusing pete-peteannya</p>
             </div>
           </div>
-          <span className="text-[9px] font-bold bg-primary-950 text-primary-400 border border-primary-900/60 px-2.5 py-1 rounded-full shrink-0">
+          <Badge color="brand" size="sm" type="pill-color" className="shrink-0 font-bold">
             Coba
-          </span>
-          <span className="absolute -top-2.5 -right-3.5 text-[8px] font-extrabold bg-danger-300 text-white px-2 py-0.5 rounded-full border border-danger shadow-lg shadow-danger-500/50 uppercase tracking-wider rotate-30">
+          </Badge>
+          <Badge color="danger" size="sm" type="pill-color" className="absolute -top-2.5 -right-3.5 text-[8px] font-extrabold bg-danger text-white ring-0 shadow-lg shadow-danger-500/50 uppercase tracking-wider rotate-30">
             New
-          </span>
+          </Badge>
         </Link>
 
         {/* Daftar Sesi Split Bill */}
@@ -158,20 +159,18 @@ export default async function TongkronganPage() {
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
                         {session.merchantName && (
-                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-text-950 text-text-300 border border-text-700">
+                          <Badge color="gray" size="sm" type="color" className="inline-flex font-semibold">
                             {session.inviteCode}
-                          </span>
+                          </Badge>
                         )}
-                        <span
-                          className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${session.status === "COMPLETED"
-                            ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
-                            : session.status === "ACTIVE"
-                              ? "bg-primary-950 text-primary-300 border border-primary-800"
-                              : "bg-text-950 text-primary-400 border border-text-700"
-                            }`}
+                        <Badge
+                          color={session.status === "COMPLETED" ? "success" : session.status === "ACTIVE" ? "brand" : "gray"}
+                          size="sm"
+                          type="color"
+                          className="inline-flex font-semibold"
                         >
                           {session.status === "COMPLETED" ? "Kelar" : session.status === "ACTIVE" ? "Jalan" : "Draft"}
-                        </span>
+                        </Badge>
                       </div>
                     </div>
 
@@ -182,15 +181,19 @@ export default async function TongkronganPage() {
                           Rp {Number(session.totalAmount).toLocaleString("id-ID")}
                         </span>
                       </div>
-                      <div className="text-text-400 text-right">
-                        <span className="font-semibold text-text-200">
+                      <div className="text-[10px] text-text-400 text-right">
+                        <Badge color="indigo" size="sm" type="color" className="inline-flex font-semibold">
                           {session.members.length} Sohib
-                        </span>
-                        {session.members.filter((m) => m.isPaid).length > 0 && (
-                          <span className="text-emerald-400 font-medium ml-1">
-                            ({session.members.filter((m) => m.isPaid).length} bayar)
-                          </span>
-                        )}
+                        </Badge>
+                        <span className="text-text-500 mx-1">•</span>
+                        <Badge color="success" size="sm" type="color" className="inline-flex font-semibold">
+                          {session.members.filter((m) => m.isPaid).length} Udeh
+                        </Badge>
+                        <span className="text-text-500 mx-1">/</span>
+
+                        <Badge color="error" size="sm" type="color" className="inline-flex font-semibold">
+                          {session.members.filter((m) => !m.isPaid).length} Belom
+                        </Badge>
                       </div>
                     </div>
 

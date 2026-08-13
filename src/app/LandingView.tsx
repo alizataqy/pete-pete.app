@@ -62,7 +62,7 @@ export default function LandingView({ user }: UserSessionProp) {
       badge: "Sekali Tap",
       detail: [
         "Rincian tagihan rapi & transparan",
-        "Integrasi nomor rekening & QRIS",
+        "Integrasi nomor rekening & E-Wallet",
         "Gak ada lagi drama lupa bayar"
       ]
     }
