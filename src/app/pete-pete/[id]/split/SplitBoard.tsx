@@ -22,6 +22,8 @@ import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 import { Dot } from "@/components/foundations/dot-icon";
 import DeleteConfirmation from "@/components/application/modals/DeleteConfirmation";
+import ConfirmationModal from "@/components/application/modals/ConfirmationModal";
+
 
 const formatRupiah = (value: number | string): string => {
   if (value === undefined || value === null || value === "") return "";
@@ -99,6 +101,7 @@ export default function SplitBoard({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
   const [showAccount, setShowAccount] = useState(false);
+  const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [deleteConfig, setDeleteConfig] = useState<{
     isOpen: boolean;
     title: string;
@@ -106,6 +109,7 @@ export default function SplitBoard({
     confirmText?: string;
     onConfirm: () => void;
   } | null>(null);
+
 
   // Hitung patungan member secara real-time di client
   const getMemberShareAmount = (memberId: string) => {
@@ -407,8 +411,12 @@ export default function SplitBoard({
     });
   };
 
-  const handleCompleteSession = async () => {
-    if (!confirm("Yakin mau kelarin Bill PETE-PETE ini? Kalo udah selesai gak bisa diotak-atik lagi ya!")) return;
+  const handleCompleteSession = () => {
+    setShowCompleteConfirm(true);
+  };
+
+  const handleConfirmCompleteSession = async () => {
+    setShowCompleteConfirm(false);
     setLoading(true);
     try {
       const payload = allocations.map((a) => {
@@ -444,6 +452,7 @@ export default function SplitBoard({
       setLoading(false);
     }
   };
+
 
   // Tambah Item Manual
   const handleAddItem = async (e: React.FormEvent) => {
@@ -1263,6 +1272,21 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
           isLoading={loading}
         />
       )}
+      {showCompleteConfirm && (
+        <ConfirmationModal
+          isOpen={showCompleteConfirm}
+          onClose={() => setShowCompleteConfirm(false)}
+          onConfirm={handleConfirmCompleteSession}
+          title="Kelarin Bill Pete-Pete?"
+          description="Yakin mau kelarin Bill PETE-PETE ini? Kalo udah selesai gak bisa diotak-atik lagi ya, Bos!"
+          confirmText="Kelarin Aja"
+          cancelText="Gak Jadi"
+          color="warning"
+          icon={AlertTriangle}
+          isLoading={loading}
+        />
+      )}
     </div>
+
   );
 }
