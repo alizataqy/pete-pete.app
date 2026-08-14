@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
-import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus } from "@untitledui/icons";
+import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus, X } from "@untitledui/icons";
 import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
@@ -836,16 +836,16 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                         <div className="flex items-center gap-1.5">
                           <Button
                             onPress={() => handleTogglePaid(member.id, !!member.isPaid)}
-                            color={member.isPaid ? "primary" : "secondary"}
+                            color={!member.isPaid ? "primary" : "secondary"}
                             size="xs"
-                            iconLeading={member.isPaid ? Check : Circle}
+                            iconLeading={!member.isPaid ? Check : X}
                             className={`text-[10px] font-bold tracking-wide transition-all duration-300 ${
-                              member.isPaid 
+                              !member.isPaid 
                                 ? "shadow-sm shadow-emerald-950/20" 
                                 : "opacity-80 hover:opacity-100"
                             }`}
                           >
-                            {member.isPaid ? "Udah Bayar" : "Belum Bayar"}
+                            {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
                           </Button>
                           <Button
                             onPress={() => handleCopySummary(member)}
