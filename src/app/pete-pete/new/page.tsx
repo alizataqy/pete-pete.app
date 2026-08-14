@@ -11,6 +11,7 @@ import { getUserBanks, UserBankData } from "@/app/actions/profile";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
+import LoadingScreen from "@/components/application/LoadingScreen";
 
 interface ScanItem {
   name: string;
@@ -437,12 +438,7 @@ export default function NewSessionPage() {
 
   if (isPending) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-text-300 text-sm">Sabar Bos</p>
-        </div>
-      </div>
+      <LoadingScreen title="Sabar ya, ngab!" description="Lagi memproses data lu" />
     );
   }
 
