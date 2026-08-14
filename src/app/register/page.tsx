@@ -49,7 +49,7 @@ export default function RegisterPage() {
       <div className="w-full z-10 space-y-6 max-w-sm mx-auto">
         <div className="text-center space-y-1.5">
           <Link href="/" className="text-2xl font-extrabold text-primary-400">
-            PETE-PETE
+            Ceban Pertama
           </Link>
           <h2 className="text-lg font-bold text-text-50">Gabung yuk!</h2>
           <p className="text-xs text-text-300">Daftar dulu baru bisa split bill</p>

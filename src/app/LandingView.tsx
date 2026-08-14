@@ -74,7 +74,7 @@ export default function LandingView({ user }: UserSessionProp) {
       {/* Desktop Header Navigation */}
       <header className="w-full max-w-5xl px-6 py-6 flex items-center justify-between z-30">
         <div className="flex items-center gap-3 group cursor-pointer">
-          <span className="font-black text-text text-lg tracking-wider">PETE-PETE</span>
+          <span className="font-black text-text text-lg tracking-wider">Ceban Pertama</span>
         </div>
         <div className="flex items-center gap-4">
           {user ? (
@@ -101,7 +101,7 @@ export default function LandingView({ user }: UserSessionProp) {
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary-500/20 bg-primary-950/60 backdrop-blur-md text-primary-400 text-xs font-semibold mb-10 shadow-inner">
           <Camera01 className="w-3.5 h-3.5 text-primary-400 animate-pulse" />
-          <span className="tracking-wide">PETE-PETE &mdash; Akhir dari Drama Patungan</span>
+          <span className="tracking-wide">Ceban Pertama &mdash; Akhir dari Drama Patungan</span>
         </div>
 
         {/* Desktop Container Grid */}
@@ -307,7 +307,7 @@ export default function LandingView({ user }: UserSessionProp) {
               <h2 className="text-xs font-black text-primary-400 uppercase tracking-widest flex items-center gap-2">
                 <Zap className="w-4 h-4 text-primary-400" /> Alur Canggih
               </h2>
-              <p className="text-xl md:text-2xl font-extrabold text-text">Gimana PETE-PETE Ngebantu Lo?</p>
+              <p className="text-xl md:text-2xl font-extrabold text-text">Gimana Ceban Pertama Ngebantu Lo?</p>
             </div>
 
             {/* Tabs selector */}
@@ -434,7 +434,7 @@ export default function LandingView({ user }: UserSessionProp) {
                   </div>
 
                   <div className="bg-[#202c33] p-2.5 rounded-xl text-[9px] text-white space-y-1.5 border-l-4 border-primary max-w-[90%]">
-                    <p className="font-extrabold text-primary-200">PETE-PETE: Ramen Geng 🍜</p>
+                    <p className="font-extrabold text-primary-200">Ceban Pertama: Ramen Geng 🍜</p>
                     <p>Total tagihan lo: <span className="font-bold text-white">Rp 73.000</span></p>
                     <p className="text-[8px] text-zinc-400">Menu: 1x Spicy Miso Ramen + 1x Gyoza</p>
                     <div className="mt-2 text-center bg-primary-600 py-1.5 rounded font-extrabold text-white text-[8px]">
@@ -475,7 +475,7 @@ export default function LandingView({ user }: UserSessionProp) {
       {/* Footer */}
       <footer className="mt-16 text-center px-6 w-full max-w-5xl border-t border-text-900/60 pt-8 z-10">
         <p className="text-xs text-text-400 font-medium">
-          PETE-PETE &mdash; Dibuat khusus biar patungan geng lo beres instan.
+          Ceban Pertama &mdash; Dibuat khusus biar patungan geng lo beres instan.
         </p>
       </footer>
     </div>
