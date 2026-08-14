@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ceban-pertama.vercel.app"),
-  title: "PETE-PETE — Akhir dari Drama Patungan",
+  title: "Ceban Pertama — Akhir dari Drama Patungan",
   description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
   robots: {
     index: true,
@@ -19,16 +19,16 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "PETE-PETE — Akhir dari Drama Patungan",
+    title: "Ceban Pertama — Akhir dari Drama Patungan",
     description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
     url: "https://ceban-pertama.vercel.app",
-    siteName: "PETE-PETE",
+    siteName: "Ceban Pertama",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "PETE-PETE Preview Image",
+        alt: "Ceban Pertama Preview Image",
       },
     ],
     locale: "id_ID",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PETE-PETE — Akhir dari Drama Patungan",
+    title: "Ceban Pertama — Akhir dari Drama Patungan",
     description: "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
     images: ["/og-image.png"],
   },
@@ -53,7 +53,7 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "PETE-PETE",
+    "name": "Ceban Pertama",
     "url": "https://ceban-pertama.vercel.app",
     "description": "Bagi tagihan makan dan belanja bersama jadi lebih gampang dengan AI OCR scan struk dan tagih langsung ke WhatsApp.",
     "applicationCategory": "UtilityApplication",
