@@ -213,6 +213,7 @@ model VacationPlan {
   createdBy   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   members     VacationMember[]
   expenses    VacationExpense[]
+  date        DateTime?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 }

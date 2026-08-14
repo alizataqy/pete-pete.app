@@ -29,6 +29,7 @@ export default async function AgendaPage() {
         membersCount: p.members.length,
         expensesCount: p.expenses.length,
         totalExpenses: p.expenses.reduce((sum, e) => sum + Number(e.amount), 0),
+        date: p.date ? p.date.toISOString() : undefined,
         createdAt: p.createdAt.toISOString(),
       }))}
     />

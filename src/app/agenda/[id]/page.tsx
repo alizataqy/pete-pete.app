@@ -35,6 +35,7 @@ export default async function AgendaDetailPage({ params }: PageProps) {
         title: plan.title,
         description: plan.description || "",
         budget: Number(plan.budget),
+        date: plan.date ? plan.date.toISOString() : undefined,
         createdAt: plan.createdAt.toISOString(),
       }}
       initialMembers={plan.members.map((m) => ({

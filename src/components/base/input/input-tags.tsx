@@ -84,30 +84,27 @@ export const InputTags = ({
     hideRequiredIndicator,
 }: InputTagsProps) => {
     const isControlled = value !== undefined;
-    const idCounter = useRef(0);
-    const nextId = () => idCounter.current++;
+    const [idCounter, setIdCounter] = useState(() => (defaultValue ?? []).length);
 
     const inputRef = useRef<HTMLInputElement>(null);
     const tagGroupRef = useRef<HTMLDivElement>(null);
     const [inputValue, setInputValue] = useState("");
 
-    const [internalEntries, setInternalEntries] = useState<TagEntry[]>(() => (defaultValue ?? []).map((label) => ({ id: nextId(), label })));
+    const [internalEntries, setInternalEntries] = useState<TagEntry[]>(() => 
+        (defaultValue ?? []).map((label, index) => ({ id: index, label }))
+    );
 
     // For controlled mode, maintain stable IDs across renders so React keys don't shift
-    const prevControlledValue = useRef<string[]>([]);
-    const controlledEntries = useRef<TagEntry[]>([]);
+    const [prevControlledValue, setPrevControlledValue] = useState<string[] | undefined>(undefined);
+    const [controlledEntries, setControlledEntries] = useState<TagEntry[]>([]);
 
-    const entries = (() => {
-        if (!isControlled) return internalEntries;
-
-        const prev = prevControlledValue.current;
-        if (prev === value) return controlledEntries.current;
-
-        // Reconcile: reuse existing IDs for tags that haven't changed position,
-        // assign new IDs only for genuinely new entries
-        const oldEntries = controlledEntries.current;
+    if (isControlled && value !== prevControlledValue) {
+        setPrevControlledValue(value);
+        
+        const oldEntries = controlledEntries;
         const newEntries: TagEntry[] = [];
         const usedOldIndices = new Set<number>();
+        let currentId = idCounter;
 
         for (const label of value) {
             // Try to find a matching old entry (same label, not yet used)
@@ -116,15 +113,14 @@ export const InputTags = ({
                 usedOldIndices.add(oldIndex);
                 newEntries.push(oldEntries[oldIndex]);
             } else {
-                newEntries.push({ id: nextId(), label });
+                newEntries.push({ id: currentId++, label });
             }
         }
+        setControlledEntries(newEntries);
+        setIdCounter(currentId);
+    }
 
-        prevControlledValue.current = value;
-        controlledEntries.current = newEntries;
-        return newEntries;
-    })();
-
+    const entries = isControlled ? controlledEntries : internalEntries;
     const tags = entries.map((e) => e.label);
 
     const addTag = useCallback(
@@ -135,17 +131,18 @@ export const InputTags = ({
             if (maxTags && tags.length >= maxTags) return false;
             if (validate && !validate(trimmed)) return false;
 
-            const newEntry: TagEntry = { id: nextId(), label: trimmed };
+            const newEntry: TagEntry = { id: idCounter, label: trimmed };
             const newEntries = [...entries, newEntry];
 
             if (!isControlled) {
                 setInternalEntries(newEntries);
             }
+            setIdCounter((prev) => prev + 1);
             onChange?.(newEntries.map((e) => e.label));
             onTagAdded?.(trimmed);
             return true;
         },
-        [tags, entries, isControlled, allowDuplicates, maxTags, validate, onChange, onTagAdded],
+        [tags, entries, isControlled, allowDuplicates, maxTags, validate, onChange, onTagAdded, idCounter],
     );
 
     const removeTag = useCallback(

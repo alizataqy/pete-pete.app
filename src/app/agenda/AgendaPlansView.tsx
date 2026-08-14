@@ -12,6 +12,8 @@ import { Heading } from "react-aria-components";
 import { toast } from "sonner";
 import { Input } from "@/components/base/input/input";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { DatePicker } from "@/components/application/date-picker/date-picker";
+import type { DateValue } from "react-aria-components";
 
 interface PlanItem {
   id: string;
@@ -21,6 +23,7 @@ interface PlanItem {
   membersCount: number;
   expensesCount: number;
   totalExpenses: number;
+  date?: string;
   createdAt: string;
 }
 
@@ -47,6 +50,19 @@ const parseRupiah = (formatted: string): string => {
   return formatted.replace(/[^0-9]/g, "");
 };
 
+const formatDateString = (dateStr?: string) => {
+  if (!dateStr) return "";
+  const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const parts = dateStr.split("T")[0].split("-");
+  if (parts.length === 3) {
+    const y = parts[0];
+    const m = months[parseInt(parts[1], 10) - 1];
+    const d = parseInt(parts[2], 10);
+    return `${d} ${m} ${y}`;
+  }
+  return dateStr;
+};
+
 export default function AgendaPlansView({ userId, userName, initialPlans }: AgendaPlansViewProps) {
   const router = useRouter();
   const [plans, setPlans] = useState<PlanItem[]>(initialPlans);
@@ -56,6 +72,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
   // Form states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [dateValue, setDateValue] = useState<DateValue | null>(null);
   const [members, setMembers] = useState<string[]>([]);
   const [newMemberName, setNewMemberName] = useState("");
 
@@ -99,6 +116,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
         description,
         budget: 0,
         members,
+        date: dateValue ? dateValue.toString() : undefined,
       });
 
       if (res.success && res.planId) {
@@ -107,6 +125,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
         // Clear form
         setTitle("");
         setDescription("");
+        setDateValue(null);
         setMembers([]);
         router.push(`/agenda/${res.planId}`);
         router.refresh();
@@ -197,6 +216,11 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     <p className="text-[10px] text-text-400 line-clamp-1 mt-0.5">
                       {plan.description || "Gak ada deskripsi plan."}
                     </p>
+                    {plan.date && (
+                      <p className="text-[9px] text-primary-400 font-bold mt-1 flex items-center gap-1">
+                        📅 {formatDateString(plan.date)}
+                      </p>
+                    )}
                   </div>
                   <Badge color="brand" size="sm" type="pill-color" className="font-bold">
                     {plan.membersCount} Sohib
@@ -250,6 +274,14 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     onChange={(val) => setTitle(val)}
                     placeholder="Contoh: Bali Getaway, Tahun Baru Grill..."
                   />
+
+                  <div className="space-y-1 flex flex-col">
+                    <label className="text-[9px] font-bold text-text-400 uppercase">Tanggal Acara (Opsional)</label>
+                    <DatePicker
+                      value={dateValue}
+                      onChange={setDateValue}
+                    />
+                  </div>
 
                   <div className="space-y-1">
                     <label className="text-[9px] font-bold text-text-400 uppercase">Deskripsi (Opsional)</label>

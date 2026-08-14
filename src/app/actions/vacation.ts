@@ -7,6 +7,7 @@ interface CreateVacationPlanData {
   description?: string;
   budget: number;
   members: string[];
+  date?: string;
 }
 
 export async function getVacationPlans(userId: string) {
@@ -46,6 +47,7 @@ export async function createVacationPlan(userId: string, data: CreateVacationPla
         description: data.description,
         budget: data.budget,
         userId,
+        date: data.date ? new Date(data.date) : null,
         members: {
           create: [
             { name: creatorName, userId },

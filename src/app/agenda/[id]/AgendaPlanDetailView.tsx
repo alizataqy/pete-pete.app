@@ -65,6 +65,7 @@ interface VacationPlanDetailViewProps {
     title: string;
     description: string;
     budget: number;
+    date?: string;
     createdAt: string;
   };
   initialMembers: Member[];
@@ -86,6 +87,19 @@ const formatRupiah = (value: number | string): string => {
 const parseRupiah = (formatted: string): string => {
   if (!formatted) return "";
   return formatted.replace(/[^0-9]/g, "");
+};
+
+const formatDateString = (dateStr?: string) => {
+  if (!dateStr) return "";
+  const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const parts = dateStr.split("T")[0].split("-");
+  if (parts.length === 3) {
+    const y = parts[0];
+    const m = months[parseInt(parts[1], 10) - 1];
+    const d = parseInt(parts[2], 10);
+    return `${d} ${m} ${y}`;
+  }
+  return dateStr;
 };
 
 export default function VacationPlanDetailView({
@@ -523,8 +537,14 @@ export default function VacationPlanDetailView({
           </Button>
           <div>
             <h1 className="text-sm font-extrabold text-text line-clamp-1">{plan.title}</h1>
-            <p className="text-[9px] text-text-300 flex items-center gap-1.5">
+            <p className="text-[9px] text-text-300 flex items-center gap-1.5 flex-wrap">
               <span>{plan.description || "Pete-Pete Seru & Kumpul Bareng"}</span>
+              {plan.date && (
+                <>
+                  <span className="text-text-500">•</span>
+                  <span className="text-primary-400 font-bold">📅 {formatDateString(plan.date)}</span>
+                </>
+              )}
             </p>
           </div>
         </div>
