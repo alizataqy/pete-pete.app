@@ -434,25 +434,34 @@ export async function joinSessionByCode(inviteCode: string, userId: string, user
   }
 }
 
-// Action untuk menyelesaikan sesi patungan
-export async function completeBillSession(sessionId: string) {
+// Action untuk update status sesi patungan (CANCELLED, DRAFT, COMPLETED)
+export async function updateBillSessionStatus(
+  sessionId: string,
+  status: "CANCELLED" | "COMPLETED" | "DRAFT"
+) {
   try {
     await prisma.billSession.update({
       where: { id: sessionId },
       data: {
-        status: "COMPLETED",
+        status,
       },
     });
 
     revalidatePath(`/pete-pete/${sessionId}/split`);
+    revalidatePath(`/pete-pete/${sessionId}/items`);
     revalidatePath("/tongkrongan");
 
     return { success: true };
   } catch (error) {
-    console.error("Gagal menyelesaikan sesi:", error);
-    const message = error instanceof Error ? error.message : "Gagal menyelesaikan sesi PETE-PETE";
+    console.error("Gagal update status sesi:", error);
+    const message = error instanceof Error ? error.message : "Gagal mengubah status bill";
     return { success: false, error: message };
   }
+}
+
+// Action untuk menyelesaikan sesi patungan
+export async function completeBillSession(sessionId: string) {
+  return updateBillSessionStatus(sessionId, "COMPLETED");
 }
 
 export interface CreateManualSessionData {

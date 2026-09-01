@@ -87,7 +87,7 @@ export default async function TongkronganPage() {
           <div className="p-3 rounded-xl border border-secondary-800 bg-text-900 text-center">
             <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">On Going</p>
             <p className="text-lg font-bold text-primary-300 mt-1">
-              {mySessions.filter((s) => s.status === "DRAFT" || s.status === "ACTIVE").length}
+              {mySessions.filter((s) => s.status === "DRAFT").length}
             </p>
           </div>
           <div className="p-3 rounded-xl border border-secondary-800 bg-text-900 text-center">
@@ -164,12 +164,22 @@ export default async function TongkronganPage() {
                           </Badge>
                         )}
                         <Badge
-                          color={session.status === "COMPLETED" ? "success" : session.status === "ACTIVE" ? "brand" : "gray"}
+                          color={
+                            session.status === "COMPLETED"
+                              ? "success"
+                              : session.status === "CANCELLED"
+                              ? "error"
+                              : "gray"
+                          }
                           size="sm"
                           type="color"
                           className="inline-flex font-semibold"
                         >
-                          {session.status === "COMPLETED" ? "Kelar" : session.status === "ACTIVE" ? "Jalan" : "Draft"}
+                          {session.status === "COMPLETED"
+                            ? "Kelar"
+                            : session.status === "CANCELLED"
+                            ? "Batal"
+                            : "Draft"}
                         </Badge>
                       </div>
                     </div>

@@ -121,7 +121,6 @@ model Transaction {
 
 enum SessionStatus {
   DRAFT
-  ACTIVE
   COMPLETED
   CANCELLED
 }

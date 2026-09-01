@@ -11,12 +11,13 @@ import {
   updateSessionItem,
   deleteSessionItem,
   completeBillSession,
+  updateBillSessionStatus,
   toggleMemberPaidStatus
 } from "@/app/actions/session";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
-import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus, X, Share07, MessageChatSquare } from "@untitledui/icons";
+import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus, X, Share07, MessageChatSquare, Play, XClose } from "@untitledui/icons";
 import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
@@ -106,6 +107,7 @@ export default function SplitBoard({
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
   const [showAccount, setShowAccount] = useState(false);
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [deleteConfig, setDeleteConfig] = useState<{
     isOpen: boolean;
     title: string;
@@ -463,6 +465,36 @@ export default function SplitBoard({
     }
   };
 
+  // Handler update status sesi ke CANCELLED atau DRAFT
+  const handleUpdateStatus = async (newStatus: "CANCELLED" | "DRAFT") => {
+    setLoading(true);
+    try {
+      const res = await updateBillSessionStatus(session.id, newStatus);
+      if (res.success) {
+        setSessionStatus(newStatus);
+        const statusLabel =
+          newStatus === "CANCELLED"
+            ? "Bill berhasil DIBATALKAN!"
+            : "Status bill diubah ke DRAFT!";
+        toast.success(statusLabel);
+      } else {
+        setError(res.error || "Gagal mengubah status bill.");
+        toast.error(res.error || "Gagal mengubah status bill.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Gagal mengubah status bill.");
+      toast.error("Gagal mengubah status bill.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmCancelSession = async () => {
+    setShowCancelConfirm(false);
+    await handleUpdateStatus("CANCELLED");
+  };
+
 
   // Tambah Item Manual
   const handleAddItem = async (e: React.FormEvent) => {
@@ -758,18 +790,40 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
           </Button>
           <div>
             <h1 className="text-sm font-extrabold text-text line-clamp-1">{session.title}</h1>
-            <p className="text-[9px] text-text-300 flex items-center gap-1.5">
+            <div className="text-[9px] text-text-300 flex items-center gap-1.5 mt-0.5">
               <span>Kode: {session.inviteCode}</span>
-            </p>
+              <span>•</span>
+              <Badge
+                color={
+                  sessionStatus === "COMPLETED"
+                    ? "success"
+                    : sessionStatus === "CANCELLED"
+                    ? "error"
+                    : "gray"
+                }
+                size="sm"
+                type="color"
+                className="inline-flex font-semibold text-[9px] py-0 px-1.5"
+              >
+                {sessionStatus === "COMPLETED"
+                  ? "Kelar"
+                  : sessionStatus === "CANCELLED"
+                  ? "Dibatalkan"
+                  : "Draft"}
+              </Badge>
+            </div>
           </div>
         </div>
-        <Button
-          href={`/pete-pete/${session.id}/items`}
-          color="primary"
-          className="px-2.5 py-1.5 text-xs transition-all active:scale-95"
-        >
-          Cek Struk
-        </Button>
+
+        <div className="flex items-center gap-1.5">
+          <Button
+            href={`/pete-pete/${session.id}/items`}
+            color="primary"
+            className="px-2.5 py-1.5 text-xs transition-all active:scale-95"
+          >
+            Cek Struk
+          </Button>
+        </div>
       </header>
 
       {/* Body Content */}
@@ -1358,16 +1412,39 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
           >
             Bagi Rekap Tagihan Grup
           </Button>
+        ) : sessionStatus === "CANCELLED" ? (
+          <div className="flex gap-2">
+            <Button
+              onPress={() => handleUpdateStatus("DRAFT")}
+              isDisabled={isPending || loading}
+              isLoading={isPending || loading}
+              color="primary"
+              className="flex-1 py-3 px-4 rounded-xl text-xs font-semibold"
+            >
+              Buka Kembali Bill
+            </Button>
+          </div>
         ) : (
-          <Button
-            onPress={handleCompleteSession}
-            isDisabled={isPending || loading}
-            isLoading={isPending || loading}
-            className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold"
-            iconLeading={Check}
-          >
-            Selesai
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onPress={() => setShowCancelConfirm(true)}
+              isDisabled={isPending || loading}
+              color="secondary"
+              className="py-3 px-4 rounded-xl text-xs font-semibold text-danger-300 hover:text-danger-400 hover:bg-danger-950/40 border-danger-800/60"
+              iconLeading={XClose}
+            >
+              Batalin
+            </Button>
+            <Button
+              onPress={handleCompleteSession}
+              isDisabled={isPending || loading}
+              isLoading={isPending || loading}
+              className="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold"
+              iconLeading={Check}
+            >
+              Selesai
+            </Button>
+          </div>
         )}
       </div>
       {deleteConfig && (
@@ -1378,6 +1455,20 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
           title={deleteConfig.title}
           description={deleteConfig.description}
           confirmText={deleteConfig.confirmText}
+          isLoading={loading}
+        />
+      )}
+      {showCancelConfirm && (
+        <ConfirmationModal
+          isOpen={showCancelConfirm}
+          onClose={() => setShowCancelConfirm(false)}
+          onConfirm={handleConfirmCancelSession}
+          title="Batalin Bill Pete-Pete?"
+          description="Yakin mau ngebatalin sesi patungan ini, Bos? Statusnya bakal berubah jadi DIBATALKAN."
+          confirmText="Batalin Bill"
+          cancelText="Gak Jadi"
+          color="error"
+          icon={AlertTriangle}
           isLoading={loading}
         />
       )}
