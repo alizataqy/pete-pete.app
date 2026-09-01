@@ -52,7 +52,6 @@ export default function RegisterPage() {
             Ceban Pertama
           </Link>
           <h2 className="text-lg font-bold text-text-50">Gabung yuk!</h2>
-          <p className="text-xs text-text-300">Daftar dulu baru bisa split bill</p>
         </div>
 
         {error && (
@@ -106,14 +105,14 @@ export default function RegisterPage() {
             isDisabled={loading}
             isLoading={loading}
             size="md"
-            className="w-full py-3 bg-primary hover:bg-primary-700"
+            className="w-full py-3 "
           >
             Daftar Sekarang!
           </Button>
         </form>
 
         <div className="text-center pt-1">
-          <p className="text-xs text-text-300">
+          <p className="text-xs text-text-50">
             Udah punya akun?{" "}
             <Link href="/login" className="text-primary-400 hover:underline">
               Masuk aja

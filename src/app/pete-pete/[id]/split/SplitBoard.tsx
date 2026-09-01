@@ -16,13 +16,16 @@ import {
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
-import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus, X } from "@untitledui/icons";
+import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus, X, Share07, MessageChatSquare } from "@untitledui/icons";
 import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 import { Dot } from "@/components/foundations/dot-icon";
 import DeleteConfirmation from "@/components/application/modals/DeleteConfirmation";
 import ConfirmationModal from "@/components/application/modals/ConfirmationModal";
+import { ModalOverlay, Modal, Dialog } from "@/components/application/modals/modal";
+import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { Heading } from "react-aria-components";
 
 
 const formatRupiah = (value: number | string): string => {
@@ -97,6 +100,7 @@ export default function SplitBoard({
   const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [sessionStatus, setSessionStatus] = useState(session.status);
   const [showMembers, setShowMembers] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
@@ -108,6 +112,13 @@ export default function SplitBoard({
     description: string;
     confirmText?: string;
     onConfirm: () => void;
+  } | null>(null);
+  const [shareModalConfig, setShareModalConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    text: string;
+    memberId?: string;
   } | null>(null);
 
 
@@ -437,9 +448,8 @@ export default function SplitBoard({
       if (res.success) {
         sessionStorage.removeItem(`pete-pete-allocations-${session.id}`);
         toast.success("Bill PETE-PETE udah kelar, Bos!");
-        setTimeout(() => {
-          redirect("/tongkrongan");
-        }, 1200);
+        setSessionStatus("COMPLETED");
+        handleOpenAllSummaryShare();
       } else {
         setError(res.error || "Gagal menyelesaikan sesi.");
         toast.error(res.error || "Gagal menyelesaikan sesi.");
@@ -541,8 +551,8 @@ export default function SplitBoard({
     }
   };
 
-  // Menyusun dan menyalin rincian pesanan anggota ke clipboard
-  const handleCopySummary = (member: Member) => {
+  // Generate teks rincian pesanan satu anggota
+  const generateMemberSummaryText = (member: Member) => {
     const memberAllocations = allocations.filter(a => a.memberId === member.id);
 
     let itemsText = "";
@@ -556,7 +566,11 @@ export default function SplitBoard({
         const sharePrice = Math.round((alloc.quantity / totalAllocatedQty) * Number(item.totalPrice));
         subtotal += sharePrice;
 
-        itemsText += `  - ${item.name} (${alloc.quantity}/${totalAllocatedQty} porsi): Rp ${sharePrice.toLocaleString("id-ID")}\n`;
+        const portionLabel = alloc.quantity === totalAllocatedQty && totalAllocatedQty === 1
+          ? ""
+          : ` (${alloc.quantity}/${totalAllocatedQty} porsi)`;
+
+        itemsText += `  • ${item.name}${portionLabel} ➔ Rp ${sharePrice.toLocaleString("id-ID")}\n`;
       }
     });
 
@@ -565,38 +579,60 @@ export default function SplitBoard({
       return acc + (hasAlloc ? Number(item.totalPrice) : 0);
     }, 0);
 
-    const taxAndTips = Number(session.taxAmount) + Number(session.tipAmount);
-    const ratio = totalSubtotal > 0 ? taxAndTips / totalSubtotal : 0;
-    const memberTaxAndTips = Math.round(subtotal * ratio);
+    const taxAmount = Number(session.taxAmount) || 0;
+    const tipAmount = Number(session.tipAmount) || 0;
+    const taxAndTips = taxAmount + tipAmount;
+    const memberTax = totalSubtotal > 0 ? Math.round(subtotal * (taxAmount / totalSubtotal)) : 0;
+    const memberTips = totalSubtotal > 0 ? Math.round(subtotal * (tipAmount / totalSubtotal)) : 0;
+    const memberTaxAndTips = memberTax + memberTips;
     const grandTotal = subtotal + memberTaxAndTips;
 
+    let feeBreakdownText = "";
+    if (taxAmount > 0) {
+      const taxPercent = totalSubtotal > 0 ? ((taxAmount / totalSubtotal) * 100).toFixed(1).replace(/\.0$/, "") : "0";
+      feeBreakdownText += `Pajak (${taxPercent}%): Rp ${memberTax.toLocaleString("id-ID")}\n`;
+    }
+    if (tipAmount > 0) {
+      const tipPercent = totalSubtotal > 0 ? ((tipAmount / totalSubtotal) * 100).toFixed(1).replace(/\.0$/, "") : "0";
+      feeBreakdownText += `Servis/Tip (${tipPercent}%): Rp ${memberTips.toLocaleString("id-ID")}\n`;
+    }
+    if (!feeBreakdownText && taxAndTips > 0) {
+      feeBreakdownText = `Pajak & Servis: Rp ${memberTaxAndTips.toLocaleString("id-ID")}\n`;
+    }
+
     const bankDetails = session.bankName
-      ? `Transfer ke: ${session.bankName}\n No. Rekening: ${session.bankAccount}\n👤 A/N: ${session.bankOwner}`
+      ? `💳 *Info Pembayaran:*\nTransfer ke: ${session.bankName}\nNo. Rekening: ${session.bankAccount}\nA/N: ${session.bankOwner}`
       : "Silakan hubungi pembuat sesi untuk detail transfer.";
 
     const cleanTitle = session.title.replace(/^PETE-PETE\s+/i, "");
 
-    const text = `📢 *TAGIHAN PETE-PETE: ${cleanTitle}*
+    return `📢 *TAGIHAN PETE-PETE: ${cleanTitle}*
 ${session.merchantName ? `📍 ${session.merchantName}\n` : ""}
 Halo *${member.name}*, berikut rincian tagihan kamu:
-${itemsText || "  - Belum memilih menu makanan\n"}----------------------------------
-Subtotal: Rp ${subtotal.toLocaleString("id-ID")}
-Pajak & Servis: Rp ${memberTaxAndTips.toLocaleString("id-ID")}
-💰 *Total Tagihan: Rp ${grandTotal.toLocaleString("id-ID")}*
+
+📋 *Menu Pesanan:*
+${itemsText || "  • Belum memilih menu makanan\n"}
+───────────────────
+Subtotal Pesanan: Rp ${subtotal.toLocaleString("id-ID")}
+${feeBreakdownText}💰 *Total Tagihan: Rp ${grandTotal.toLocaleString("id-ID")}*
 
 ${bankDetails}
 
-Terima kasih! 🙏`;
-
-    navigator.clipboard.writeText(text);
-    setCopiedId(member.id);
-    setTimeout(() => setCopiedId(null), 2000);
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+Ditunggu transferannya ya, Bos! Thank you 🙏`;
   };
 
-  // Menyalin rekap tagihan seluruh anggota sekaligus (untuk dikirim ke grup WhatsApp)
-  const handleCopyAllSummary = () => {
+  // Generate teks rekap tagihan semua anggota untuk grup
+  const generateAllSummaryText = () => {
     let allMembersShareText = "";
+
+    const totalSubtotal = items.reduce((acc, item) => {
+      const hasAlloc = allocations.some(a => a.itemId === item.id);
+      return acc + (hasAlloc ? Number(item.totalPrice) : 0);
+    }, 0);
+
+    const taxAmount = Number(session.taxAmount) || 0;
+    const tipAmount = Number(session.tipAmount) || 0;
+    const taxAndTips = taxAmount + tipAmount;
 
     members.forEach((member) => {
       const memberAllocations = allocations.filter(a => a.memberId === member.id);
@@ -610,40 +646,101 @@ Terima kasih! 🙏`;
           const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
           const sharePrice = Math.round((alloc.quantity / totalAllocatedQty) * Number(item.totalPrice));
           subtotal += sharePrice;
-          memberItemsText += `  • ${item.name} (${alloc.quantity}/${totalAllocatedQty} porsi)\n`;
+
+          const portionLabel = alloc.quantity === totalAllocatedQty && totalAllocatedQty === 1
+            ? ""
+            : ` _(${alloc.quantity}/${totalAllocatedQty} porsi)_`;
+
+          memberItemsText += `  • ${item.name}${portionLabel} ➔ Rp ${sharePrice.toLocaleString("id-ID")}\n`;
         }
       });
 
-      const totalSubtotal = items.reduce((acc, item) => {
-        const hasAlloc = allocations.some(a => a.itemId === item.id);
-        return acc + (hasAlloc ? Number(item.totalPrice) : 0);
-      }, 0);
-
-      const taxAndTips = Number(session.taxAmount) + Number(session.tipAmount);
-      const ratio = totalSubtotal > 0 ? taxAndTips / totalSubtotal : 0;
-      const memberTaxAndTips = Math.round(subtotal * ratio);
+      const memberTax = totalSubtotal > 0 ? Math.round(subtotal * (taxAmount / totalSubtotal)) : 0;
+      const memberTips = totalSubtotal > 0 ? Math.round(subtotal * (tipAmount / totalSubtotal)) : 0;
+      const memberTaxAndTips = memberTax + memberTips;
       const grandTotal = subtotal + memberTaxAndTips;
 
-      allMembersShareText += `👤 *${member.name}* : Rp ${grandTotal.toLocaleString("id-ID")}\n${memberItemsText || "  • Belum pilih menu\n"}\n`;
+      let memberFeeText = "";
+      if (taxAmount > 0 && tipAmount > 0) {
+        memberFeeText = `  _↳ Subtotal: Rp ${subtotal.toLocaleString("id-ID")} + Pajak: Rp ${memberTax.toLocaleString("id-ID")} + Servis: Rp ${memberTips.toLocaleString("id-ID")}_\n`;
+      } else if (taxAndTips > 0) {
+        memberFeeText = `  _↳ Subtotal: Rp ${subtotal.toLocaleString("id-ID")} + Pajak/Servis: Rp ${memberTaxAndTips.toLocaleString("id-ID")}_\n`;
+      }
+
+      allMembersShareText += `👤 *${member.name}* : *Rp ${grandTotal.toLocaleString("id-ID")}*\n${memberItemsText || "  • Belum pilih menu\n"}${memberFeeText}\n`;
     });
 
+    let overallFeeText = `Subtotal Struk: Rp ${totalSubtotal.toLocaleString("id-ID")}\n`;
+    if (taxAmount > 0) {
+      const taxPercent = totalSubtotal > 0 ? ((taxAmount / totalSubtotal) * 100).toFixed(1).replace(/\.0$/, "") : "0";
+      overallFeeText += `Pajak (${taxPercent}%): Rp ${taxAmount.toLocaleString("id-ID")}\n`;
+    }
+    if (tipAmount > 0) {
+      const tipPercent = totalSubtotal > 0 ? ((tipAmount / totalSubtotal) * 100).toFixed(1).replace(/\.0$/, "") : "0";
+      overallFeeText += `Servis/Tip (${tipPercent}%): Rp ${tipAmount.toLocaleString("id-ID")}\n`;
+    }
+
     const bankDetails = session.bankName
-      ? `Transfer ke: ${session.bankName}\n No. Rekening: ${session.bankAccount}\n👤 A/N: ${session.bankOwner}`
+      ? `💳 *Info Pembayaran:*\nTransfer ke: ${session.bankName}\nNo. Rekening: ${session.bankAccount}\nA/N: ${session.bankOwner}`
       : "Silakan hubungi pembuat sesi untuk detail transfer.";
 
     const cleanTitle = session.title.replace(/^PETE-PETE\s+/i, "");
 
-    const text = `📢 *REKAP TAGIHAN PETE-PETE: ${cleanTitle}*
+    return `📢 *REKAP TAGIHAN PETE-PETE: ${cleanTitle}*
 ${session.merchantName ? `📍 ${session.merchantName}\n` : ""}
-Total Tagihan Bill: Rp ${session.totalAmount.toLocaleString("id-ID")}
-----------------------------------
-${allMembersShareText}----------------------------------
+🧾 *Rincian Keseluruhan Bill:*
+${overallFeeText}💰 Total Tagihan: *Rp ${session.totalAmount.toLocaleString("id-ID")}*
+───────────────────
+${allMembersShareText}───────────────────
 ${bankDetails}
 
 Ditunggu transferannya ya, Bos! Thank you 🙏`;
+  };
 
+  // Menampilkan modal pilihan bagikan rincian pesanan satu anggota
+  const handleOpenMemberSummaryShare = (member: Member) => {
+    const text = generateMemberSummaryText(member);
+    setShareModalConfig({
+      isOpen: true,
+      title: `Bagi Tagihan ${member.name}`,
+      description: "Pilih mau salin rincian tagihan ke clipboard atau langsung gas ke WhatsApp, Bos!",
+      text,
+      memberId: member.id,
+    });
+  };
+
+  // Menampilkan modal pilihan bagikan rekap seluruh anggota ke grup
+  const handleOpenAllSummaryShare = () => {
+    const text = generateAllSummaryText();
+    setShareModalConfig({
+      isOpen: true,
+      title: "Bagi Rekap Tagihan Grup",
+      description: "Mau salin seluruh rekap ke clipboard atau langsung lempar ke grup WhatsApp?",
+      text,
+    });
+  };
+
+  // Aksi eksekusi bagikan ke Clipboard
+  const handleShareToClipboard = (text: string, memberId?: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Semua rekap tagihan disalin ke clipboard!");
+    if (memberId) {
+      setCopiedId(memberId);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
+    if (!session.bankName || !session.bankAccount) {
+      toast.warning("Rincian disalin, tapi info rekening bank lo belum diisi nih, Bos!");
+    } else {
+      toast.success("Rincian tagihan berhasil disalin ke clipboard!");
+    }
+    setShareModalConfig(null);
+  };
+
+  // Aksi eksekusi bagikan ke WhatsApp
+  const handleShareToWhatsApp = (text: string) => {
+    if (!session.bankName || !session.bankAccount) {
+      toast.warning("Info rekening bank lo belum diisi nih di rincian!");
+    }
+    setShareModalConfig(null);
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -745,11 +842,17 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
             </h2>
             <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
               <Button
-                onPress={handleCopyAllSummary}
+                onPress={() => {
+                  if (sessionStatus !== "COMPLETED") {
+                    toast.warning("Kelarin dulu bill-nya sebelum bagi rekap ya, Bos!");
+                    return;
+                  }
+                  handleOpenAllSummaryShare();
+                }}
                 color="secondary"
                 size="xs"
-                className="px-2 py-1 text-[10px]"
-                iconLeading={Copy01}
+                className={`px-2 py-1 text-[10px] ${sessionStatus !== "COMPLETED" ? "opacity-60" : ""}`}
+                iconLeading={Share07}
               >
                 Bagi Group
               </Button>
@@ -839,21 +942,26 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
                             color={!member.isPaid ? "primary" : "secondary"}
                             size="xs"
                             iconLeading={!member.isPaid ? Check : X}
-                            className={`text-[10px] font-bold tracking-wide transition-all duration-300 ${
-                              !member.isPaid 
-                                ? "shadow-sm shadow-emerald-950/20" 
-                                : "opacity-80 hover:opacity-100"
-                            }`}
+                            className={`text-[10px] font-bold tracking-wide transition-all duration-300 ${!member.isPaid
+                              ? "shadow-sm shadow-emerald-950/20"
+                              : "opacity-80 hover:opacity-100"
+                              }`}
                           >
                             {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
                           </Button>
                           <Button
-                            onPress={() => handleCopySummary(member)}
+                            onPress={() => {
+                              if (sessionStatus !== "COMPLETED") {
+                                toast.warning("Kelarin dulu bill-nya sebelum bagi rincian ya, Bos!");
+                                return;
+                              }
+                              handleOpenMemberSummaryShare(member);
+                            }}
                             color="secondary"
                             size="xs"
-                            className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center"
+                            className={`p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center ${sessionStatus !== "COMPLETED" ? "opacity-60" : ""}`}
                           >
-                            {copiedId === member.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy01 className="w-3.5 h-3.5 text-primary-400" />}
+                            {copiedId === member.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share07 className="w-3.5 h-3.5 text-primary-400" />}
                           </Button>
                           {member.userId !== session.userId && session.status !== "COMPLETED" && (
                             <>
@@ -1241,13 +1349,14 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
 
       {/* Floating Bottom Actions (Mobile thumb friendly) */}
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-secondary-800 bg-secondary-950/95 backdrop-blur-md z-20">
-        {session.status === "COMPLETED" ? (
+        {sessionStatus === "COMPLETED" ? (
           <Button
-            isDisabled
-            className="w-full py-3 px-4 rounded-xl bg-secondary-800 text-text-300 text-xs font-semibold"
-            iconLeading={Check}
+            onPress={handleOpenAllSummaryShare}
+            color="primary"
+            className="w-full py-3 px-4 rounded-xl text-text-950 text-xs font-bold"
+            iconLeading={Share07}
           >
-            Bill PETE-PETE Selesai
+            Bagi Rekap Tagihan Grup
           </Button>
         ) : (
           <Button
@@ -1285,6 +1394,75 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
           icon={AlertTriangle}
           isLoading={loading}
         />
+      )}
+      {shareModalConfig && (
+        <ModalOverlay
+          isOpen={shareModalConfig.isOpen}
+          onOpenChange={() => setShareModalConfig(null)}
+          className="fixed inset-0 z-50 flex min-h-dvh w-full items-end justify-center bg-overlay/70 outline-hidden backdrop-blur-[6px] sm:items-center sm:justify-center sm:px-8 pt-(--modal-pt) pb-(--modal-pb) [--modal-pb:clamp(16px,8vh,64px)] [--modal-pt:16px] sm:[--modal-pb:32px] sm:[--modal-pt:32px]"
+        >
+          <Modal className="w-full max-w-sm overflow-hidden bg-active text-text p-5 rounded-xl sm:rounded-2xl shadow-xl outline-hidden duration-0 animate-none transform-none transition-none">
+            <Dialog className="outline-hidden">
+              {({ close }) => (
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-3">
+                    <FeaturedIcon
+                      icon={Share07}
+                      color="brand"
+                      theme="modern"
+                      size="md"
+                      className="bg-primary-950 text-primary-500 border border-primary-800"
+                    />
+                    <div className="grid grid-cols-1">
+                      <Heading slot="title" className="text-sm font-bold text-text">
+                        {shareModalConfig.title}
+                      </Heading>
+                      <p className="text-xs text-text-400 leading-relaxed">
+                        {shareModalConfig.description}
+                      </p>
+                    </div>
+                    <Button
+                      color="tertiary"
+                      size="xs"
+                      onPress={close}
+                      className="text-text-400 hover:text-text"
+                    >
+                      <X />
+                    </Button>
+                  </div>
+
+                  {(!session.bankName || !session.bankAccount) && (
+                    <div className="p-2.5 rounded-xl bg-warning-950/60 border border-warning-800/80 flex items-start gap-2.5 text-warning-100 text-xs leading-snug">
+                      <AlertTriangle className="w-4 h-4 shrink-0 text-warning-400 mt-0.5" />
+                      <span>Info rekening pembayaran belum lo atur, temen-temen lo bakal disuruh nanya manual detail transfernya.</span>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-2 w-full pt-1">
+                    <Button
+                      color="secondary"
+                      size="sm"
+                      iconLeading={Copy01}
+                      className="w-full justify-center py-2.5 text-xs font-semibold"
+                      onPress={() => handleShareToClipboard(shareModalConfig.text, shareModalConfig.memberId)}
+                    >
+                      Salin ke Clipboard
+                    </Button>
+                    <Button
+                      color="primary"
+                      size="sm"
+                      iconLeading={MessageChatSquare}
+                      className="w-full justify-center py-2.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white"
+                      onPress={() => handleShareToWhatsApp(shareModalConfig.text)}
+                    >
+                      Kirim ke WhatsApp
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </Dialog>
+          </Modal>
+        </ModalOverlay>
       )}
     </div>
 
