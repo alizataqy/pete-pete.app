@@ -85,9 +85,6 @@ export default function LandingView({ user }: UserSessionProp) {
           href="/"
           className="flex items-center gap-2.5 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-lg transition-transform duration-150 ease-out active:scale-[0.97]"
         >
-          <div className="w-8 h-8 rounded-xl bg-primary-950 border border-primary-800/60 flex items-center justify-center text-primary-400 font-black text-sm shadow-xs">
-            CP
-          </div>
           <span className="font-black text-text text-lg tracking-tight">Ceban Pertama</span>
         </Link>
         <div className="flex items-center gap-3">

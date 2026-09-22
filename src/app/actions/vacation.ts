@@ -114,7 +114,7 @@ export async function addVacationMember(planId: string, name: string) {
       },
     });
 
-    revalidatePath(`/vacation/${planId}`);
+    revalidatePath(`/agenda/${planId}`);
     return { success: true, member };
   } catch (error) {
     console.error("Gagal menambahkan anggota:", error);
@@ -128,7 +128,7 @@ export async function removeVacationMember(memberId: string, planId: string) {
       where: { id: memberId, planId },
     });
 
-    revalidatePath(`/vacation/${planId}`);
+    revalidatePath(`/agenda/${planId}`);
     return { success: true };
   } catch (error) {
     console.error("Gagal menghapus anggota:", error);
@@ -173,7 +173,7 @@ export async function addVacationExpense(
       });
     });
 
-    revalidatePath(`/vacation/${planId}`);
+    revalidatePath(`/agenda/${planId}`);
     return { success: true };
   } catch (error) {
     console.error("Gagal menambahkan pengeluaran:", error);
@@ -187,7 +187,7 @@ export async function deleteVacationExpense(expenseId: string, planId: string) {
       where: { id: expenseId, planId },
     });
 
-    revalidatePath(`/vacation/${planId}`);
+    revalidatePath(`/agenda/${planId}`);
     return { success: true };
   } catch (error) {
     console.error("Gagal menghapus pengeluaran:", error);
@@ -237,7 +237,7 @@ export async function updateVacationExpense(
       });
     });
 
-    revalidatePath(`/vacation/${planId}`);
+    revalidatePath(`/agenda/${planId}`);
     return { success: true };
   } catch (error) {
     console.error("Gagal mengupdate pengeluaran:", error);
@@ -252,7 +252,7 @@ export async function renameVacationMember(memberId: string, planId: string, nam
       data: { name },
     });
 
-    revalidatePath(`/vacation/${planId}`);
+    revalidatePath(`/agenda/${planId}`);
     return { success: true };
   } catch (error) {
     console.error("Gagal mengubah nama sohib:", error);
