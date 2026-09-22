@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import {
   addVacationMember,
   removeVacationMember,
@@ -21,7 +22,6 @@ import {
   Users01,
   CreditCard01,
   PlusCircle,
-  AlertTriangle,
   Receipt,
   Check,
   ArrowUp,
@@ -32,13 +32,18 @@ import {
   Share07,
   MessageChatSquare,
   X,
+  Calendar,
 } from "@untitledui/icons";
 import { ModalOverlay, Modal, Dialog } from "@/components/application/modals/modal";
 import { Heading } from "react-aria-components";
 import { toast } from "sonner";
-import DeleteConfirmation from "@/components/application/modals/DeleteConfirmation";
 import { Input } from "@/components/base/input/input";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+
+const DeleteConfirmation = dynamic(
+  () => import("@/components/application/modals/DeleteConfirmation"),
+  { ssr: false }
+);
 
 interface Member {
   id: string;
@@ -191,51 +196,70 @@ export default function VacationPlanDetailView({
       return;
     }
 
-    setLoading(true);
+    // Optimistic UI: tampilkan langsung seketika
+    const tempId = `temp-${Date.now()}`;
+    const optimisticMember: Member = {
+      id: tempId,
+      name,
+      userId: null,
+    };
+    setMembers((prev) => [...prev, optimisticMember]);
+    setExpenseParticipants((prev) => [...prev, tempId]);
+    setNewMemberName("");
+    toast.success("Sohib berhasil ditambahkan!");
+
     try {
       const res = await addVacationMember(plan.id, name);
       if (res.success && res.member) {
-        toast.success("Sohib berhasil ditambahkan!");
-        const newM: Member = {
-          id: res.member.id,
-          name: res.member.name,
-          userId: res.member.userId,
-        };
-        setMembers([...members, newM]);
-        // Add to default participants if we are creating an expense later
-        setExpenseParticipants([...expenseParticipants, newM.id]);
-        setNewMemberName("");
-        router.refresh();
+        setMembers((prev) =>
+          prev.map((m) =>
+            m.id === tempId
+              ? { ...m, id: res.member.id, userId: res.member.userId }
+              : m
+          )
+        );
+        setExpenseParticipants((prev) =>
+          prev.map((id) => (id === tempId ? res.member.id : id))
+        );
       } else {
+        setMembers((prev) => prev.filter((m) => m.id !== tempId));
+        setExpenseParticipants((prev) => prev.filter((id) => id !== tempId));
         toast.error(res.error || "Gagal nambahin sohib");
       }
     } catch {
+      setMembers((prev) => prev.filter((m) => m.id !== tempId));
+      setExpenseParticipants((prev) => prev.filter((id) => id !== tempId));
       toast.error("Gagal nambahin sohib");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleRemoveMember = async (memberId: string) => {
-    setLoading(true);
+    const prevMembers = members;
+    const prevParticipants = expenseParticipants;
+    const prevPayerId = expensePayerId;
+
+    // Optimistic UI: hapus langsung dari state
+    setMembers((prev) => prev.filter((m) => m.id !== memberId));
+    setExpenseParticipants((prev) => prev.filter((id) => id !== memberId));
+    if (expensePayerId === memberId) {
+      setExpensePayerId(members.find((m) => m.id !== memberId)?.id || "");
+    }
+    setDeleteConfig(null);
+    toast.success("Sohib berhasil dikeluarkan dari tim");
+
     try {
       const res = await removeVacationMember(memberId, plan.id);
-      if (res.success) {
-        toast.success("Sohib berhasil dikeluarkan dari tim");
-        setMembers(members.filter((m) => m.id !== memberId));
-        setExpenseParticipants(expenseParticipants.filter((id) => id !== memberId));
-        if (expensePayerId === memberId) {
-          setExpensePayerId(members.find((m) => m.id !== memberId)?.id || "");
-        }
-        router.refresh();
-      } else {
+      if (!res.success) {
+        setMembers(prevMembers);
+        setExpenseParticipants(prevParticipants);
+        setExpensePayerId(prevPayerId);
         toast.error(res.error || "Gagal ngeluarin sohib");
       }
     } catch {
+      setMembers(prevMembers);
+      setExpenseParticipants(prevParticipants);
+      setExpensePayerId(prevPayerId);
       toast.error("Gagal ngeluarin sohib");
-    } finally {
-      setLoading(false);
-      setDeleteConfig(null);
     }
   };
 
@@ -431,56 +455,102 @@ export default function VacationPlanDetailView({
       return;
     }
 
-    setLoading(true);
-    try {
-      let res;
-      if (editingExpenseId) {
-        res = await updateVacationExpense(editingExpenseId, plan.id, {
-          title: expenseTitle.trim(),
-          amount: amt,
-          payerId: expensePayerId,
-          memberIds: expenseParticipants,
-        });
-      } else {
-        res = await addVacationExpense(plan.id, {
-          title: expenseTitle.trim(),
-          amount: amt,
-          payerId: expensePayerId,
-          memberIds: expenseParticipants,
-        });
-      }
+    const payerName = members.find((m) => m.id === expensePayerId)?.name || "Sohib";
+    const shareAmount = Math.round(amt / expenseParticipants.length);
+    const shares: Share[] = expenseParticipants.map((mId) => ({
+      memberId: mId,
+      memberName: members.find((m) => m.id === mId)?.name || "Sohib",
+      amount: shareAmount,
+    }));
 
-      if (res.success) {
-        toast.success(editingExpenseId ? "Biaya pengeluaran berhasil diubah!" : "Biaya pengeluaran berhasil dicatat!");
-        handleCloseModal();
-        // Reload details
-        window.location.reload();
+    const prevExpenses = expenses;
+    const isEdit = !!editingExpenseId;
+    const currentEditId = editingExpenseId;
+    const tempId = `temp-${Date.now()}`;
+
+    // Optimistic UI: langsung tampilkan di list & kalkulasi ulang seketika
+    if (isEdit && currentEditId) {
+      setExpenses((prev) =>
+        prev.map((e) =>
+          e.id === currentEditId
+            ? {
+                ...e,
+                title: expenseTitle.trim(),
+                amount: amt,
+                payerId: expensePayerId,
+                payerName,
+                shares,
+              }
+            : e
+        )
+      );
+    } else {
+      const newExp: Expense = {
+        id: tempId,
+        title: expenseTitle.trim(),
+        amount: amt,
+        payerId: expensePayerId,
+        payerName,
+        createdAt: new Date().toISOString(),
+        shares,
+      };
+      setExpenses((prev) => [newExp, ...prev]);
+    }
+
+    handleCloseModal();
+    toast.success(isEdit ? "Biaya pengeluaran berhasil diubah!" : "Biaya pengeluaran berhasil dicatat!");
+
+    try {
+      if (isEdit && currentEditId) {
+        const res = await updateVacationExpense(currentEditId, plan.id, {
+          title: expenseTitle.trim(),
+          amount: amt,
+          payerId: expensePayerId,
+          memberIds: expenseParticipants,
+        });
+        if (!res.success) {
+          setExpenses(prevExpenses);
+          toast.error(res.error || "Gagal menyimpan pengeluaran");
+        }
       } else {
-        toast.error(res.error || "Gagal menyimpan pengeluaran");
+        const res = await addVacationExpense(plan.id, {
+          title: expenseTitle.trim(),
+          amount: amt,
+          payerId: expensePayerId,
+          memberIds: expenseParticipants,
+        });
+        if (res.success && res.expenseId) {
+          setExpenses((prev) =>
+            prev.map((e) => (e.id === tempId ? { ...e, id: res.expenseId! } : e))
+          );
+        } else if (!res.success) {
+          setExpenses(prevExpenses);
+          toast.error(res.error || "Gagal menyimpan pengeluaran");
+        }
       }
     } catch {
+      setExpenses(prevExpenses);
       toast.error("Gagal menyimpan pengeluaran");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleDeleteExpense = async (expenseId: string) => {
-    setLoading(true);
+    const prevExpenses = expenses;
+
+    // Optimistic UI: hapus langsung seketika
+    setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
+    setDeleteConfig(null);
+    toast.success("Pengeluaran berhasil dihapus!");
+
     try {
       const res = await deleteVacationExpense(expenseId, plan.id);
-      if (res.success) {
-        toast.success("Pengeluaran berhasil dihapus!");
-        setExpenses(expenses.filter((e) => e.id !== expenseId));
-        router.refresh();
-      } else {
+      if (!res.success) {
+        setExpenses(prevExpenses);
         toast.error(res.error || "Gagal menghapus pengeluaran");
       }
     } catch {
+      setExpenses(prevExpenses);
       toast.error("Gagal menghapus pengeluaran");
-    } finally {
-      setLoading(false);
-      setDeleteConfig(null);
     }
   };
 
@@ -591,17 +661,21 @@ export default function VacationPlanDetailView({
             onPress={() => router.push("/agenda")}
             color="primary"
             size="sm"
+            aria-label="Kembali ke daftar agenda"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
             <h1 className="text-sm font-extrabold text-text line-clamp-1">{plan.title}</h1>
-            <p className="text-[9px] text-text-300 flex items-center gap-1.5 flex-wrap">
+            <p className="text-[10px] text-text-300 flex items-center gap-1.5 flex-wrap">
               <span>{plan.description || "Pete-Pete Seru & Kumpul Bareng"}</span>
               {plan.date && (
                 <>
                   <span className="text-text-500">•</span>
-                  <span className="text-primary-400 font-bold">📅 {formatDateString(plan.date)}</span>
+                  <span className="text-primary-400 font-bold inline-flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5" />
+                    {formatDateString(plan.date)}
+                  </span>
                 </>
               )}
             </p>
@@ -614,7 +688,7 @@ export default function VacationPlanDetailView({
         {/* Info Summary */}
         <div className="p-4 rounded-xl border border-secondary-800 bg-secondary-950/15 flex items-center justify-between shrink-0">
           <div>
-            <p className="text-[9px] text-text-500 font-bold uppercase tracking-wider">Total Pengeluaran Kelompok</p>
+            <p className="text-[10px] text-text-400 font-bold uppercase tracking-wider">Total Pengeluaran Kelompok</p>
             <p className="text-lg font-black text-text-50 mt-0.5">{formatRupiah(totalSpent)}</p>
           </div>
           <div className="p-2 bg-text-900 border border-secondary-800 rounded-lg">
@@ -625,7 +699,16 @@ export default function VacationPlanDetailView({
         {/* 1. TIM SOHIB (Vacation Members) */}
         <div className={`p-3.5 rounded-2xl border border-secondary-800 bg-secondary-950/60 flex flex-col gap-3 overflow-hidden transition-all ${showMembers ? "flex-1 min-h-0" : "shrink-0"}`}>
           <div
+            role="button"
+            tabIndex={0}
+            aria-expanded={showMembers}
             onClick={() => setShowMembers(!showMembers)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setShowMembers(!showMembers);
+              }
+            }}
             className="flex items-center justify-between cursor-pointer select-none shrink-0"
           >
             <div className="flex items-center gap-2">
@@ -639,6 +722,7 @@ export default function VacationPlanDetailView({
               onPress={() => setShowMembers(!showMembers)}
               color="secondary"
               className="px-2 py-1"
+              aria-label={showMembers ? "Tutup daftar sohib" : "Buka daftar sohib"}
             >
               {showMembers ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
             </Button>
@@ -648,20 +732,24 @@ export default function VacationPlanDetailView({
             <div className="flex-1 flex flex-col gap-3 min-h-0 overflow-hidden">
               {/* Add member inline form */}
               {isOwner && (
-                <form onSubmit={handleAddMember} className="flex gap-2 items-end shrink-0">
+                <form onSubmit={handleAddMember} className="flex gap-2 items-center shrink-0">
                   <div className="flex-1">
                     <Input
                       placeholder="Ketik nama sohib lo..."
                       value={newMemberName}
                       onChange={(val) => setNewMemberName(val)}
+                      size="sm"
+                      icon={Users01}
                     />
                   </div>
                   <Button
                     type="submit"
-                    isDisabled={loading}
+                    isDisabled={loading || !newMemberName.trim()}
                     isLoading={loading}
-                    size="md"
-                    className="h-10"
+                    size="sm"
+                    color="primary"
+                    iconLeading={Plus}
+                    className="shrink-0"
                   >
                     Tambahin
                   </Button>
@@ -669,116 +757,156 @@ export default function VacationPlanDetailView({
               )}
 
               {/* Members list */}
-              <div className="grid gap-2 flex-1 overflow-y-auto pr-1 scrollbar-hide min-h-0">
-                {members.map((member) => {
-                  const balance = balances[member.id] || 0;
-                  return (
-                    <div
-                      key={member.id}
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-text-950 border border-secondary-800"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <Avatar alt={member.name} size="sm" className="shadow-md border border-secondary-800" />
-                        {editingMemberId === member.id ? (
-                          <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                            <input
-                              type="text"
-                              value={editingMemberName}
-                              onChange={(e) => setEditingMemberName(e.target.value)}
-                              className="flex-1 px-2 py-1 rounded bg-text-900 border border-text-700 text-xs text-text outline-none focus:border-primary"
-                            />
-                            <Button
-                              onPress={() => setEditingMemberId(null)}
-                              color="secondary"
-                              size="xs"
-                              className="h-7 text-[10px]"
-                            >
-                              Gak Jadi
-                            </Button>
-                            <Button
-                              onPress={() => handleRenameMember(member.id)}
-                              color="primary"
-                              size="xs"
-                              className="h-7 text-[10px]"
-                            >
-                              Simpan
-                            </Button>
-                          </div>
-                        ) : (
-                          <div className="min-w-0 flex-1">
-                            <p className="font-semibold text-text text-xs truncate">
-                              {member.name}
-                              {member.userId === userId && (
-                                <span className="text-[9px] font-normal text-text-400 ml-1.5">(Gua)</span>
-                              )}
-                            </p>
-                            <p
-                              className={`text-[9px] font-bold ${balance < 0
-                                ? "text-rose-400"
-                                : balance > 0
-                                  ? "text-text-50"
-                                  : "text-text-400"
-                                }`}
-                            >
-                              {balance < 0
-                                ? `Utang: ${formatRupiah(Math.abs(balance))}`
-                                : balance > 0
-                                  ? `Piutang: ${formatRupiah(balance)}`
-                                  : "Lunas"}
-                            </p>
-                          </div>
-                        )}
-                      </div>
+              {members.length === 0 ? (
+                <div className="p-4 rounded-xl border border-dashed border-secondary-800 bg-secondary-950/10 flex items-center justify-center text-center">
+                  <p className="text-[11px] text-text-400">Belum ada sohib yang didaftarin nih, tambahin di atas ya!</p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 flex-1 overflow-y-auto pr-1 scrollbar-hide min-h-0">
+                  {members.map((member) => {
+                    const balance = balances[member.id] || 0;
+                    const isMe = member.userId === userId;
+                    return (
+                      <div
+                        key={member.id}
+                        className="flex items-center justify-between p-3 rounded-xl bg-secondary-950/40 border border-secondary-800/80 hover:bg-secondary-950/60 hover:border-secondary-700/80 transition-all shrink-0 gap-3"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          <Avatar alt={member.name} size="sm" className="shadow-xs border border-secondary-800 shrink-0" />
+                          {editingMemberId === member.id ? (
+                            <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                              <input
+                                type="text"
+                                value={editingMemberName}
+                                onChange={(e) => setEditingMemberName(e.target.value)}
+                                className="flex-1 px-2.5 py-1 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                                autoFocus
+                              />
+                              <Button
+                                onPress={() => setEditingMemberId(null)}
+                                color="secondary"
+                                size="xs"
+                                className="h-7 text-[10px]"
+                              >
+                                Gak Jadi
+                              </Button>
+                              <Button
+                                onPress={() => handleRenameMember(member.id)}
+                                color="primary"
+                                size="xs"
+                                className="h-7 text-[10px]"
+                              >
+                                Simpan
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <p className="font-semibold text-text-50 text-xs truncate">
+                                  {member.name}
+                                </p>
+                                {isMe && (
+                                  <Badge
+                                    color="brand"
+                                    size="sm"
+                                    type="pill-color"
+                                    className="text-[9px] px-1.5 py-0 font-medium"
+                                  >
+                                    Gua
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1.5 mt-1">
+                                {balance < 0 ? (
+                                  <Badge
+                                    color="error"
+                                    size="sm"
+                                    type="pill-color"
+                                    className="text-[10px] font-semibold px-2 py-0.5"
+                                  >
+                                    Utang: {formatRupiah(Math.abs(balance))}
+                                  </Badge>
+                                ) : balance > 0 ? (
+                                  <Badge
+                                    color="success"
+                                    size="sm"
+                                    type="pill-color"
+                                    className="text-[10px] font-semibold px-2 py-0.5"
+                                  >
+                                    Piutang: {formatRupiah(balance)}
+                                  </Badge>
+                                ) : (
+                                  <Badge
+                                    color="gray"
+                                    size="sm"
+                                    type="pill-color"
+                                    className="text-[10px] font-medium px-2 py-0.5"
+                                  >
+                                    Lunas
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
 
-                      <div className="flex items-center gap-1.5">
-                        {editingMemberId !== member.id && (
-                          <>
-                            <Button
-                              onPress={() => handleOpenMemberSummaryShare(member)}
-                              color="secondary"
-                              size="xs"
-                              className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center"
-                            >
-                              {copiedId === member.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share07 className="w-3.5 h-3.5 text-primary-400" />}
-                            </Button>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {editingMemberId !== member.id && (
+                            <>
+                              <Button
+                                onPress={() => handleOpenMemberSummaryShare(member)}
+                                color="secondary"
+                                size="xs"
+                                aria-label={`Bagikan rincian tagihan ${member.name}`}
+                                className="h-8 w-8 p-0 rounded-lg flex items-center justify-center shrink-0"
+                              >
+                                {copiedId === member.id ? (
+                                  <Check className="w-4 h-4 text-emerald-400" />
+                                ) : (
+                                  <Share07 className="w-4 h-4 text-text-400" />
+                                )}
+                              </Button>
 
-                            <Button
-                              onPress={() => {
-                                setEditingMemberId(member.id);
-                                setEditingMemberName(member.name);
-                              }}
-                              color="tertiary"
-                              size="xs"
-                              className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
-                            >
-                              <Edit02 className="w-3.5 h-3.5" />
-                            </Button>
-
-                            {member.userId !== userId && (
                               <Button
                                 onPress={() => {
-                                  setDeleteConfig({
-                                    isOpen: true,
-                                    title: "Hapus Sohib Dari Tim?",
-                                    description: `Beneran mau hapus "${member.name}"? Semua catatan pengeluaran & pete-pete dia di plan ini bakal ilang, lho.`,
-                                    confirmText: "Hapus",
-                                    onConfirm: () => handleRemoveMember(member.id),
-                                  });
+                                  setEditingMemberId(member.id);
+                                  setEditingMemberName(member.name);
                                 }}
-                                color="tertiary"
+                                color="secondary"
                                 size="xs"
-                                className="p-1.5 rounded-lg text-danger-400/80 hover:text-danger-400 flex items-center justify-center active:scale-95 transition-all"
+                                aria-label={`Ubah nama ${member.name}`}
+                                className="h-8 w-8 p-0 rounded-lg flex items-center justify-center shrink-0"
                               >
-                                <Trash01 className="w-3.5 h-3.5" />
+                                <Edit02 className="w-4 h-4 text-text-400" />
                               </Button>
-                            )}
-                          </>
-                        )}
+
+                              {!isMe && (
+                                <Button
+                                  onPress={() => {
+                                    setDeleteConfig({
+                                      isOpen: true,
+                                      title: "Hapus Sohib Dari Tim?",
+                                      description: `Beneran mau hapus "${member.name}"? Semua catatan pengeluaran & pete-pete dia di plan ini bakal ilang, lho.`,
+                                      confirmText: "Hapus",
+                                      onConfirm: () => handleRemoveMember(member.id),
+                                    });
+                                  }}
+                                  color="secondary-destructive"
+                                  size="xs"
+                                  aria-label={`Hapus ${member.name} dari tim`}
+                                  className="h-8 w-8 p-0 rounded-lg flex items-center justify-center shrink-0"
+                                >
+                                  <Trash01 className="w-4 h-4 text-danger-400" />
+                                </Button>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -786,7 +914,16 @@ export default function VacationPlanDetailView({
         {/* 2. DAFTAR BIAYA / PENGELUARAN */}
         <div className={`p-3.5 rounded-2xl border border-secondary-800 bg-secondary-950/60 flex flex-col gap-3 overflow-hidden transition-all ${showExpenses ? "flex-1 min-h-0" : "shrink-0"}`}>
           <div
+            role="button"
+            tabIndex={0}
+            aria-expanded={showExpenses}
             onClick={() => setShowExpenses(!showExpenses)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setShowExpenses(!showExpenses);
+              }
+            }}
             className="flex justify-between items-center cursor-pointer select-none shrink-0"
           >
             <div className="flex items-center gap-2">
@@ -812,6 +949,7 @@ export default function VacationPlanDetailView({
                 onPress={() => setShowExpenses(!showExpenses)}
                 color="secondary"
                 className="px-2 py-1"
+                aria-label={showExpenses ? "Tutup daftar pengeluaran" : "Buka daftar pengeluaran"}
               >
                 {showExpenses ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
               </Button>
@@ -833,22 +971,22 @@ export default function VacationPlanDetailView({
                     <div className="min-w-0 flex-1 space-y-1">
                       <div>
                         <p className="text-xs font-bold text-text-50 truncate">{exp.title}</p>
-                        <p className="text-[9px] text-text-400">
+                        <p className="text-[10px] text-text-400">
                           Dibayar oleh: <span className="font-semibold text-text-300">{exp.payerName}</span>
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {exp.shares.map((sh) => (
-                          <Badge
-                            key={sh.memberId}
-                            color="gray"
-                            size="sm"
-                            type="color"
-                            className="flex items-center gap-1 text-[8px] font-semibold"
-                          >
-                            <Avatar alt={sh.memberName} size="xs" className="h-4 w-4 min-w-[16px]" />
-                            {sh.memberName} ({formatRupiah(sh.amount)})
-                          </Badge>
+                  <Badge
+                    key={sh.memberId}
+                    color="gray"
+                    size="sm"
+                    type="color"
+                    className="flex items-center gap-1 text-[10px] font-semibold"
+                  >
+                    <Avatar alt={sh.memberName} size="xs" className="h-4 w-4 min-w-[16px]" />
+                    {sh.memberName} ({formatRupiah(sh.amount)})
+                  </Badge>
                         ))}
                       </div>
                     </div>
@@ -861,6 +999,7 @@ export default function VacationPlanDetailView({
                           onPress={() => handleStartEdit(exp)}
                           color="tertiary"
                           size="xs"
+                          aria-label={`Edit ${exp.title}`}
                           className="p-1 rounded-lg text-primary-400/80 hover:text-primary-400 flex items-center justify-center"
                         >
                           <Edit02 className="w-3.5 h-3.5" />
@@ -877,6 +1016,7 @@ export default function VacationPlanDetailView({
                           }}
                           color="tertiary"
                           size="xs"
+                          aria-label={`Hapus ${exp.title}`}
                           className="p-1 rounded-lg text-danger-400/80 hover:text-danger-400 flex items-center justify-center"
                         >
                           <Trash01 className="w-3.5 h-3.5" />
@@ -893,7 +1033,16 @@ export default function VacationPlanDetailView({
         {/* 3. RINGKASAN SETTLEMENT (Who owes whom) */}
         <div className={`p-3.5 rounded-2xl border border-secondary-800 bg-secondary-950/60 flex flex-col gap-3 overflow-hidden transition-all ${showSettlements ? "flex-1 min-h-0" : "shrink-0"}`}>
           <div
+            role="button"
+            tabIndex={0}
+            aria-expanded={showSettlements}
             onClick={() => setShowSettlements(!showSettlements)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setShowSettlements(!showSettlements);
+              }
+            }}
             className="flex justify-between items-center cursor-pointer select-none shrink-0"
           >
             <div className="flex items-center gap-2.5">
@@ -931,6 +1080,7 @@ export default function VacationPlanDetailView({
                 onPress={() => setShowSettlements(!showSettlements)}
                 color="secondary"
                 className="px-2 py-1"
+                aria-label={showSettlements ? "Tutup hasil akhir patungan" : "Buka hasil akhir patungan"}
               >
                 {showSettlements ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
               </Button>
@@ -1015,7 +1165,7 @@ export default function VacationPlanDetailView({
                       <div className="flex items-center justify-end gap-2.5 min-w-0 flex-1 text-right">
                         <div className="min-w-0">
                           <p className="text-[11px] font-bold text-text-50 truncate flex items-center justify-end gap-1">
-                            {isToMe && <span className="text-[9px] font-normal text-primary-300">(Gua)</span>}
+                            {isToMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
                             {t.to}
                           </p>
                           <p className="text-[9px] text-text-400 font-medium">Penerima</p>

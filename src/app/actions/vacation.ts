@@ -152,6 +152,7 @@ export async function addVacationExpense(
 
     const shareAmount = Math.round(data.amount / data.memberIds.length);
 
+    let createdExpenseId = "";
     await prisma.$transaction(async (tx) => {
       const expense = await tx.vacationExpense.create({
         data: {
@@ -161,6 +162,7 @@ export async function addVacationExpense(
           planId,
         },
       });
+      createdExpenseId = expense.id;
 
       const sharesData = data.memberIds.map((memberId) => ({
         expenseId: expense.id,
@@ -174,7 +176,7 @@ export async function addVacationExpense(
     });
 
     revalidatePath(`/agenda/${planId}`);
-    return { success: true };
+    return { success: true, expenseId: createdExpenseId };
   } catch (error) {
     console.error("Gagal menambahkan pengeluaran:", error);
     return { success: false, error: "Gagal menambahkan pengeluaran" };

@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ArrowLeft } from "@untitledui/icons";

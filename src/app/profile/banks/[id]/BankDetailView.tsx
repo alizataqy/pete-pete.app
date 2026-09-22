@@ -41,7 +41,6 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
       if (res.success) {
         toast.success("Rekening berhasil dihapus!");
         router.push("/profile");
-        router.refresh();
       } else {
         toast.error(res.error || "Gagal menghapus rekening.");
       }

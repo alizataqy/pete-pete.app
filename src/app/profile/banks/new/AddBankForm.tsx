@@ -56,7 +56,6 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
       if (res.success) {
         toast.success("Rekening berhasil ditambahkan!");
         router.push("/profile");
-        router.refresh();
       } else {
         toast.error(res.error || "Gagal menambahkan rekening.");
       }

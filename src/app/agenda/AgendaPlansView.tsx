@@ -45,11 +45,6 @@ const formatRupiah = (value: number | string): string => {
   return `Rp ${formatted}`;
 };
 
-const parseRupiah = (formatted: string): string => {
-  if (!formatted) return "";
-  return formatted.replace(/[^0-9]/g, "");
-};
-
 const formatDateString = (dateStr?: string) => {
   if (!dateStr) return "";
   const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -128,7 +123,6 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
         setDateValue(null);
         setMembers([]);
         router.push(`/agenda/${res.planId}`);
-        router.refresh();
       } else {
         toast.error(res.error || "Gagal bikin plan baru");
       }
@@ -144,7 +138,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
       {/* Header */}
       <div className="p-4 border-b border-secondary-800 bg-secondary-950/40 flex items-center justify-between gap-3 shrink-0">
         <Button
-          onPress={() => router.push("/tongkrongan")}
+          href="/tongkrongan"
           color="primary"
           size="sm"
         >

@@ -6,10 +6,8 @@ import { prisma } from "@/lib/db";
 import LogoutButton from "@/components/LogoutButton";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
-import { User01, Plus, Compass, Coins01 } from "@untitledui/icons";
+import { Plus, Compass } from "@untitledui/icons";
 import { Avatar } from "@/components/base/avatar/avatar";
-import { toast } from "sonner";
-import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 
 export default async function TongkronganPage() {
   const session = await auth.api.getSession({

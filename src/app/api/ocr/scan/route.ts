@@ -98,8 +98,6 @@ export async function POST(request: NextRequest) {
       const service = Math.round(subtotal * 0.05); // Service Charge 5%
       const grandTotal = subtotal + tax + service;
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       // log the scan
       if (session?.user?.id) {
         await prisma.ocrScanLog.create({

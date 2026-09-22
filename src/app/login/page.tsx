@@ -31,7 +31,6 @@ export default function LoginPage() {
         setError(response.error.message || "Gagal masuk. Silakan cek kembali email & password Anda.");
       } else {
         router.push("/tongkrongan");
-        router.refresh();
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Terjadi kesalahan server saat mencoba login.";

@@ -6,7 +6,7 @@ import { createBillSession, createManualBillSession } from "@/app/actions/sessio
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
-import { Edit02, Camera01, Plus, ArrowLeft, AlertCircle, UploadCloud01, Check, CreditCard01 } from "@untitledui/icons";
+import { Edit02, Camera01, Plus, ArrowLeft, AlertCircle, UploadCloud01, CreditCard01 } from "@untitledui/icons";
 import { getUserBanks, UserBankData } from "@/app/actions/profile";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";

@@ -32,7 +32,6 @@ export default function RegisterPage() {
         setError(response.error.message || "Gagal mendaftar. Email mungkin sudah terdaftar.");
       } else {
         router.push("/tongkrongan");
-        router.refresh();
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Terjadi kesalahan server saat mencoba mendaftar.";

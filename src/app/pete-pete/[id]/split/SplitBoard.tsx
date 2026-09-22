@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition, useEffect } from "react";
+import React, { useState, useTransition, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   addSessionMember,
@@ -17,16 +17,24 @@ import {
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
-import { Plus, Edit02, Trash01, Save01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowsDown, ArrowUp, ArrowDown, Circle, Eye, EyeOff, Minus, MinusCircle, UsersMinus, X, Share07, MessageChatSquare, Play, XClose } from "@untitledui/icons";
-import { redirect, useRouter } from "next/navigation";
+import { Plus, Edit02, Trash01, Check, ArrowLeft, AlertTriangle, Users01, Copy01, Target01, CreditCard01, ArrowUp, ArrowDown, Eye, EyeOff, Minus, X, Share07, MessageChatSquare, XClose } from "@untitledui/icons";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 import { Dot } from "@/components/foundations/dot-icon";
-import DeleteConfirmation from "@/components/application/modals/DeleteConfirmation";
-import ConfirmationModal from "@/components/application/modals/ConfirmationModal";
+import dynamic from "next/dynamic";
 import { ModalOverlay, Modal, Dialog } from "@/components/application/modals/modal";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import { Heading } from "react-aria-components";
+
+const DeleteConfirmation = dynamic(
+  () => import("@/components/application/modals/DeleteConfirmation"),
+  { ssr: false }
+);
+const ConfirmationModal = dynamic(
+  () => import("@/components/application/modals/ConfirmationModal"),
+  { ssr: false }
+);
 
 
 const formatRupiah = (value: number | string): string => {
@@ -92,7 +100,12 @@ export default function SplitBoard({
 }: SplitBoardProps) {
   const router = useRouter();
   const [members, setMembers] = useState<Member[]>(initialMembers);
+  const [itemList, setItemList] = useState<Item[]>(items);
   const [newMemberName, setNewMemberName] = useState("");
+
+  useEffect(() => {
+    setItemList(items);
+  }, [items]);
   const [allocations, setAllocations] = useSessionStorageState<{ itemId: string; memberId: string; quantity: number }[]>(
     `pete-pete-allocations-${session.id}`,
     initialAllocations.map((a) => ({ itemId: a.itemId, memberId: a.memberId, quantity: a.quantity || 1 }))
@@ -130,7 +143,7 @@ export default function SplitBoard({
     let subtotal = 0;
 
     memberAllocations.forEach((alloc) => {
-      const item = items.find((i) => i.id === alloc.itemId);
+      const item = itemList.find((i) => i.id === alloc.itemId);
       if (item) {
         const itemAllocations = allocations.filter((x) => x.itemId === item.id);
         const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
@@ -141,7 +154,7 @@ export default function SplitBoard({
       }
     });
 
-    const totalSubtotal = items.reduce((acc, item) => {
+    const totalSubtotal = itemList.reduce((acc, item) => {
       const hasAlloc = allocations.some((a) => a.itemId === item.id);
       return acc + (hasAlloc ? Number(item.totalPrice) : 0);
     }, 0);
@@ -152,8 +165,15 @@ export default function SplitBoard({
     return subtotal + memberTaxAndTips;
   };
 
-  // Debounced auto-save allocations ke DB
+  const isInitialMount = useRef(true);
+
+  // Debounced auto-save allocations ke DB (hanya berjalan saat ada perubahan pengguna)
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     const statusTimer = setTimeout(() => {
       setSaveStatus("saving");
     }, 0);
@@ -181,7 +201,7 @@ export default function SplitBoard({
         console.error("Gagal auto-save:", err);
         setSaveStatus("error");
       }
-    }, 1000);
+    }, 800);
 
     return () => {
       clearTimeout(statusTimer);
@@ -194,24 +214,26 @@ export default function SplitBoard({
   const [editingMemberName, setEditingMemberName] = useState("");
 
   const handleRenameMember = async (memberId: string) => {
-    if (!editingMemberName.trim()) return;
-    setLoading(true);
-    setError("");
+    const trimmed = editingMemberName.trim();
+    if (!trimmed) return;
+    const prevMembers = members;
+    setMembers((prev) =>
+      prev.map((m) => (m.id === memberId ? { ...m, name: trimmed } : m))
+    );
+    setEditingMemberId(null);
+    toast.success("Nama anggota berhasil diubah!");
+
     try {
-      const res = await renameSessionMember(memberId, editingMemberName.trim(), session.id);
-      if (res.success && res.member) {
-        setMembers((prev) =>
-          prev.map((m) => (m.id === memberId ? { ...m, name: res.member!.name } : m))
-        );
-        setEditingMemberId(null);
-        toast.success("Nama anggota berhasil diubah!");
-      } else {
+      const res = await renameSessionMember(memberId, trimmed, session.id);
+      if (!res.success) {
+        setMembers(prevMembers);
         setError(res.error || "Gagal mengubah nama anggota.");
+        toast.error(res.error || "Gagal mengubah nama anggota.");
       }
     } catch {
+      setMembers(prevMembers);
       setError("Terjadi kesalahan.");
-    } finally {
-      setLoading(false);
+      toast.error("Gagal mengubah nama anggota.");
     }
   };
 
@@ -307,61 +329,77 @@ export default function SplitBoard({
       }
     }
 
-    setLoading(true);
+    const tempId = `temp-${Date.now()}`;
+    const prevMembers = members;
+    setMembers((prev) => [
+      ...prev,
+      { id: tempId, name, shareAmount: 0 },
+    ]);
+    setNewMemberName("");
+    toast.success("Teman berhasil ditambahkan!");
+
     try {
       const res = await addSessionMember(session.id, name);
       if (res.success && res.member) {
-        setMembers((prev) => [
-          ...prev,
-          { id: res.member.id, name: res.member.name, shareAmount: 0 },
-        ]);
-        setNewMemberName("");
-        toast.success("Teman berhasil ditambahkan!");
+        setMembers((prev) =>
+          prev.map((m) =>
+            m.id === tempId ? { id: res.member.id, name: res.member.name, shareAmount: 0 } : m
+          )
+        );
       } else {
+        setMembers(prevMembers);
         setError(res.error || "Gagal menambahkan anggota");
         toast.error(res.error || "Gagal menambahkan anggota");
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
+      setMembers(prevMembers);
       setError("Gagal menambahkan anggota");
       toast.error("Gagal menambahkan anggota");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleRemoveMember = async (memberId: string) => {
-    setLoading(true);
+    const prevMembers = members;
+    const prevAllocations = allocations;
+    setMembers((prev) => prev.filter((m) => m.id !== memberId));
+    setAllocations((prev) => prev.filter((a) => a.memberId !== memberId));
+    toast.success("Teman berhasil dihapus");
+
     try {
       const res = await removeSessionMember(memberId, session.id);
-      if (res.success) {
-        setMembers((prev) => prev.filter((m) => m.id !== memberId));
-        setAllocations((prev) => prev.filter((a) => a.memberId !== memberId));
-        toast.success("Teman berhasil dihapus");
+      if (!res.success) {
+        setMembers(prevMembers);
+        setAllocations(prevAllocations);
+        setError(res.error || "Gagal menghapus anggota");
+        toast.error(res.error || "Gagal menghapus anggota");
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
+      setMembers(prevMembers);
+      setAllocations(prevAllocations);
       setError("Gagal menghapus anggota");
       toast.error("Gagal menghapus anggota");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleTogglePaid = async (memberId: string, currentStatus: boolean) => {
+    const newStatus = !currentStatus;
+    const prevMembers = members;
+    setMembers((prev) =>
+      prev.map((m) => (m.id === memberId ? { ...m, isPaid: newStatus } : m))
+    );
+    const memberName = members.find((m) => m.id === memberId)?.name || "Sohib";
+    toast.success(newStatus ? `${memberName} udah bayar, mantap!` : `Tandai ${memberName} belum bayar!`);
+
     try {
-      const newStatus = !currentStatus;
       const res = await toggleMemberPaidStatus(memberId, newStatus, session.id);
-      if (res.success) {
-        setMembers((prev) =>
-          prev.map((m) => (m.id === memberId ? { ...m, isPaid: newStatus } : m))
-        );
-        const memberName = members.find((m) => m.id === memberId)?.name || "Sohib";
-        toast.success(newStatus ? `${memberName} udah bayar, mantap!` : `Tandai ${memberName} belum bayar!`);
-      } else {
+      if (!res.success) {
+        setMembers(prevMembers);
         toast.error(res.error || "Gagal mengubah status pembayaran");
       }
     } catch {
+      setMembers(prevMembers);
       toast.error("Terjadi kesalahan.");
     }
   };
@@ -414,12 +452,11 @@ export default function SplitBoard({
       if (res.success) {
         sessionStorage.removeItem(`pete-pete-allocations-${session.id}`);
         toast.success("Pembagian tagihan berhasil disimpan!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        setSaveStatus("saved");
       } else {
         setError(res.error || "Gagal memproses pembagian");
         toast.error(res.error || "Gagal memproses pembagian");
+        setSaveStatus("error");
       }
     });
   };
@@ -501,49 +538,73 @@ export default function SplitBoard({
     e.preventDefault();
     if (!newItemName.trim() || !newItemPrice) return;
 
-    setLoading(true);
+    const qty = Number(newItemQty) || 1;
+    const unitPrice = Number(newItemPrice);
+    const totalPrice = qty * unitPrice;
+    const tempId = `temp-${Date.now()}`;
+    const newItem: Item = {
+      id: tempId,
+      name: newItemName.trim(),
+      quantity: qty,
+      totalPrice,
+    };
+
+    const prevItems = itemList;
+    setItemList((prev) => [...prev, newItem]);
+    setShowAddForm(false);
+    setNewItemName("");
+    setNewItemQty("1");
+    setNewItemPrice("");
+    toast.success("Menu makanan berhasil ditambahkan!");
+
     try {
-      const res = await addSessionItem(session.id, newItemName, Number(newItemQty) || 1, Number(newItemPrice));
-      if (res.success) {
-        toast.success("Menu makanan berhasil ditambahkan!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+      const res = await addSessionItem(session.id, newItem.name, qty, unitPrice);
+      if (res.success && res.item) {
+        setItemList((prev) =>
+          prev.map((i) =>
+            i.id === tempId
+              ? {
+                  id: res.item.id,
+                  name: res.item.name,
+                  quantity: res.item.quantity,
+                  totalPrice: Number(res.item.totalPrice),
+                }
+              : i
+          )
+        );
       } else {
-        setError(res.error || "Gagal menambah item.");
+        setItemList(prevItems);
         toast.error(res.error || "Gagal menambah item.");
       }
     } catch (err) {
-      console.log(err)
-      setError("Gagal menambah item.");
+      console.log(err);
+      setItemList(prevItems);
       toast.error("Gagal menambah item.");
-    } finally {
-      setLoading(false);
     }
   };
 
   // Hapus Item
   const handleDeleteItem = async (itemId: string) => {
-    setLoading(true);
+    const prevItems = itemList;
+    const prevAllocations = allocations;
+
+    setItemList((prev) => prev.filter((i) => i.id !== itemId));
+    setAllocations((prev) => prev.filter((a) => a.itemId !== itemId));
+    setDeleteConfig(null);
+    toast.success("Menu makanan berhasil dihapus");
+
     try {
       const res = await deleteSessionItem(itemId, session.id);
-      if (res.success) {
-        toast.success("Menu makanan berhasil dihapus");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      } else {
-        setError(res.error || "Gagal menghapus item.");
+      if (!res.success) {
+        setItemList(prevItems);
+        setAllocations(prevAllocations);
         toast.error(res.error || "Gagal menghapus item.");
       }
     } catch (err) {
-      console.log(err)
-
-      setError("Gagal menghapus item.");
+      console.log(err);
+      setItemList(prevItems);
+      setAllocations(prevAllocations);
       toast.error("Gagal menghapus item.");
-    } finally {
-      setLoading(false);
-      setDeleteConfig(null);
     }
   };
 
@@ -561,25 +622,36 @@ export default function SplitBoard({
     e.preventDefault();
     if (!editItemName.trim() || !editItemPrice) return;
 
-    setLoading(true);
+    const qty = Number(editItemQty) || 1;
+    const unitPrice = Number(editItemPrice);
+    const totalPrice = qty * unitPrice;
+    const prevItems = itemList;
+
+    setItemList((prev) =>
+      prev.map((i) =>
+        i.id === itemId
+          ? {
+              ...i,
+              name: editItemName.trim(),
+              quantity: qty,
+              totalPrice,
+            }
+          : i
+      )
+    );
+    setEditingItemId(null);
+    toast.success("Menu makanan berhasil diperbarui!");
+
     try {
-      const res = await updateSessionItem(itemId, session.id, editItemName, Number(editItemQty) || 1, Number(editItemPrice));
-      if (res.success) {
-        toast.success("Menu makanan berhasil diperbarui!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      } else {
-        setError(res.error || "Gagal memperbarui item.");
+      const res = await updateSessionItem(itemId, session.id, editItemName.trim(), qty, unitPrice);
+      if (!res.success) {
+        setItemList(prevItems);
         toast.error(res.error || "Gagal memperbarui item.");
       }
     } catch (err) {
-      console.log(err)
-
-      setError("Gagal memperbarui item.");
+      console.log(err);
+      setItemList(prevItems);
       toast.error("Gagal memperbarui item.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -591,7 +663,7 @@ export default function SplitBoard({
     let subtotal = 0;
 
     memberAllocations.forEach(alloc => {
-      const item = items.find(i => i.id === alloc.itemId);
+      const item = itemList.find(i => i.id === alloc.itemId);
       if (item) {
         const itemAllocations = allocations.filter(x => x.itemId === item.id);
         const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
@@ -606,7 +678,7 @@ export default function SplitBoard({
       }
     });
 
-    const totalSubtotal = items.reduce((acc, item) => {
+    const totalSubtotal = itemList.reduce((acc, item) => {
       const hasAlloc = allocations.some(a => a.itemId === item.id);
       return acc + (hasAlloc ? Number(item.totalPrice) : 0);
     }, 0);
@@ -657,7 +729,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
   const generateAllSummaryText = () => {
     let allMembersShareText = "";
 
-    const totalSubtotal = items.reduce((acc, item) => {
+    const totalSubtotal = itemList.reduce((acc, item) => {
       const hasAlloc = allocations.some(a => a.itemId === item.id);
       return acc + (hasAlloc ? Number(item.totalPrice) : 0);
     }, 0);
@@ -672,7 +744,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
       let memberItemsText = "";
 
       memberAllocations.forEach(alloc => {
-        const item = items.find(i => i.id === alloc.itemId);
+        const item = itemList.find(i => i.id === alloc.itemId);
         if (item) {
           const itemAllocations = allocations.filter(x => x.itemId === item.id);
           const totalAllocatedQty = itemAllocations.reduce((sum, x) => sum + x.quantity, 0);
@@ -1172,7 +1244,7 @@ Ditunggu transferannya ya, Bos! Thank you 🙏`;
           )}
 
           <div className="space-y-3 flex-1 overflow-y-auto scrollbar-hide min-h-0">
-            {items.map((item) => {
+            {itemList.map((item) => {
               const isEditing = editingItemId === item.id;
 
               return (

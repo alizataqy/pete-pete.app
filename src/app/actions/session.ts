@@ -287,7 +287,7 @@ export async function recalculateSessionShares(sessionId: string) {
 export async function addSessionItem(sessionId: string, name: string, quantity: number, unitPrice: number) {
   try {
     const totalPrice = quantity * unitPrice;
-    await prisma.billItem.create({
+    const createdItem = await prisma.billItem.create({
       data: {
         name,
         quantity,
@@ -311,7 +311,7 @@ export async function addSessionItem(sessionId: string, name: string, quantity: 
 
     await recalculateSessionShares(sessionId);
     revalidatePath(`/pete-pete/${sessionId}/split`);
-    return { success: true };
+    return { success: true, item: createdItem };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Gagal menambahkan item secara manual";
     return { success: false, error: message };
