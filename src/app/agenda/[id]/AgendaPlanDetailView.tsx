@@ -667,7 +667,7 @@ export default function VacationPlanDetailView({
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-sm font-extrabold text-text line-clamp-1">{plan.title}</h1>
+            <h1 className="text-sm font-extrabold text-text wrap-break-word">{plan.title}</h1>
             <p className="text-[10px] text-text-300 flex items-center gap-1.5 flex-wrap">
               <span>{plan.description || "Pete-Pete Seru & Kumpul Bareng"}</span>
               {plan.date && (
@@ -803,7 +803,7 @@ export default function VacationPlanDetailView({
                           ) : (
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-1.5 flex-wrap">
-                                <p className="font-semibold text-text-50 text-xs truncate">
+                                <p className="font-semibold text-text-50 text-xs wrap-break-word">
                                   {member.name}
                                 </p>
                                 {isMe && (
@@ -971,7 +971,7 @@ export default function VacationPlanDetailView({
                   >
                     <div className="min-w-0 flex-1 space-y-1">
                       <div>
-                        <p className="text-xs font-bold text-text-50 truncate">{exp.title}</p>
+                        <p className="text-xs font-bold text-text-50 wrap-break-word">{exp.title}</p>
                         <p className="text-[10px] text-text-400">
                           Dibayar oleh: <span className="font-semibold text-text-300">{exp.payerName}</span>
                         </p>
@@ -1140,7 +1140,7 @@ export default function VacationPlanDetailView({
                               }`}
                           />
                           <div className="min-w-0">
-                            <p className="text-[11px] font-bold text-text-50 truncate flex items-center gap-1">
+                            <p className="text-[11px] font-bold text-text-50 wrap-break-word flex items-center gap-1">
                               {t.from}
                               {isFromMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
                             </p>
@@ -1165,7 +1165,7 @@ export default function VacationPlanDetailView({
                         {/* Receiver (To) */}
                         <div className="flex items-center justify-end gap-2.5 min-w-0 flex-1 text-right">
                           <div className="min-w-0">
-                            <p className="text-[11px] font-bold text-text-50 truncate flex items-center justify-end gap-1">
+                            <p className="text-[11px] font-bold text-text-50 wrap-break-word flex items-center justify-end gap-1">
                               {isToMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
                               {t.to}
                             </p>
@@ -1251,7 +1251,7 @@ export default function VacationPlanDetailView({
                               )}
                             </div>
                             <p
-                              className={`text-[10px] truncate w-full text-center font-semibold ${isSelected ? "text-text font-bold" : "text-text-400"
+                              className={`text-[10px] wrap-break-word w-full text-center leading-tight font-semibold ${isSelected ? "text-text font-bold" : "text-text-400"
                                 }`}
                             >
                               {m.name}
@@ -1307,7 +1307,7 @@ export default function VacationPlanDetailView({
                               )}
                             </div>
                             <p
-                              className={`text-[10px] truncate w-full text-center font-semibold ${isParticipating ? "text-text font-bold" : "text-text-400"
+                              className={`text-[10px] wrap-break-word w-full text-center leading-tight font-semibold ${isParticipating ? "text-text font-bold" : "text-text-400"
                                 }`}
                             >
                               {m.name}

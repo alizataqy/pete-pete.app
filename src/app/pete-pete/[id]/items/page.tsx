@@ -38,8 +38,8 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-sm font-extrabold text-text-50 truncate">Cek Menu Struk</h1>
-            <p className="text-[10px] text-text-300 truncate">
+            <h1 className="text-sm font-extrabold text-text-50">Cek Menu Struk</h1>
+            <p className="text-[10px] text-text-300">
               {session.merchantName ? `${session.title} • ${session.merchantName}` : session.title}
             </p>
           </div>
@@ -114,10 +114,10 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
                       {item.quantity}x
                     </Badge>
                     <div className="space-y-0.5 min-w-0 flex-1">
-                      <span className="text-xs font-bold text-text-50 block truncate">
+                      <span className="text-xs font-bold text-text-50 block wrap-break-word">
                         {item.name}
                       </span>
-                      <span className="text-[10px] text-text-400 block truncate">
+                      <span className="text-[10px] text-text-400 block">
                         Rp {unitPrice.toLocaleString("id-ID")} / porsi
                       </span>
                     </div>

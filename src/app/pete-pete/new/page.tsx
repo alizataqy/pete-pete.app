@@ -270,7 +270,7 @@ export default function NewSessionPage() {
       }
       setScanResult(result);
       if (result.merchantName) setMerchantName(result.merchantName);
-      if (result.merchantName && !title) setTitle(`PETE-PETE ${result.merchantName}`);
+      if (result.merchantName && !title) setTitle(result.merchantName);
       toast.success("Struk berhasil dibaca!");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Gagal scan struk nih, coba foto yang lebih terang atau input manual ya!";
@@ -391,7 +391,7 @@ export default function NewSessionPage() {
         });
 
         const res = await createManualBillSession({
-          title: title || `PETE-PETE ${merchantName || "Bill Patungan"}`,
+          title: title || merchantName || "Bill Patungan",
           description,
           merchantName,
           totalAmount: manualTotal,
@@ -417,7 +417,7 @@ export default function NewSessionPage() {
         const totalAmount = scanResult!.totalAmount;
 
         const res = await createBillSession({
-          title: title || `PETE-PETE ${merchantName}`,
+          title: title || merchantName || scanResult!.merchantName || "Bill Patungan",
           description,
           merchantName: merchantName || scanResult!.merchantName,
           totalAmount,
@@ -462,13 +462,13 @@ export default function NewSessionPage() {
             color="primary"
             size="sm"
             aria-label="Kembali"
-            className="min-w-[44px] min-h-[44px] p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+            className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-sm font-extrabold text-text-50 truncate">Bikin Bill PETE-PETE</h1>
-            <p className="text-[10px] text-text-300 truncate">Pilih cara input menu patungan</p>
+            <h1 className="text-sm font-extrabold text-text-50">Bikin Bill PETE-PETE</h1>
+            <p className="text-[10px] text-text-300">Pilih cara input menu patungan</p>
           </div>
         </header>
 
@@ -732,7 +732,7 @@ export default function NewSessionPage() {
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={t.logo} alt={t.name} className="w-6 h-6 object-contain" />
-                      <span className="text-[10px] font-bold truncate max-w-full">{t.name}</span>
+                      <span className="text-[10px] font-bold wrap-break-word text-center">{t.name}</span>
                     </button>
                   ))}
                 </div>
@@ -783,7 +783,7 @@ export default function NewSessionPage() {
   );
 
   return (
-    <main className="flex-1 flex flex-col bg-background text-text relative h-full min-h-0 overflow-hidden">
+    <main className="flex-1 flex flex-col bg-background text-text h-full min-h-0 overflow-hidden">
       {/* Mobile Header */}
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
         <Button
@@ -811,7 +811,7 @@ export default function NewSessionPage() {
       </header>
 
       {/* Form Body Scrollable */}
-      <div className="flex-1 p-4 pb-28 space-y-5 overflow-y-auto">
+      <div className="flex-1 min-h-0 p-4 space-y-5 overflow-y-auto">
         {/* ============================ SCAN MODE ============================ */}
         {inputMode === "scan" && (
           <>
@@ -875,7 +875,7 @@ export default function NewSessionPage() {
                   {scanResult.items.map((item, idx) => (
                     <div key={idx} className="bg-secondary-900/40 border border-secondary-800/80 rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-3">
                       <div className="space-y-0.5 min-w-0 flex-1">
-                        <span className="text-xs sm:text-sm font-bold text-text-50 block truncate">{item.name}</span>
+                        <span className="text-xs sm:text-sm font-bold text-text-50 block wrap-break-word">{item.name}</span>
                         <span className="text-[11px] text-text-300">{item.quantity}x &bull; Rp {Number(item.unitPrice).toLocaleString("id-ID")}</span>
                       </div>
                       <span className="text-xs sm:text-sm font-extrabold text-text-50 shrink-0">Rp {Number(item.totalPrice).toLocaleString("id-ID")}</span>
@@ -916,7 +916,7 @@ export default function NewSessionPage() {
 
         {/* ============================ MANUAL MODE ============================ */}
         {inputMode === "manual" && (
-          <div className="space-y-4 pb-20">
+          <div className="space-y-4 pb-4">
             {/* Step Indicator */}
             <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-3.5 space-y-2.5">
               <div className="flex items-center justify-between">
@@ -982,22 +982,20 @@ export default function NewSessionPage() {
                           <button
                             type="button"
                             onClick={() => setAddPriceMode("unit")}
-                            className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                              addPriceMode === "unit"
+                            className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${addPriceMode === "unit"
                                 ? "bg-primary-500 text-white shadow-xs"
                                 : "text-text-400 hover:text-text-200"
-                            }`}
+                              }`}
                           >
                             Satuan
                           </button>
                           <button
                             type="button"
                             onClick={() => setAddPriceMode("total")}
-                            className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                              addPriceMode === "total"
+                            className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${addPriceMode === "total"
                                 ? "bg-primary-500 text-white shadow-xs"
                                 : "text-text-400 hover:text-text-200"
-                            }`}
+                              }`}
                           >
                             Total
                           </button>
@@ -1055,7 +1053,7 @@ export default function NewSessionPage() {
                       {manualItems.map((item, idx) => (
                         <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-secondary-900/40 border border-secondary-800/80 gap-3">
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs sm:text-sm font-bold text-text-50 truncate">{item.name}</p>
+                            <p className="text-xs sm:text-sm font-bold text-text-50 wrap-break-word">{item.name}</p>
                             <p className="text-[11px] text-text-300 mt-0.5">
                               {item.quantity}x &bull; Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/porsi = Rp {item.totalPrice.toLocaleString("id-ID")}
                             </p>
@@ -1120,7 +1118,7 @@ export default function NewSessionPage() {
                         Gua
                       </span>
                     </div>
-                    <p className="text-[10px] text-text font-bold truncate w-full text-center">
+                    <p className="text-[10px] text-text font-bold wrap-break-word w-full text-center leading-tight">
                       {currentUserName}
                     </p>
                   </div>
@@ -1163,7 +1161,7 @@ export default function NewSessionPage() {
                               setEditingManualIndex(idx);
                               setEditingManualName(m);
                             }}
-                            className="text-[10px] text-text font-semibold truncate w-full text-center cursor-pointer hover:underline"
+                            className="text-[10px] text-text font-semibold wrap-break-word w-full text-center leading-tight cursor-pointer hover:underline"
                             title="Klik untuk ubah nama"
                           >
                             {m}
@@ -1206,7 +1204,7 @@ export default function NewSessionPage() {
                         <div key={idx} className="p-3.5 rounded-xl border border-secondary-800/80 bg-secondary-900/40 space-y-3">
                           <div className="flex justify-between items-start gap-2">
                             <div className="min-w-0 flex-1">
-                              <h4 className="font-bold text-text-50 text-xs sm:text-sm leading-snug line-clamp-2">{item.name}</h4>
+                              <h4 className="font-bold text-text-50 text-xs sm:text-sm leading-snug wrap-break-word">{item.name}</h4>
                               <p className="text-[11px] text-text-300 mt-0.5">
                                 Qty: {item.quantity}x &bull; Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/porsi
                               </p>
@@ -1271,7 +1269,7 @@ export default function NewSessionPage() {
                                       </>
                                     )}
                                   </div>
-                                  <p className={`text-[10px] truncate w-full text-center font-semibold ${qty > 0 ? "text-text-50 font-bold" : "text-text-400"}`}>
+                                  <p className={`text-[10px] wrap-break-word w-full text-center leading-tight font-semibold ${qty > 0 ? "text-text-50 font-bold" : "text-text-400"}`}>
                                     {person === currentUserName ? "Gua" : person}
                                   </p>
                                 </div>
@@ -1292,8 +1290,8 @@ export default function NewSessionPage() {
         )}
       </div>
 
-      {/* Fixed Bottom Action */}
-      <div className="fixed bottom-0 inset-x-0 max-w-md mx-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-secondary-800 bg-secondary-950/95 backdrop-blur-md z-30">
+      {/* Docked Bottom Action */}
+      <div className="shrink-0 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-secondary-800 bg-secondary-950/95 backdrop-blur-md z-30">
         {inputMode === "scan" && !scanResult ? (
           file ? (
             <Button

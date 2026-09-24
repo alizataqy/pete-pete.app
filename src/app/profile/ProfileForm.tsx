@@ -226,8 +226,8 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                   <Wallet03 className="w-5 h-5 text-primary-400" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-text-50 truncate">{banks.length} Wallet</p>
-                  <p className="text-[10px] text-text-300 truncate">
+                  <p className="text-sm font-bold text-text-50">{banks.length} Wallet</p>
+                  <p className="text-[10px] text-text-300">
                     {banks.filter((b: UserBankData) => !["GoPay", "OVO", "Dana", "QRIS"].includes(b.bankName)).length} Bank
                     {" "}&bull;{" "}
                     {banks.filter((b: UserBankData) => ["GoPay", "OVO", "Dana"].includes(b.bankName)).length} E-Wallet

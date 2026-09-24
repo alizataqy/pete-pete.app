@@ -546,11 +546,11 @@ export default function SplitBoard({
           prev.map((i) =>
             i.id === tempId
               ? {
-                  id: res.item.id,
-                  name: res.item.name,
-                  quantity: res.item.quantity,
-                  totalPrice: Number(res.item.totalPrice),
-                }
+                id: res.item.id,
+                name: res.item.name,
+                quantity: res.item.quantity,
+                totalPrice: Number(res.item.totalPrice),
+              }
               : i
           )
         );
@@ -621,11 +621,11 @@ export default function SplitBoard({
       prev.map((i) =>
         i.id === itemId
           ? {
-              ...i,
-              name: cleanName,
-              quantity: qty,
-              totalPrice,
-            }
+            ...i,
+            name: cleanName,
+            quantity: qty,
+            totalPrice,
+          }
           : i
       )
     );
@@ -867,7 +867,7 @@ ${bonUrl}
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-sm font-extrabold text-text truncate">{session.title}</h1>
+            <h1 className="text-sm font-extrabold text-text wrap-break-word">{session.title}</h1>
             <div className="text-[9px] text-text-300 flex items-center gap-1.5 mt-0.5">
               <span className="shrink-0">Kode: {session.inviteCode}</span>
               <span>•</span>
@@ -876,8 +876,8 @@ ${bonUrl}
                   sessionStatus === "COMPLETED"
                     ? "success"
                     : sessionStatus === "CANCELLED"
-                    ? "error"
-                    : "gray"
+                      ? "error"
+                      : "gray"
                 }
                 size="sm"
                 type="color"
@@ -886,8 +886,8 @@ ${bonUrl}
                 {sessionStatus === "COMPLETED"
                   ? "Kelar"
                   : sessionStatus === "CANCELLED"
-                  ? "Dibatalkan"
-                  : "Draft"}
+                    ? "Dibatalkan"
+                    : "Draft"}
               </Badge>
             </div>
           </div>
@@ -918,7 +918,7 @@ ${bonUrl}
           <div className="p-2 px-3 rounded-lg border border-secondary-800 bg-secondary-950/40 text-xs flex items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-2 min-w-0 flex-1 text-text-200">
               <CreditCard01 className="w-3.5 h-3.5 text-primary-400 shrink-0" />
-              <p className="truncate" title={session.bankOwner ? `${session.bankName}: ${session.bankAccount} (A/N: ${session.bankOwner})` : undefined}>
+              <p className="wrap-break-word leading-tight" title={session.bankOwner ? `${session.bankName}: ${session.bankAccount} (A/N: ${session.bankOwner})` : undefined}>
                 <span className="font-bold text-text-50">{session.bankName}</span>:{" "}
                 {showAccount
                   ? session.bankAccount
@@ -991,12 +991,12 @@ ${bonUrl}
               <Users01 className="w-4 h-4 text-text-300 shrink-0" />
               <div className="flex flex-col min-w-0 flex-1">
                 <div className="flex items-center gap-1 min-w-0">
-                  <span className="text-xs font-semibold text-text-100 tracking-wider truncate">{members.length} Sohib yang Join</span>
+                  <span className="text-xs font-semibold text-text-100 tracking-wider wrap-break-word">{members.length} Sohib yang Join</span>
                   {saveStatus === "saving" && <span className="text-text-400 font-medium shrink-0"> <Dot color="primary" /> </span>}
                   {saveStatus === "saved" && <span className="text-emerald-500 font-medium shrink-0"> <Dot color="success" /> </span>}
                   {saveStatus === "error" && <span className="text-danger-500 font-medium shrink-0"> <Dot color="danger" /> </span>}
                 </div>
-                <span className="text-[10px] text-text-400 truncate">Pencet buat kelola sohib lo</span>
+                <span className="text-[10px] text-text-400 wrap-break-word">Pencet buat kelola sohib lo</span>
               </div>
             </div>
             <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -1088,7 +1088,7 @@ ${bonUrl}
                           </div>
                         ) : (
                           <div className="flex flex-col min-w-0">
-                            <p className="font-semibold text-text text-xs truncate">
+                            <p className="font-semibold text-text text-xs wrap-break-word">
                               {member.name} {member.userId === session.userId && <span className="text-[9px] font-normal text-text-400">(Gua)</span>}
                             </p>
                             <p className="text-[10px] text-primary-400 font-medium">
@@ -1177,11 +1177,11 @@ ${bonUrl}
         <div className="space-y-3 flex-1 flex flex-col min-h-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2">
             <div className="space-y-0.5 min-w-0 flex-1">
-              <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5 truncate">
+              <h2 className="text-xs font-semibold text-text uppercase tracking-wider flex items-center gap-1.5">
                 <Target01 className="w-4 h-4 text-text-300 shrink-0" />
-                <span className="truncate">Siapa Pesen Apa Nih?</span>
+                <span>Siapa Pesen Apa Nih?</span>
               </h2>
-              <p className="text-[10px] text-text-400 leading-normal truncate">
+              <p className="text-[10px] text-text-400 leading-normal">
                 Klik avatar sohib lo buat bagi porsi makanannya, Bos!
               </p>
             </div>
@@ -1403,7 +1403,7 @@ ${bonUrl}
                           <>
                             <div className="flex items-start justify-between gap-2">
                               <div className="min-w-0 flex-1">
-                                <h4 className="font-bold text-text text-xs leading-snug line-clamp-2" title={item.name}>
+                                <h4 className="font-bold text-text text-xs leading-snug wrap-break-word" title={item.name}>
                                   {item.name}
                                 </h4>
                                 <p className="text-[10px] text-text-400 mt-0.5">
@@ -1509,7 +1509,7 @@ ${bonUrl}
                                         )}
                                       </div>
                                       <p
-                                        className={`text-[10px] truncate w-full text-center font-semibold ${qty > 0 ? "text-text font-bold" : "text-text-400"}`}
+                                        className={`text-[10px] wrap-break-word w-full text-center leading-tight font-semibold ${qty > 0 ? "text-text font-bold" : "text-text-400"}`}
                                         title={member.name}
                                       >
                                         {member.userId === session.userId ? "Gua" : member.name}

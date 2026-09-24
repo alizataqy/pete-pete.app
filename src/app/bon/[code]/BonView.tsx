@@ -278,9 +278,8 @@ export default function BonView({
             {/* Shadow tepi kiri */}
             <div
               aria-hidden="true"
-              className={`pointer-events-none absolute left-0 top-0 bottom-3 w-8 bg-linear-to-r from-background via-background/70 to-transparent z-10 transition-opacity duration-200 ${
-                canScrollLeft ? "opacity-100" : "opacity-0"
-              }`}
+              className={`pointer-events-none absolute left-0 top-0 bottom-3 w-8 bg-linear-to-r from-background via-background/70 to-transparent z-10 transition-opacity duration-200 ${canScrollLeft ? "opacity-100" : "opacity-0"
+                }`}
             />
 
             <div
@@ -302,21 +301,19 @@ export default function BonView({
                     onClick={() => setSelectedMemberId(m.id)}
                     aria-pressed={isSelected}
                     aria-label={`Pilih ${displayName}, total tagihan Rp ${grandTotal.toLocaleString("id-ID")}`}
-                    className={`group relative flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all duration-150 cursor-pointer min-w-24 sm:min-w-26 shrink-0 active:scale-[0.96] ${
-                      isSelected
+                    className={`group relative flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all duration-150 cursor-pointer min-w-24 sm:min-w-26 shrink-0 active:scale-[0.96] ${isSelected
                         ? "bg-primary-500/15 border-primary-500/80 shadow-md shadow-primary-500/10 ring-1 ring-primary-500/40"
                         : "bg-secondary-950/60 border-secondary-800/90 hover:border-secondary-700 hover:bg-secondary-900/50 shadow-xs"
-                    }`}
+                      }`}
                   >
                     <div className="relative">
                       <Avatar
                         alt={displayName}
                         size="lg"
-                        className={`shadow-xs transition-transform duration-150 ${
-                          isSelected
+                        className={`shadow-xs transition-transform duration-150 ${isSelected
                             ? "scale-105 ring-2 ring-primary-500 ring-offset-2 ring-offset-secondary-950"
                             : "border border-secondary-800"
-                        }`}
+                          }`}
                       />
                       {m.isPaid ? (
                         <span
@@ -337,19 +334,17 @@ export default function BonView({
 
                     <div className="w-full text-center min-w-0 space-y-0.5">
                       <span
-                        className={`text-xs block truncate transition-colors ${
-                          isSelected ? "text-primary-300 font-extrabold" : "text-text-100 font-semibold"
-                        }`}
+                        className={`text-xs block wrap-break-word leading-tight transition-colors ${isSelected ? "text-primary-300 font-extrabold" : "text-text-100 font-semibold"
+                          }`}
                         title={displayName}
                       >
                         {displayName}
                       </span>
                       <span
-                        className={`inline-block text-[10px] font-bold tabular-nums px-2 py-0.5 rounded-full border transition-all ${
-                          isSelected
+                        className={`inline-block text-[10px] font-bold tabular-nums px-2 py-0.5 rounded-full border transition-all ${isSelected
                             ? "bg-primary-500/20 border-primary-500/40 text-primary-200"
                             : "bg-secondary-900/80 border-secondary-800/80 text-text-300"
-                        }`}
+                          }`}
                       >
                         Rp {grandTotal.toLocaleString("id-ID")}
                       </span>
@@ -362,9 +357,8 @@ export default function BonView({
             {/* Shadow tepi kanan */}
             <div
               aria-hidden="true"
-              className={`pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-linear-to-l from-background via-background/70 to-transparent z-10 transition-opacity duration-200 ${
-                canScrollRight ? "opacity-100" : "opacity-0"
-              }`}
+              className={`pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-linear-to-l from-background via-background/70 to-transparent z-10 transition-opacity duration-200 ${canScrollRight ? "opacity-100" : "opacity-0"
+                }`}
             />
           </div>
         </div>
@@ -380,7 +374,7 @@ export default function BonView({
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Avatar alt={displayName} size="md" />
                   <div className="min-w-0">
-                    <h3 className="text-sm font-extrabold text-text-50 truncate">
+                    <h3 className="text-sm font-extrabold text-text-50 wrap-break-word">
                       {displayName}
                     </h3>
                     <p className="text-[10px] text-text-400 mt-0.5">
@@ -420,7 +414,7 @@ export default function BonView({
                         className="p-3 rounded-xl bg-secondary-900/30 hover:bg-secondary-900/50 border border-secondary-800/80 hover:border-secondary-700/80 transition-all flex items-center justify-between gap-3 shadow-2xs"
                       >
                         <div className="min-w-0 flex-1">
-                          <span className="text-xs font-bold text-text-50 block truncate">
+                          <span className="text-xs font-bold text-text-50 block wrap-break-word">
                             {item.name}
                           </span>
                           <div className="flex items-center gap-1.5 mt-1">
@@ -541,7 +535,7 @@ export default function BonView({
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs font-bold text-text-50 block leading-snug truncate">
+                        <span className="text-xs font-bold text-text-50 block leading-snug wrap-break-word">
                           {item.name}
                         </span>
                         <span className="text-[10px] text-text-400 font-medium block mt-0.5">
@@ -569,7 +563,7 @@ export default function BonView({
                                 size="xs"
                                 className="size-5 shrink-0 ring-1 ring-secondary-800"
                               />
-                              <span className="font-semibold text-text-100 max-w-20 truncate">
+                              <span className="font-semibold text-text-100 max-w-20 wrap-break-word leading-tight">
                                 {member.name}
                               </span>
                               <span className="text-[9px] font-bold text-primary-400 bg-primary-500/10 px-1.5 py-0.5 rounded-full whitespace-nowrap">

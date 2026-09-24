@@ -209,7 +209,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     <h3 className="text-xs font-bold text-text-50 group-hover:text-primary-400 transition-colors">
                       {plan.title}
                     </h3>
-                    <p className="text-[10px] text-text-400 line-clamp-1 mt-0.5">
+                    <p className="text-[10px] text-text-400 mt-0.5 wrap-break-word">
                       {plan.description || "Gak ada deskripsi plan."}
                     </p>
                     {plan.date && (

@@ -63,7 +63,7 @@ export default async function TongkronganPage() {
             />
           </Button>
           <div className="flex-col flex min-w-0 flex-1">
-            <h1 className="text-sm font-extrabold text-text-50 truncate">Tongkrongan Gua</h1>
+            <h1 className="text-sm font-extrabold text-text-50">Tongkrongan Gua</h1>
             <p className="text-[10px] text-text-300 mt-0.5">
               Wassup, <strong className="text-primary-400 font-medium">{session.user.name}</strong>! Tongkrongan lo udah beres patungannya?
             </p>
@@ -112,7 +112,7 @@ export default async function TongkronganPage() {
             </div>
             <div className="min-w-0">
               <p className="text-xs font-bold text-text-50">Make a Plan</p>
-              <p className="text-[10px] text-text-400 line-clamp-1">Bikin plan liburan, BBQ, atau agenda kumpul bareng sohib biar ga pusing pete-peteannya</p>
+              <p className="text-[10px] text-text-400 leading-normal">Bikin plan liburan, BBQ, atau agenda kumpul bareng sohib biar ga pusing pete-peteannya</p>
             </div>
           </div>
           <Badge color="brand" size="sm" type="pill-color" className="shrink-0 font-bold">
@@ -147,6 +147,7 @@ export default async function TongkronganPage() {
                   const paidMembers = session.members.filter((m) => m.isPaid).length;
                   const unpaidMembers = totalMembers - paidMembers;
                   const isAllPaid = totalMembers > 0 && unpaidMembers === 0;
+                  const cleanTitle = session.title.replace(/^PETE-PETE\s*[-–—:]?\s*/i, "").trim() || session.merchantName || session.title;
 
                   return (
                     <div
@@ -157,7 +158,7 @@ export default async function TongkronganPage() {
                       <Link
                         href={`/pete-pete/${session.id}/split`}
                         className="absolute inset-0 z-0 rounded-xl"
-                        aria-label={`Bagi tagihan ${session.title}`}
+                        aria-label={`Bagi tagihan ${cleanTitle}`}
                       />
 
                       {/* Header: Icon, Judul, Merchant/Kode, dan Status */}
@@ -167,11 +168,11 @@ export default async function TongkronganPage() {
                             <ReceiptCheck className="w-4 h-4" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h3 className="font-bold text-sm text-text-50 group-hover:text-primary-400 transition-colors truncate">
-                              {session.title}
+                            <h3 className="font-bold text-sm text-text-50 group-hover:text-primary-400 transition-colors wrap-break-word">
+                              {cleanTitle}
                             </h3>
-                            <p className="text-[10px] text-text-400 truncate mt-0.5 flex items-center gap-1.5">
-                              {session.merchantName ? (
+                            <p className="text-[10px] text-text-400 mt-0.5 flex flex-wrap items-center gap-1.5">
+                              {session.merchantName && session.merchantName.toLowerCase() !== cleanTitle.toLowerCase() ? (
                                 <>
                                   <span className="font-medium text-text-300">{session.merchantName}</span>
                                   <span className="text-secondary-700">•</span>
@@ -186,8 +187,8 @@ export default async function TongkronganPage() {
                             session.status === "COMPLETED"
                               ? "success"
                               : session.status === "CANCELLED"
-                              ? "error"
-                              : "brand"
+                                ? "error"
+                                : "brand"
                           }
                           size="sm"
                           type="pill-color"
@@ -196,8 +197,8 @@ export default async function TongkronganPage() {
                           {session.status === "COMPLETED"
                             ? "Kelar"
                             : session.status === "CANCELLED"
-                            ? "Batal"
-                            : "Draft"}
+                              ? "Batal"
+                              : "Draft"}
                         </Badge>
                       </div>
 
