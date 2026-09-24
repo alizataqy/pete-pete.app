@@ -58,7 +58,8 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-center relative">
         <Button
           href="/profile/banks"
-          className="absolute left-4 p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all"
+          aria-label="Kembali ke semua wallet"
+          className="absolute left-4 min-w-[44px] min-h-[44px] p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all flex items-center justify-center"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -119,12 +120,13 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
                 <button
                   type="button"
                   onClick={() => setShowAccount(!showAccount)}
-                  className="p-1 text-white/50 hover:text-white/80 transition-all"
+                  aria-label={showAccount ? "Sembunyikan nomor rekening" : "Tampilkan nomor rekening"}
+                  className="min-w-[40px] min-h-[40px] p-2 flex items-center justify-center text-white/60 hover:text-white transition-all cursor-pointer rounded-lg active:scale-95"
                 >
                   {showAccount ? (
-                    <EyeOff className="w-4 h-4" />
+                    <EyeOff className="w-5 h-5" />
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-5 h-5" />
                   )}
                 </button>
               )}
@@ -140,17 +142,17 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
               navigator.clipboard.writeText(bank.bankAccount);
               toast.success("Nomor rekening disalin!");
             }}
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-secondary-800 bg-text-900 text-text-100 text-xs font-semibold hover:bg-text-800 active:scale-95 transition-all"
+            className="flex items-center justify-center gap-2 min-h-[48px] py-3.5 px-4 rounded-lg border border-secondary-800 bg-text-900 text-text-100 text-xs font-bold hover:bg-text-800 active:scale-[0.96] transition-transform cursor-pointer"
           >
             <Copy01 className="w-4 h-4" /> Salin Nomor
           </button>
           <button
             type="button"
             onClick={() => {
-              const text = `Transfer ke ${bank.bankName}\nA/N: ${bank.bankOwner}\nNo. Rek: ${bank.bankAccount}`;
+              const text = `💳 Transfer ke ${bank.bankName}\n👤 A/N: ${bank.bankOwner}\n🔢 No. Rek: ${bank.bankAccount}\n\n🙏 Ditunggu transferannya ya, Bos! Thank you.`;
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
             }}
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold active:scale-95 transition-all"
+            className="flex items-center justify-center gap-2 min-h-[48px] py-3.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold active:scale-[0.96] transition-transform cursor-pointer"
           >
             <Share07 className="w-4 h-4" /> Share WA
           </button>
@@ -162,7 +164,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
             disabled={deleting}
-            className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-rose-400 hover:text-rose-300 disabled:opacity-50 transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 min-h-[44px] py-3 text-sm font-semibold text-rose-400 hover:text-rose-300 disabled:opacity-50 active:scale-[0.96] transition-transform cursor-pointer"
           >
             <Trash01 className="w-4 h-4" /> Hapus Rekening
           </button>

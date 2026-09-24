@@ -42,15 +42,20 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  const handleUpdateProfile = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    if (!name.trim()) {
+      toast.error("Nama lo jangan dikosongin ya, Bos!");
+      return;
+    }
+
     setProfileLoading(true);
     setProfileSuccess(false);
 
     try {
       const res = await updateUserProfile({
         userId: initialData.id,
-        name,
+        name: name.trim(),
         email,
         avatar,
       });
@@ -58,34 +63,39 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
       if (res.success) {
         // Sinkronkan data profil ke session cookie better-auth secara client-side
         await authClient.updateUser({
-          name,
+          name: name.trim(),
         });
 
         setProfileSuccess(true);
-        toast.success("Profil berhasil diperbarui!");
+        toast.success("Profil lo udah berhasil diperbarui!");
         router.refresh();
       } else {
-        toast.error(res.error || "Gagal memperbarui profil.");
+        toast.error(res.error || "Gagal nyimpen profil nih, coba lagi ya!");
       }
     } catch (err) {
       console.log(err);
-      toast.error("Terjadi kesalahan server saat memperbarui profil.");
+      toast.error("Gagal nyimpen profil nih, coba lagi ya!");
     } finally {
       setProfileLoading(false);
     }
   };
 
-  const handleChangePassword = async (e: React.FormEvent) => {
+  const handleChangePassword = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setPasswordSuccess(false);
 
-    if (newPassword !== confirmPassword) {
-      toast.error("Konfirmasi kata sandi baru tidak cocok.");
+    if (!currentPassword) {
+      toast.error("Kata sandi lama lo diisi dulu ya!");
       return;
     }
 
-    if (newPassword.length < 6) {
-      toast.error("Kata sandi baru minimal harus 6 karakter.");
+    if (!newPassword || newPassword.length < 6) {
+      toast.error("Kata sandi baru minimal 6 karakter ya!");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Konfirmasi kata sandi baru lo gak cocok nih.");
       return;
     }
 
@@ -99,17 +109,22 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
       });
 
       if (res.error) {
-        toast.error(res.error.message || "Gagal mengubah kata sandi.");
+        const raw = res.error.message || "";
+        const friendlyMessage =
+          /incorrect|current|wrong|invalid/i.test(raw)
+            ? "Kata sandi lama lo salah nih, coba diinget-inget lagi ya!"
+            : "Gagal ganti kata sandi nih, coba lagi ya!";
+        toast.error(friendlyMessage);
       } else {
         setPasswordSuccess(true);
-        toast.success("Kata sandi berhasil diperbarui!");
+        toast.success("Kata sandi baru lo udah aktif, mantap!");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       }
     } catch (err) {
       console.log(err);
-      toast.error("Terjadi kesalahan saat mengubah kata sandi.");
+      toast.error("Gagal ganti kata sandi nih, cek koneksi internet lo ya!");
     } finally {
       setPasswordLoading(false);
     }
@@ -123,6 +138,8 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
           onPress={() => router.push("/tongkrongan")}
           color="primary"
           size="sm"
+          aria-label="Kembali ke tongkrongan"
+          className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -157,7 +174,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                   setAvatar(newSeed);
                 }}
                 color="secondary"
-                className="text-[10px] py-1 px-3 mt-1.5"
+                className="text-xs min-h-9.5 py-1.5 px-3.5 mt-1.5 rounded-lg font-semibold active:scale-95 transition-transform"
               >
                 Acak Avatar
               </Button>
@@ -191,7 +208,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                   type="submit"
                   isDisabled={profileLoading || profileSuccess}
                   isLoading={profileLoading}
-                  className="w-full py-2.5 text-white text-xs"
+                  className="w-full min-h-11 py-3 text-white text-xs font-bold rounded-lg active:scale-[0.96] transition-transform"
                 >
                   Simpan
                 </Button>
@@ -221,7 +238,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                 type="button"
                 onPress={() => router.push("/profile/banks/new")}
                 iconLeading={<Plus className="w-4 h-4 " />}
-                className="text-xs py-1.5 px-3"
+                className="text-xs min-h-11 py-2 px-3.5 rounded-lg font-bold active:scale-[0.96] transition-transform"
                 color='primary'
               >
                 Tambah Bank
@@ -232,7 +249,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
               <div className="border-t border-secondary-800/60 pt-3">
                 <Button
                   onPress={() => router.push("/profile/banks")}
-                  className="w-full py-2.5 px-4 text-xs"
+                  className="w-full min-h-11 py-2.5 px-4 text-xs font-bold rounded-lg active:scale-[0.96] transition-transform"
                   color='primary'
                 >
                   Lihat Semua Wallet
@@ -290,7 +307,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
               type="submit"
               isDisabled={passwordLoading || passwordSuccess}
               isLoading={passwordLoading}
-              className="w-full text-xs"
+              className="w-full min-h-11 py-3 text-xs font-bold rounded-lg active:scale-[0.96] transition-transform"
               size="sm"
               color="primary"
             >

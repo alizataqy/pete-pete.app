@@ -141,6 +141,8 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
           href="/tongkrongan"
           color="primary"
           size="sm"
+          aria-label="Kembali ke tongkrongan"
+          className="min-w-[44px] min-h-[44px] p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -165,7 +167,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
             onPress={() => setIsOpen(true)}
             color="primary"
             size="xs"
-            className="rounded-lg text-xs active:scale-95 transition-all shadow-md"
+            className="rounded-lg min-h-[44px] px-3.5 text-xs font-bold active:scale-95 transition-all shadow-md"
             iconLeading={Plus}
           >
             Bikin Plan
@@ -188,7 +190,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
               onPress={() => setIsOpen(true)}
               color="secondary"
               size="xs"
-              className="mt-2 active:scale-95 transition-all font-semibold"
+              className="mt-2 min-h-[44px] px-4 rounded-lg active:scale-95 transition-all font-semibold"
               iconLeading={Plus}
             >
               Mulai Bikin Plan
@@ -310,7 +312,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                         onPress={handleAddMember}
                         color="secondary"
                         size="md"
-                        className="h-10 px-3"
+                        className="h-10 min-h-[44px] px-3.5 rounded-lg font-semibold active:scale-95 transition-transform"
                       >
                         Tambah
                       </Button>
@@ -334,7 +336,8 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                           <button
                             type="button"
                             onClick={() => handleRemoveMember(m)}
-                            className="text-rose-400 hover:text-rose-300 font-bold ml-1 text-xs"
+                            className="text-rose-400 hover:text-rose-300 font-bold ml-1 w-6 h-6 min-w-6 min-h-6 flex items-center justify-center rounded-full text-sm active:scale-90"
+                            aria-label={`Hapus ${m}`}
                           >
                             &times;
                           </button>
@@ -351,6 +354,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     color="secondary"
                     size="sm"
                     isDisabled={loading}
+                    className="min-h-[44px] px-4 rounded-lg text-sm font-semibold active:scale-95 transition-transform"
                   >
                     Batal
                   </Button>
@@ -360,6 +364,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     size="sm"
                     isLoading={loading}
                     isDisabled={loading}
+                    className="min-h-[44px] px-4 rounded-lg text-sm font-bold active:scale-95 transition-transform"
                   >
                     Bikin Plan
                   </Button>

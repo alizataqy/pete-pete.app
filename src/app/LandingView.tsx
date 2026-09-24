@@ -87,12 +87,12 @@ export default function LandingView({ user }: UserSessionProp) {
         >
           <span className="font-black text-text text-lg tracking-tight">Ceban Pertama</span>
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {user ? (
             <Button
               href="/tongkrongan"
               iconTrailing={ArrowRight}
-              className="py-2 px-4 rounded-xl bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer"
+              className="min-h-[40px] sm:min-h-[44px] py-2 px-4 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
             >
               Tongkrongan Gua
             </Button>
@@ -101,13 +101,13 @@ export default function LandingView({ user }: UserSessionProp) {
               <Button
                 href="/login"
                 color="secondary"
-                className="py-2 px-3.5 rounded-xl border border-secondary-800 bg-text-950/40 hover:bg-text-900 active:scale-[0.97] text-text-200 text-xs font-semibold transition-transform duration-150 ease-out cursor-pointer"
+                className="min-h-[40px] sm:min-h-[44px] py-2 px-3.5 rounded-lg border border-secondary-800 bg-text-950/40 hover:bg-text-900 active:scale-[0.96] text-text-200 text-xs font-semibold transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
               >
                 Masuk
               </Button>
               <Button
                 href="/pete-pete/new"
-                className="py-2 px-4 rounded-xl bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer"
+                className="min-h-[40px] sm:min-h-[44px] py-2 px-4 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
               >
                 Coba Gratis
               </Button>
@@ -168,7 +168,7 @@ export default function LandingView({ user }: UserSessionProp) {
                 <Button
                   href="/tongkrongan"
                   iconTrailing={ArrowRight}
-                  className="w-full py-3.5 px-6 rounded-2xl bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3.5 px-6 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
                 >
                   Buka Tongkrongan Gua
                 </Button>
@@ -177,14 +177,14 @@ export default function LandingView({ user }: UserSessionProp) {
                   <Button
                     href="/pete-pete/new"
                     iconTrailing={ArrowRight}
-                    className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full sm:w-auto px-7 py-3.5 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Foto Struk Sekarang
                   </Button>
                   <Button
                     href="/register"
                     color="secondary"
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-secondary-800 bg-text-950/40 text-text-100 hover:text-white hover:bg-text-900 active:scale-[0.97] text-sm font-bold transition-transform duration-150 ease-out cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-lg border border-secondary-800 bg-text-950/40 text-text-100 hover:text-white hover:bg-text-900 active:scale-[0.97] text-sm font-bold transition-transform duration-150 ease-out cursor-pointer"
                   >
                     Daftar Akun
                   </Button>
@@ -394,7 +394,7 @@ export default function LandingView({ user }: UserSessionProp) {
             <Button
               href="/pete-pete/new"
               iconTrailing={ArrowRight}
-              className="py-3.5 px-8 rounded-2xl bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/30 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
+              className="py-3.5 px-8 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/30 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
             >
               Mulai Scan Struk Gratis
             </Button>

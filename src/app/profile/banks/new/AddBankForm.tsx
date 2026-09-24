@@ -30,17 +30,17 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
   const [newQrisUrl, setNewQrisUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleAddBank = async (e: React.FormEvent) => {
+  const handleAddBank = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!newBankOwner.trim()) {
-      toast.error("Nama pemilik rekening harus diisi!");
+      toast.error("Nama pemilik rekeningnya jangan dikosongin ya, Bos!");
       return;
     }
 
     const isQris = selectedTemplate === "QRIS";
     const accountVal = isQris ? newQrisUrl : newBankAccount;
     if (!accountVal.trim()) {
-      toast.error(isQris ? "Link QRIS harus diisi!" : "Nomor rekening harus diisi!");
+      toast.error(isQris ? "Link QRIS-nya jangan dikosongin ya!" : "Nomor rekening atau nomor HP jangan dikosongin ya!");
       return;
     }
 
@@ -49,19 +49,19 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
       const res = await addUserBank(userId, {
         bankName: selectedTemplate,
         bankAccount: accountVal,
-        bankOwner: newBankOwner,
+        bankOwner: newBankOwner.trim(),
         imageUrl: isQris ? newQrisUrl : `/bank-logos/${selectedTemplate.toLowerCase().replace(/\s+/g, "")}.svg`,
       });
 
       if (res.success) {
-        toast.success("Rekening berhasil ditambahkan!");
+        toast.success("Rekening baru lo berhasil disimpen!");
         router.push("/profile");
       } else {
-        toast.error(res.error || "Gagal menambahkan rekening.");
+        toast.error(res.error || "Gagal nyimpen rekening nih, coba lagi ya!");
       }
     } catch (err) {
       console.log(err);
-      toast.error("Gagal menyimpan rekening.");
+      toast.error("Gagal nyimpen rekening nih, coba lagi ya!");
     } finally {
       setLoading(false);
     }
@@ -73,10 +73,11 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
     <div className="flex flex-col flex-1 pb-16">
       {/* Header */}
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
-        <Button 
-          href="/profile" 
+        <Button
+          href="/profile"
           color="secondary"
-          className="p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all"
+          aria-label="Kembali ke profil"
+          className="min-w-11 min-h-11 p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all flex items-center justify-center"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -148,7 +149,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
             isDisabled={loading}
             isLoading={loading}
             iconLeading={<Plus />}
-            className="w-full py-1.5 px-3 text-xs"
+            className="w-full min-h-12 py-3.5 px-4 text-sm font-bold rounded-lg active:scale-[0.96] transition-transform"
             color='primary'
           >
             Tambah Rekening

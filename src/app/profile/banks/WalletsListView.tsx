@@ -23,6 +23,8 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
             onPress={() => router.push("/profile")}
             color="primary"
             size="sm"
+            aria-label="Kembali ke profil"
+            className="min-w-[44px] min-h-[44px] p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -35,21 +37,22 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
           type="button"
           onPress={() => router.push("/profile/banks/new")}
           iconLeading={<Plus className="w-4 h-4" />}
-          className="text-xs py-1.5 px-3"
+          className="text-xs min-h-[44px] py-2 px-3.5 rounded-lg font-bold active:scale-[0.96] transition-transform"
           color="primary"
         >
           Tambah Bank
         </Button>
-      </header> 
+      </header>
 
       {/* Body */}
       <div className="flex-1 p-4 overflow-y-auto space-y-3">
         {banks.length === 0 ? (
-          <div className="p-6 rounded-xl border border-dashed border-text-700 bg-text-950 flex flex-col items-center justify-center gap-2">
+          <div className="p-6 rounded-xl border border-dashed border-text-700 bg-text-950 flex flex-col items-center justify-center gap-3">
             <p className="text-xs text-text-400">Belum ada rekening terdaftar</p>
             <Button
               onPress={() => router.push("/profile/banks/new")}
-              className="text-[10px] font-bold text-primary-400 hover:text-primary-300 bg-transparent border-0"
+              color="primary"
+              className="text-xs font-bold min-h-[44px] px-4 rounded-lg active:scale-[0.96] transition-transform"
             >
               Tambah rekening pertama lo
             </Button>

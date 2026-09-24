@@ -16,7 +16,7 @@ export default function MobileContainer({ children }: { children: React.ReactNod
 
   // Halaman selain landing page dibatasi ukuran mobile (max-w-md) dan diposisikan di tengah (mx-auto)
   return (
-    <div className="w-full h-screen overflow-hidden bg-background border-x border-background-200 shadow-2xl relative flex flex-col max-w-md mx-auto">
+    <div className="w-full h-screen h-dvh overflow-hidden bg-background border-x border-background-200 shadow-2xl relative flex flex-col max-w-md mx-auto">
       {children}
     </div>
   );

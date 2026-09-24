@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { joinSessionByCode } from "@/app/actions/session";
 import { Input } from "@/components/base/input/input";
 import { Button } from "@/components/base/buttons/button";
+import { toast } from "sonner";
 
 interface JoinSessionFormProps {
   userId: string;
@@ -18,9 +19,14 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (!code.trim()) return;
+    if (!code.trim()) {
+      const msg = "Masukin kode patungannya dulu ya, Bos!";
+      setError(msg);
+      toast.error(msg);
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -29,13 +35,18 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
       const res = await joinSessionByCode(code.trim(), userId, userName);
       if (res.success && res.sessionId) {
         setSuccess(true);
+        toast.success("Berhasil gabung ke patungan!");
         router.push(`/pete-pete/${res.sessionId}/split`);
       } else {
-        setError(res.error || "Gagal bergabung ke Bill.");
+        const msg = res.error || "Kode patungannya gak ketemu nih, coba cek lagi ya!";
+        setError(msg);
+        toast.error(msg);
       }
     } catch (err) {
       console.log(err);
-      setError("Terjadi kesalahan server saat mencoba bergabung.");
+      const msg = "Gagal gabung patungan nih, cek koneksi internet lo ya!";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

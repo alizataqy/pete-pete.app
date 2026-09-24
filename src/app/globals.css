@@ -279,6 +279,7 @@
   --color-emerald-900: #072c16;
   --color-emerald-950: #051f10;
 
+  --color-background: var(--background);
   --color-text: var(--text);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
@@ -372,6 +373,19 @@ body {
   font-variant-ligatures: contextual;
   -webkit-font-kerning: normal;
   font-kerning: normal;
+}
+
+/* Hide scrollbars globally while keeping scroll functional */
+*, *::before, *::after {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+  -webkit-appearance: none;
 }
 
 @utility scrollbar-hide {

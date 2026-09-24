@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { signUp } from "@/lib/auth-client";
 import { Input } from "@/components/base/input/input";
 import { Button } from "@/components/base/buttons/button";
+import { ArrowLeft } from "@untitledui/icons";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -17,25 +18,46 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+
+    if (!name.trim()) {
+      setError("Nama panggilan lo jangan dikosongin ya!");
+      return;
+    }
+
+    if (!email.trim() || !email.includes("@")) {
+      setError("Format email lo belum pas nih, coba cek lagi ya!");
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setError("Password minimal 6 karakter ya biar akun lo aman!");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await signUp.email({
-        name,
-        email,
+        name: name.trim(),
+        email: email.trim(),
         password,
         callbackURL: "/tongkrongan",
       });
 
       if (response.error) {
-        setError(response.error.message || "Gagal mendaftar. Email mungkin sudah terdaftar.");
+        const raw = response.error.message || "";
+        const friendlyMessage =
+          /already|exists|registered/i.test(raw)
+            ? "Email ini udah pernah kedaftar, Bos. Langsung masuk aja!"
+            : "Gagal daftar nih, coba pastiin data lo bener ya!";
+        setError(friendlyMessage);
       } else {
         router.push("/tongkrongan");
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Terjadi kesalahan server saat mencoba mendaftar.";
-      setError(message);
+      console.error(error);
+      setError("Gagal terhubung ke server nih. Cek koneksi internet lo ya, Bos!");
     } finally {
       setLoading(false);
     }
@@ -43,7 +65,17 @@ export default function RegisterPage() {
 
   return (
     <main className="flex-1 flex flex-col justify-center p-6 relative overflow-hidden bg-transparent">
-
+      <header className="absolute top-0 left-0 right-0 z-10 p-6">
+        <Button
+          href="/"
+          color="secondary"
+          size="sm"
+          aria-label="Kembali ke beranda"
+          className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+      </header>
 
       <div className="w-full z-10 space-y-6 max-w-sm mx-auto">
         <div className="text-center space-y-1.5">
@@ -103,8 +135,9 @@ export default function RegisterPage() {
             type="submit"
             isDisabled={loading}
             isLoading={loading}
-            size="md"
-            className="w-full py-3 "
+            color="primary"
+            size="lg"
+            className="w-full min-h-12 py-3.5 rounded-lg font-bold text-sm active:scale-[0.96] transition-transform"
           >
             Daftar Sekarang!
           </Button>

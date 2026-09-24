@@ -474,13 +474,13 @@ export default function VacationPlanDetailView({
         prev.map((e) =>
           e.id === currentEditId
             ? {
-                ...e,
-                title: expenseTitle.trim(),
-                amount: amt,
-                payerId: expensePayerId,
-                payerName,
-                shares,
-              }
+              ...e,
+              title: expenseTitle.trim(),
+              amount: amt,
+              payerId: expensePayerId,
+              payerName,
+              shares,
+            }
             : e
         )
       );
@@ -662,6 +662,7 @@ export default function VacationPlanDetailView({
             color="primary"
             size="sm"
             aria-label="Kembali ke daftar agenda"
+            className="min-w-[44px] min-h-[44px] p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -714,8 +715,8 @@ export default function VacationPlanDetailView({
             <div className="flex items-center gap-2">
               <FeaturedIcon icon={Users01} size="sm" color="brand" theme="modern" />
               <div>
-                <h2 className="text-xs font-bold text-text-50">Sohib yang Join</h2>
-                <p className="text-[10px] text-text-400">{members.length} Sohib Terdaftar</p>
+                <h2 className="text-xs font-bold text-text-50">{members.length} Sohib yang Join</h2>
+                <p className="text-[10px] text-text-400">Buka ini untuk menambah Sohib lo</p>
               </div>
             </div>
             <Button
@@ -858,7 +859,7 @@ export default function VacationPlanDetailView({
                                 color="secondary"
                                 size="xs"
                                 aria-label={`Bagikan rincian tagihan ${member.name}`}
-                                className="h-8 w-8 p-0 rounded-lg flex items-center justify-center shrink-0"
+                                className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
                               >
                                 {copiedId === member.id ? (
                                   <Check className="w-4 h-4 text-emerald-400" />
@@ -875,7 +876,7 @@ export default function VacationPlanDetailView({
                                 color="secondary"
                                 size="xs"
                                 aria-label={`Ubah nama ${member.name}`}
-                                className="h-8 w-8 p-0 rounded-lg flex items-center justify-center shrink-0"
+                                className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
                               >
                                 <Edit02 className="w-4 h-4 text-text-400" />
                               </Button>
@@ -894,7 +895,7 @@ export default function VacationPlanDetailView({
                                   color="secondary-destructive"
                                   size="xs"
                                   aria-label={`Hapus ${member.name} dari tim`}
-                                  className="h-8 w-8 p-0 rounded-lg flex items-center justify-center shrink-0"
+                                  className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
                                 >
                                   <Trash01 className="w-4 h-4 text-danger-400" />
                                 </Button>
@@ -977,16 +978,16 @@ export default function VacationPlanDetailView({
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {exp.shares.map((sh) => (
-                  <Badge
-                    key={sh.memberId}
-                    color="gray"
-                    size="sm"
-                    type="color"
-                    className="flex items-center gap-1 text-[10px] font-semibold"
-                  >
-                    <Avatar alt={sh.memberName} size="xs" className="h-4 w-4 min-w-[16px]" />
-                    {sh.memberName} ({formatRupiah(sh.amount)})
-                  </Badge>
+                          <Badge
+                            key={sh.memberId}
+                            color="gray"
+                            size="sm"
+                            type="color"
+                            className="flex items-center gap-1 text-[10px] font-semibold"
+                          >
+                            <Avatar alt={sh.memberName} size="xs" className="h-4 w-4 min-w-[16px]" />
+                            {sh.memberName} ({formatRupiah(sh.amount)})
+                          </Badge>
                         ))}
                       </div>
                     </div>
@@ -994,15 +995,15 @@ export default function VacationPlanDetailView({
                       <span className="text-xs font-black text-text-50">
                         {formatRupiah(exp.amount)}
                       </span>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
                         <Button
                           onPress={() => handleStartEdit(exp)}
                           color="tertiary"
                           size="xs"
                           aria-label={`Edit ${exp.title}`}
-                          className="p-1 rounded-lg text-primary-400/80 hover:text-primary-400 flex items-center justify-center"
+                          className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg text-primary-400/80 hover:text-primary-400 flex items-center justify-center active:scale-95 transition-transform"
                         >
-                          <Edit02 className="w-3.5 h-3.5" />
+                          <Edit02 className="w-4 h-4" />
                         </Button>
                         <Button
                           onPress={() => {
@@ -1017,9 +1018,9 @@ export default function VacationPlanDetailView({
                           color="tertiary"
                           size="xs"
                           aria-label={`Hapus ${exp.title}`}
-                          className="p-1 rounded-lg text-danger-400/80 hover:text-danger-400 flex items-center justify-center"
+                          className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg text-danger-400/80 hover:text-danger-400 flex items-center justify-center active:scale-95 transition-transform"
                         >
-                          <Trash01 className="w-3.5 h-3.5" />
+                          <Trash01 className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
@@ -1096,93 +1097,93 @@ export default function VacationPlanDetailView({
               </div>
             ) : (
               <div className="space-y-2.5 flex-1 overflow-y-auto pr-1 scrollbar-hide min-h-0">
-              {transfers.map((t, idx) => {
-                const fromMember = members.find((m) => m.id === t.fromMemberId || m.name === t.from);
-                const toMember = members.find((m) => m.id === t.toMemberId || m.name === t.to);
-                const isFromMe = fromMember?.userId === userId;
-                const isToMe = toMember?.userId === userId;
+                {transfers.map((t, idx) => {
+                  const fromMember = members.find((m) => m.id === t.fromMemberId || m.name === t.from);
+                  const toMember = members.find((m) => m.id === t.toMemberId || m.name === t.to);
+                  const isFromMe = fromMember?.userId === userId;
+                  const isToMe = toMember?.userId === userId;
 
-                return (
-                  <div
-                    key={idx}
-                    className={`p-3.5 rounded-lg border transition-all flex flex-col gap-2.5 ${isFromMe
-                      ? "border-rose-900/60 bg-rose-950/15"
-                      : isToMe
-                        ? "border-primary-800/60 bg-primary-950/15"
-                        : "border-secondary-800 bg-secondary-950/40"
-                      }`}
-                  >
-                    {/* Status badge when current user is involved */}
-                    {(isFromMe || isToMe) && (
-                      <div className="flex items-center justify-between">
-                        <Badge
-                          color={isFromMe ? "error" : "success"}
-                          size="sm"
-                          type="color"
-                          className="text-[9px] font-bold inline-flex items-center gap-1"
-                        >
-                          {isFromMe ? "Lo Harus Transfer" : "Lo Bakal Terima Uang"}
-                        </Badge>
-                      </div>
-                    )}
-
-                    {/* Transfer visual flow with Avatars */}
-                    <div className="flex items-center justify-between gap-2">
-                      {/* Payer (From) */}
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <Avatar
-                          alt={t.from}
-                          size="sm"
-                          className={`shadow-md border shrink-0 ${isFromMe
-                            ? "border-rose-500/70 ring-1 ring-rose-500/50"
-                            : "border-secondary-800"
-                            }`}
-                        />
-                        <div className="min-w-0">
-                          <p className="text-[11px] font-bold text-text-50 truncate flex items-center gap-1">
-                            {t.from}
-                            {isFromMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
-                          </p>
-                          <p className="text-[9px] text-text-400 font-medium">Yang Bayar</p>
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-3.5 rounded-lg border transition-all flex flex-col gap-2.5 ${isFromMe
+                        ? "border-rose-900/60 bg-rose-950/15"
+                        : isToMe
+                          ? "border-primary-800/60 bg-primary-950/15"
+                          : "border-secondary-800 bg-secondary-950/40"
+                        }`}
+                    >
+                      {/* Status badge when current user is involved */}
+                      {(isFromMe || isToMe) && (
+                        <div className="flex items-center justify-between">
+                          <Badge
+                            color={isFromMe ? "error" : "success"}
+                            size="sm"
+                            type="color"
+                            className="text-[9px] font-bold inline-flex items-center gap-1"
+                          >
+                            {isFromMe ? "Lo Harus Transfer" : "Lo Bakal Terima Uang"}
+                          </Badge>
                         </div>
-                      </div>
+                      )}
 
-                      {/* Direction arrow & Amount */}
-                      <div className="flex flex-col items-center shrink-0 px-1">
-                        <div className="flex items-center gap-1">
-                          <div className="h-px w-2 sm:w-4 bg-secondary-700" />
-                          <div className="p-1 rounded-full bg-secondary-900 border border-secondary-700 text-text-300">
-                            <ArrowRight className="w-3 h-3" />
+                      {/* Transfer visual flow with Avatars */}
+                      <div className="flex items-center justify-between gap-2">
+                        {/* Payer (From) */}
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          <Avatar
+                            alt={t.from}
+                            size="sm"
+                            className={`shadow-md border shrink-0 ${isFromMe
+                              ? "border-rose-500/70 ring-1 ring-rose-500/50"
+                              : "border-secondary-800"
+                              }`}
+                          />
+                          <div className="min-w-0">
+                            <p className="text-[11px] font-bold text-text-50 truncate flex items-center gap-1">
+                              {t.from}
+                              {isFromMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
+                            </p>
+                            <p className="text-[9px] text-text-400 font-medium">Yang Bayar</p>
                           </div>
-                          <div className="h-px w-2 sm:w-4 bg-secondary-700" />
                         </div>
-                        <span className="text-xs font-black text-primary-400 tracking-tight mt-1">
-                          {formatRupiah(t.amount)}
-                        </span>
-                      </div>
 
-                      {/* Receiver (To) */}
-                      <div className="flex items-center justify-end gap-2.5 min-w-0 flex-1 text-right">
-                        <div className="min-w-0">
-                          <p className="text-[11px] font-bold text-text-50 truncate flex items-center justify-end gap-1">
-                            {isToMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
-                            {t.to}
-                          </p>
-                          <p className="text-[9px] text-text-400 font-medium">Penerima</p>
+                        {/* Direction arrow & Amount */}
+                        <div className="flex flex-col items-center shrink-0 px-1">
+                          <div className="flex items-center gap-1">
+                            <div className="h-px w-2 sm:w-4 bg-secondary-700" />
+                            <div className="p-1 rounded-full bg-secondary-900 border border-secondary-700 text-text-300">
+                              <ArrowRight className="w-3 h-3" />
+                            </div>
+                            <div className="h-px w-2 sm:w-4 bg-secondary-700" />
+                          </div>
+                          <span className="text-xs font-black text-primary-400 tracking-tight mt-1">
+                            {formatRupiah(t.amount)}
+                          </span>
                         </div>
-                        <Avatar
-                          alt={t.to}
-                          size="sm"
-                          className={`shadow-md border shrink-0 ${isToMe
-                            ? "border-primary-500/70 ring-1 ring-primary-500/50"
-                            : "border-secondary-800"
-                            }`}
-                        />
+
+                        {/* Receiver (To) */}
+                        <div className="flex items-center justify-end gap-2.5 min-w-0 flex-1 text-right">
+                          <div className="min-w-0">
+                            <p className="text-[11px] font-bold text-text-50 truncate flex items-center justify-end gap-1">
+                              {isToMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
+                              {t.to}
+                            </p>
+                            <p className="text-[9px] text-text-400 font-medium">Penerima</p>
+                          </div>
+                          <Avatar
+                            alt={t.to}
+                            size="sm"
+                            className={`shadow-md border shrink-0 ${isToMe
+                              ? "border-primary-500/70 ring-1 ring-primary-500/50"
+                              : "border-secondary-800"
+                              }`}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
               </div>
             )
           )}
@@ -1232,9 +1233,9 @@ export default function VacationPlanDetailView({
                             key={m.id}
                             type="button"
                             onClick={() => setExpensePayerId(m.id)}
-                            className="flex flex-col items-center gap-1.5 w-12 shrink-0 focus:outline-hidden active:scale-95 transition-all cursor-pointer group"
+                            className="flex flex-col items-center gap-1.5 w-12 shrink-0 focus:outline-hidden active:scale-95 transition-all cursor-pointer group min-h-[56px]"
                           >
-                            <div className="relative">
+                            <div className="relative min-w-[44px] min-h-[44px] flex items-center justify-center">
                               <Avatar
                                 alt={m.name}
                                 size="md"
@@ -1244,7 +1245,7 @@ export default function VacationPlanDetailView({
                                   }`}
                               />
                               {isSelected && (
-                                <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-text-950">
+                                <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-text-950 pointer-events-none">
                                   <Check className="w-2.5 h-2.5 stroke-[3px]" />
                                 </span>
                               )}
@@ -1288,9 +1289,9 @@ export default function VacationPlanDetailView({
                             key={m.id}
                             type="button"
                             onClick={() => handleToggleParticipant(m.id)}
-                            className="flex flex-col items-center gap-1.5 w-12 shrink-0 focus:outline-hidden active:scale-95 transition-all cursor-pointer group"
+                            className="flex flex-col items-center gap-1.5 w-12 shrink-0 focus:outline-hidden active:scale-95 transition-all cursor-pointer group min-h-[56px]"
                           >
-                            <div className="relative">
+                            <div className="relative min-w-[44px] min-h-[44px] flex items-center justify-center">
                               <Avatar
                                 alt={m.name}
                                 size="md"
@@ -1300,7 +1301,7 @@ export default function VacationPlanDetailView({
                                   }`}
                               />
                               {isParticipating && (
-                                <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-text-950">
+                                <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-text-950 pointer-events-none">
                                   <Check className="w-2.5 h-2.5 stroke-[3px]" />
                                 </span>
                               )}
@@ -1326,6 +1327,7 @@ export default function VacationPlanDetailView({
                     color="secondary"
                     size="sm"
                     isDisabled={loading}
+                    className="min-h-[44px] px-4 rounded-lg text-sm font-semibold active:scale-95 transition-transform"
                   >
                     Batal
                   </Button>
@@ -1335,6 +1337,7 @@ export default function VacationPlanDetailView({
                     size="sm"
                     isLoading={loading}
                     isDisabled={loading}
+                    className="min-h-[44px] px-4 rounded-lg text-sm font-bold active:scale-95 transition-transform"
                   >
                     Simpan Biaya
                   </Button>
@@ -1400,7 +1403,7 @@ export default function VacationPlanDetailView({
                       color="secondary"
                       size="sm"
                       iconLeading={Copy01}
-                      className="w-full justify-center py-2.5 text-xs font-semibold"
+                      className="w-full justify-center min-h-[44px] py-3 text-xs font-bold rounded-lg active:scale-[0.96] transition-transform"
                       onPress={() => handleShareToClipboard(shareModalConfig.text, shareModalConfig.memberId)}
                     >
                       Salin ke Clipboard
@@ -1409,7 +1412,7 @@ export default function VacationPlanDetailView({
                       color="primary"
                       size="sm"
                       iconLeading={MessageChatSquare}
-                      className="w-full justify-center py-2.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white"
+                      className="w-full justify-center min-h-[44px] py-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg active:scale-[0.96] transition-transform"
                       onPress={() => handleShareToWhatsApp(shareModalConfig.text)}
                     >
                       Kirim ke WhatsApp

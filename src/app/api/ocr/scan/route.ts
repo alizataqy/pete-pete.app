@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
 
     if (!file) {
       return NextResponse.json(
-        { error: "Tidak ada berkas struk yang diunggah" },
+        { error: "Foto struknya belum lo pilih nih, Bos. Pilih atau jepret struknya dulu ya!" },
         { status: 400 }
       );
     }
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 
       if (scanCount >= 3) {
         return NextResponse.json(
-          { error: "Batas harian tercapai. Anda hanya dapat melakukan 3 kali scan per hari saat masuk." },
+          { error: "Udah abis jatah harian lo nih (maksimal 3x scan per hari). Coba lagi besok atau input manual aja ya, Bos!" },
           { status: 403 }
         );
       }
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       endOfDay.setHours(23, 59, 59, 999);
 
       const hasScannedCookie = request.cookies.get("has_scanned")?.value === "true";
-      
+
       let hasScannedIp = false;
       if (ipAddress && ipAddress !== "127.0.0.1") {
         const ipScan = await prisma.ocrScanLog.findFirst({
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
       if (hasScannedCookie || hasScannedIp) {
         return NextResponse.json(
-          { error: "Batas harian gratis tanpa login tercapai. Silakan masuk untuk melakukan scan hingga 3 kali sehari!" },
+          { error: "Jatah scan gratis tanpa login udah abis nih. Masuk dulu yuk biar dapet jatah 3x scan sehari!" },
           { status: 403 }
         );
       }
@@ -248,9 +248,8 @@ Rules:
 
   } catch (error) {
     console.error("OCR Scan Error:", error);
-    const message = error instanceof Error ? error.message : "Gagal memproses struk dengan OCR Gemini";
     return NextResponse.json(
-      { error: message },
+      { error: "Struk lo gagal dibaca sama sistem nih. Pastiin fotonya terang, fokus, dan gak burem, atau input manual aja ya, Bos!" },
       { status: 500 }
     );
   }

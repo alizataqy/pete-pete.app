@@ -17,24 +17,40 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+
+    if (!email.trim()) {
+      setError("Email lo jangan dikosongin ya, Bos!");
+      return;
+    }
+
+    if (!password) {
+      setError("Kata sandi lo jangan dikosongin ya!");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await signIn.email({
-        email,
+        email: email.trim(),
         password,
         callbackURL: "/tongkrongan",
       });
 
       if (response.error) {
-        setError(response.error.message || "Gagal masuk. Silakan cek kembali email & password Anda.");
+        const raw = response.error.message || "";
+        const friendlyMessage =
+          /invalid|credential|password|user|not\s*found/i.test(raw)
+            ? "Email atau kata sandi lo gak cocok nih, coba cek lagi ya!"
+            : "Gagal masuk nih, coba cek lagi akun lo ya!";
+        setError(friendlyMessage);
       } else {
         router.push("/tongkrongan");
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Terjadi kesalahan server saat mencoba login.";
-      setError(message);
+      console.error(error);
+      setError("Gagal terhubung ke server nih. Cek koneksi internet lo ya, Bos!");
     } finally {
       setLoading(false);
     }
@@ -43,11 +59,15 @@ export default function LoginPage() {
   return (
     <main className="flex-1 flex flex-col justify-center p-6 relative overflow-hidden bg-transparent">
       <header className="absolute top-0 left-0 right-0 z-10 p-6">
-        <Link href="/">
-          <Button size="xs">
-            <ArrowLeft />
-          </Button>
-        </Link>
+        <Button
+          href="/"
+          color="secondary"
+          size="sm"
+          aria-label="Kembali ke beranda"
+          className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
       </header>
 
       <div className="w-full z-10 space-y-6 max-w-sm mx-auto">
@@ -96,8 +116,9 @@ export default function LoginPage() {
             type="submit"
             isDisabled={loading}
             isLoading={loading}
-            size="md"
-            className="w-full py-3 hover:from-primary-600 hover:to-primary-700"
+            color="primary"
+            size="lg"
+            className="w-full min-h-12 py-3.5 rounded-lg font-bold text-sm active:scale-[0.96] transition-transform"
           >
             Masuk
           </Button>

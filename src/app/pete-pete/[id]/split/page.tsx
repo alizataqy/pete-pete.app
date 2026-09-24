@@ -67,7 +67,7 @@ export default async function SessionSplitPage({ params }: { params: Promise<{ i
   }));
 
   return (
-    <main className="flex-1 flex flex-col relative overflow-hidden bg-transparent">
+    <main className="flex-1 flex flex-col relative overflow-hidden bg-background text-text">
       {/* Board Utama Pembagian */}
       <SplitBoard
         session={formattedSession}

@@ -6,7 +6,7 @@ import { createBillSession, createManualBillSession } from "@/app/actions/sessio
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
-import { Edit02, Camera01, Plus, ArrowLeft, AlertCircle, UploadCloud01, CreditCard01 } from "@untitledui/icons";
+import { Edit02, Camera01, Plus, ArrowLeft, UploadCloud01, CreditCard01, Zap, ChevronRight, CheckCircle, Trash01, XClose, Users01 } from "@untitledui/icons";
 import { getUserBanks, UserBankData } from "@/app/actions/profile";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";
@@ -74,7 +74,6 @@ export default function NewSessionPage() {
   const [description, setDescription] = useSessionStorageState("pete-pete-new-description", "");
   const [merchantName, setMerchantName] = useSessionStorageState("pete-pete-new-merchant-name", "");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   // Bank details selection & inputs
   const [profileBanks, setProfileBanks] = useState<UserBankData[]>([]);
@@ -237,9 +236,8 @@ export default function NewSessionPage() {
       setFile(selectedFile);
       setFilePreview(URL.createObjectURL(selectedFile));
       setScanResult(null);
-      setError("");
     } else {
-      setError("Silakan unggah file gambar struk (PNG, JPG, JPEG, dsb).");
+      toast.error("Pilih file foto struk lo dulu ya (format JPG, PNG, atau WEBP)!");
     }
   };
 
@@ -256,20 +254,27 @@ export default function NewSessionPage() {
   };
 
   const handleScanReceipt = async () => {
-    if (!file) { setError("Silakan pilih file struk terlebih dahulu."); return; }
+    if (!file) {
+      toast.error("Pilih file foto struk lo dulu baru pencet scan ya, Bos!");
+      return;
+    }
     setLoading(true);
-    setError("");
     try {
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/ocr/scan", { method: "POST", body: formData });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || "Gagal memproses gambar.");
+      if (!res.ok) {
+        toast.error(result.error || "Gagal baca gambar struk nih, coba pastiin fotonya jelas ya!");
+        return;
+      }
       setScanResult(result);
       if (result.merchantName) setMerchantName(result.merchantName);
       if (result.merchantName && !title) setTitle(`PETE-PETE ${result.merchantName}`);
+      toast.success("Struk berhasil dibaca!");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal memproses scan struk.");
+      const msg = err instanceof Error ? err.message : "Gagal scan struk nih, coba foto yang lebih terang atau input manual ya!";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -322,27 +327,30 @@ export default function NewSessionPage() {
   const manualTotal = manualSubtotal + Number(manualTax) + Number(manualTip);
 
   // --- Create Session ---
-  const handleCreate = async (e?: React.FormEvent) => {
+  const handleCreate = async (e?: React.SyntheticEvent) => {
     if (e) e.preventDefault();
 
     const isManual = inputMode === "manual";
     const isScan = inputMode === "scan";
 
     if (isScan && !scanResult) {
-      setError("Silakan scan struk Anda terlebih dahulu untuk membagi tagihan.");
+      toast.error("Scan dulu foto struk lo biar bisa bagi tagihan, Bos!");
       return;
     }
     if (isManual && manualItems.some(i => !i.name.trim())) {
-      setError("Nama menu tidak boleh kosong.");
+      toast.error("Ada nama menu yang masih kosong nih, lengkapi dulu ya!");
       return;
     }
     if (isManual && manualItems.length === 0) {
-      setError("Tambahkan minimal satu menu.");
+      toast.error("Masukin minimal satu menu makanan atau minuman dulu ya, Bos!");
+      return;
+    }
+    if (isManual && manualItems.some(i => i.totalPrice <= 0)) {
+      toast.error("Harga menu harus lebih dari Rp 0 ya, Bos!");
       return;
     }
 
     setLoading(true);
-    setError("");
     try {
       const taxAmount = isScan ? scanResult!.taxAmount : Number(manualTax);
       const tipAmount = isScan ? scanResult!.tipAmount : Number(manualTip);
@@ -398,7 +406,7 @@ export default function NewSessionPage() {
         });
 
         if (!res.success) {
-          setError(res.error || "Gagal membuat sesi manual.");
+          toast.error(res.error || "Gagal nyimpen sesi manual nih, coba periksa data menu lo ya!");
         } else {
           clearSessionStorage();
           router.push(`/pete-pete/${res.session?.id}/split`);
@@ -423,14 +431,15 @@ export default function NewSessionPage() {
         });
 
         if (!res.success) {
-          setError(res.error || "Gagal membuat sesi.");
+          toast.error(res.error || "Gagal nyimpen sesi patungan nih, coba beberapa saat lagi ya!");
         } else {
           clearSessionStorage();
           router.push(`/pete-pete/${res.session?.id}/split`);
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal membuat sesi PETE-PETE.");
+      console.error(err);
+      toast.error("Terjadi kendala saat nyimpen sesi patungan nih, coba lagi ya!");
     } finally {
       setLoading(false);
     }
@@ -445,59 +454,125 @@ export default function NewSessionPage() {
   // --- Step 0: Choose Mode ---
   if (!inputMode) {
     return (
-      <main className="flex-1 flex flex-col bg-secondary-950">
+      <main className="flex-1 flex flex-col bg-background text-text h-full min-h-0 overflow-hidden">
+        {/* Header */}
         <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
-          <Button href={authSession ? "/tongkrongan" : "/"} color="primary" size="sm">
+          <Button
+            href={authSession ? "/tongkrongan" : "/"}
+            color="primary"
+            size="sm"
+            aria-label="Kembali"
+            className="min-w-[44px] min-h-[44px] p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+          >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div>
-            <h1 className="text-base font-semibold text-text-50">Bikin Bill PETE-PETE</h1>
-            <p className="text-[10px] text-text-300">Pilih cara input menu</p>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-sm font-extrabold text-text-50 truncate">Bikin Bill PETE-PETE</h1>
+            <p className="text-[10px] text-text-300 truncate">Pilih cara input menu patungan</p>
           </div>
         </header>
 
-        <div className="flex-1 p-5 flex flex-col justify-center gap-3">
-          <p className="text-xs text-text-300 text-center mb-1">Mau input gimana nih?</p>
+        {/* Body Content */}
+        <div className="flex-1 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto">
+          {/* Welcome / Intro Hero */}
+          <div className="space-y-1.5 pt-1">
+            <h2 className="text-base sm:text-lg font-extrabold text-text-50 [text-wrap:balance]">
+              Mau input menu gimana nih?
+            </h2>
+            <p className="text-xs text-text-300 leading-relaxed [text-wrap:pretty]">
+              Pilih cara paling praktis buat kamu &amp; geng. Pake foto struk jauh lebih cepet dan anti ribet!
+            </p>
+          </div>
 
-          {/* Scan Mode Card */}
-          <button
-            type="button"
-            onClick={() => setInputMode("scan")}
-            className="w-full text-left p-4 rounded-2xl border border-secondary-800 bg-text-900 hover:border-primary-700 hover:bg-text-800 active:scale-[0.98] transition-all space-y-2.5"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 shrink-0 rounded-xl bg-primary-900/60 border border-primary-800 flex items-center justify-center">
-                <Camera01 className="w-5 h-5 text-primary-400" />
+          {/* Action Cards */}
+          {/* Action Cards */}
+          <div className="space-y-3">
+            {/* Scan Mode Card (Recommended) */}
+            <button
+              type="button"
+              onClick={() => setInputMode("scan")}
+              className="w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-primary-500/40 bg-gradient-to-br from-primary-950/40 via-secondary-950/60 to-secondary-950/30 hover:border-primary-500/80 hover:bg-secondary-950/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative overflow-hidden"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                  <div className="w-12 h-12 shrink-0 rounded-xl bg-primary-500/20 border border-primary-500/35 text-primary-400 flex items-center justify-center group-hover:scale-105 group-hover:bg-primary-500/30 transition-all shadow-xs mt-0.5">
+                    <Camera01 className="w-6 h-6" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-sm font-extrabold text-text-50 group-hover:text-primary-300 transition-colors">
+                        Scan Foto Struk
+                      </h3>
+                      <Badge color="brand" size="sm" type="pill-color" className="font-extrabold text-[9px] px-2 py-0.5 shadow-2xs">
+                        Rekomendasi
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-text-300 mt-1 leading-relaxed [text-wrap:pretty]">
+                      Foto struk kasir lo, AI otomatis deteksi nama menu, porsi, harga, pajak &amp; diskon dalam hitungan detik.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-primary-500/10 border border-primary-500/20 text-primary-400 flex items-center justify-center shrink-0 group-hover:bg-primary-500/25 group-hover:translate-x-0.5 transition-all mt-1">
+                  <ChevronRight className="w-4 h-4" />
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-text-50">Scan Foto Struk</p>
-                <p className="text-[10px] text-text-300">AI otomatis baca item &amp; harga dari foto</p>
+            </button>
+
+            {/* Manual Mode Card (Alternative) */}
+            <button
+              type="button"
+              onClick={() => setInputMode("manual")}
+              className="w-full text-left p-4 sm:p-5 rounded-2xl border border-secondary-800 bg-secondary-950/40 hover:border-secondary-700 hover:bg-secondary-950/70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-2xs group cursor-pointer relative"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                  <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary-900 border border-secondary-700/80 text-secondary-300 flex items-center justify-center group-hover:scale-105 group-hover:bg-secondary-800 transition-all shadow-2xs mt-0.5">
+                    <Edit02 className="w-6 h-6" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-sm font-extrabold text-text-50 group-hover:text-primary-300 transition-colors">
+                        Input Menu Manual
+                      </h3>
+                      <Badge color="gray" size="sm" type="pill-color" className="font-semibold text-[9px] px-2 py-0.5">
+                        Alternatif
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-text-300 mt-1 leading-relaxed [text-wrap:pretty]">
+                      Gak ada struk fisik? Masukin nama makanan, jumlah porsi, dan harga sendiri secara bebas sesuai pesanan.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-secondary-900 border border-secondary-800 text-text-400 flex items-center justify-center shrink-0 group-hover:text-primary-400 group-hover:border-secondary-700 group-hover:translate-x-0.5 transition-all mt-1">
+                  <ChevronRight className="w-4 h-4" />
+                </div>
+              </div>
+            </button>
+          </div>
+
+          {/* Quick Perks / Trust Highlights */}
+          <div className="p-3.5 sm:p-4 rounded-2xl border border-secondary-800/80 bg-secondary-950/30 backdrop-blur-xs space-y-2.5 mt-auto shadow-2xs">
+            <div className="flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-primary-400" />
+              <p className="text-[10px] font-extrabold uppercase tracking-wider text-text-400">
+                Kenapa Enak Pake Ceban Pertama?
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2 text-[11px] text-text-300">
+                <CheckCircle className="w-4 h-4 text-primary-400 shrink-0" />
+                <span>Pajak &amp; diskon struk dihitung adil proporsional</span>
+              </div>
+              <div className="flex items-center gap-2 text-[11px] text-text-300">
+                <CheckCircle className="w-4 h-4 text-primary-400 shrink-0" />
+                <span>Bisa dibagi rata atau spesifik per porsi sohib</span>
+              </div>
+              <div className="flex items-center gap-2 text-[11px] text-text-300">
+                <CheckCircle className="w-4 h-4 text-primary-400 shrink-0" />
+                <span>Link bon publik langsung kirim via WhatsApp tanpa login</span>
               </div>
             </div>
-            <p className="text-[10px] text-text-400 leading-relaxed pl-[52px]">
-              Foto struk makan atau belanja, semua menu &amp; harganya langsung kebaca otomatis.
-            </p>
-          </button>
-
-          {/* Manual Mode Card */}
-          <button
-            type="button"
-            onClick={() => setInputMode("manual")}
-            className="w-full text-left p-4 rounded-2xl border border-secondary-800 bg-text-900 hover:border-emerald-700 hover:bg-text-800 active:scale-[0.98] transition-all space-y-2.5"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 shrink-0 rounded-xl bg-emerald-900/40 border border-emerald-800 flex items-center justify-center">
-                <Edit02 className="w-5 h-5 text-emerald-400" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-text-50">Input Manual</p>
-                <p className="text-[10px] text-text-300">Ketik item &amp; jumlah sendiri satu per satu</p>
-              </div>
-            </div>
-            <p className="text-[10px] text-text-400 leading-relaxed pl-[52px]">
-              Ga ada foto struk? Langsung ketik aja nama item sama harganya. Bebas mau split gimana.
-            </p>
-          </button>
+          </div>
         </div>
       </main>
     );
@@ -508,10 +583,13 @@ export default function NewSessionPage() {
 
   // Helper: shared details form
   const detailsForm = (
-    <div className="bg-text-900 border border-secondary-800 rounded-xl p-4 shadow-sm space-y-4">
-      <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">
-        2. Detail Bill
-      </h2>
+    <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
+          <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">2</span>
+          Detail Bill &amp; Info Transfer
+        </h2>
+      </div>
       <div className="space-y-3">
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-text-100">Judul Bill</label>
@@ -520,7 +598,7 @@ export default function NewSessionPage() {
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+            className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
             placeholder="Misal: Makan Siang Bersama"
           />
         </div>
@@ -531,7 +609,7 @@ export default function NewSessionPage() {
             type="text"
             value={merchantName}
             onChange={(e) => setMerchantName(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+            className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
             placeholder="Misal: Restoran Selera"
           />
         </div>
@@ -541,7 +619,7 @@ export default function NewSessionPage() {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+            className="w-full p-3 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
             placeholder="Keterangan tambahan..."
             rows={2}
           />
@@ -553,9 +631,10 @@ export default function NewSessionPage() {
               <label className="text-xs font-semibold text-text-100">Pajak / Tax (Rp)</label>
               <input
                 type="text"
+                inputMode="numeric"
                 value={formatRupiah(manualTax)}
                 onChange={(e) => setManualTax(Number(parseRupiah(e.target.value)) || 0)}
-                className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+                className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
                 placeholder="Contoh: Rp 10.000"
               />
             </div>
@@ -563,9 +642,10 @@ export default function NewSessionPage() {
               <label className="text-xs font-semibold text-text-100">Servis / Tip (Rp)</label>
               <input
                 type="text"
+                inputMode="numeric"
                 value={formatRupiah(manualTip)}
                 onChange={(e) => setManualTip(Number(parseRupiah(e.target.value)) || 0)}
-                className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+                className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
                 placeholder="Contoh: Rp 5.000"
               />
             </div>
@@ -573,14 +653,14 @@ export default function NewSessionPage() {
         )}
 
         <div className="border-t border-secondary-800 pt-3 space-y-3">
-          <h3 className="text-[11px] font-bold text-primary-400 uppercase tracking-wider flex items-center gap-1">
-            <CreditCard01 className="w-3.5 h-3.5" />
+          <h3 className="text-xs font-bold text-primary-400 uppercase tracking-wider flex items-center gap-1.5">
+            <CreditCard01 className="w-4 h-4" />
             <span>Rekening Transfer Bill Ini</span>
           </h3>
 
           {profileBanks.length > 0 ? (
             <div className="space-y-3">
-              <label className="flex items-center gap-2 text-xs text-text-100 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-semibold text-text-100 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={useProfileBank}
@@ -592,9 +672,9 @@ export default function NewSessionPage() {
                       setSelectedBankId("custom");
                     }
                   }}
-                  className="rounded bg-text-950 border-text-700 text-primary-500 focus:ring-primary-500"
+                  className="rounded bg-secondary-950/80 border-secondary-700 text-primary-500 focus:ring-primary-500 w-4 h-4 cursor-pointer"
                 />
-                Pilih Rekening Profil
+                Pilih dari Rekening Profil Tersimpan
               </label>
 
               {useProfileBank ? (
@@ -603,9 +683,9 @@ export default function NewSessionPage() {
                     {profileBanks.map((b) => (
                       <label
                         key={b.id}
-                        className={`p-3 rounded-lg border text-xs text-text-300 flex items-center justify-between cursor-pointer transition-all ${selectedBankId === b.id
-                          ? "bg-primary-950/40 border-primary-500 text-text-100"
-                          : "bg-text-950 border-text-800 hover:border-text-700"
+                        className={`p-3 rounded-xl border text-xs text-text-300 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] ${selectedBankId === b.id
+                          ? "bg-primary-950/40 border-primary-500 text-text-100 ring-2 ring-primary-500/20"
+                          : "bg-secondary-900/40 border-secondary-800 hover:border-secondary-700"
                           }`}
                       >
                         <div className="flex items-center gap-3">
@@ -614,11 +694,11 @@ export default function NewSessionPage() {
                             name="profileBankSelect"
                             checked={selectedBankId === b.id}
                             onChange={() => b.id && setSelectedBankId(b.id)}
-                            className="bg-text-950 border-text-700 text-primary-500 focus:ring-primary-500"
+                            className="bg-secondary-950/80 border-secondary-700 text-primary-500 focus:ring-primary-500 w-4 h-4 cursor-pointer"
                           />
                           <div>
                             <p className="font-bold text-text-50">{b.bankName}</p>
-                            <p className="text-[10px]">
+                            <p className="text-[11px] text-text-300 mt-0.5">
                               {b.bankName === "QRIS" ? "Gambar QRIS" : b.bankAccount} (A/N {b.bankOwner})
                             </p>
                           </div>
@@ -630,7 +710,7 @@ export default function NewSessionPage() {
               ) : null}
             </div>
           ) : (
-            <p className="text-[10px] text-amber-400">
+            <p className="text-xs text-warning-400">
               * Belum ada rekening di profil. Langsung input baru aja di bawah ini:
             </p>
           )}
@@ -639,18 +719,20 @@ export default function NewSessionPage() {
             <div className="space-y-3.5 pt-1">
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-text-100">Pilih Tipe Bank / E-Wallet</label>
-                <div className="grid grid-cols-4 gap-1.5">
+                <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
                   {BANK_TEMPLATES.map((t) => (
                     <button
                       key={t.name}
                       type="button"
                       onClick={() => setSelectedTemplate(t.name)}
-                      className={`py-1.5 px-2 rounded-lg border text-[10px] font-bold transition-all text-center ${selectedTemplate === t.name
-                        ? "bg-primary-900 border-primary-500 text-primary-300"
-                        : "bg-text-950 border-text-700 text-text-300 hover:bg-text-900"
+                      className={`p-2.5 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${selectedTemplate === t.name
+                        ? "bg-primary-950/60 border-primary-500 text-primary-300 ring-2 ring-primary-500/30"
+                        : "bg-secondary-900/40 border-secondary-800 hover:border-secondary-700 text-text-300"
                         }`}
                     >
-                      {t.name}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={t.logo} alt={t.name} className="w-6 h-6 object-contain" />
+                      <span className="text-[10px] font-bold truncate max-w-full">{t.name}</span>
                     </button>
                   ))}
                 </div>
@@ -664,7 +746,7 @@ export default function NewSessionPage() {
                     required
                     value={qrisUrl}
                     onChange={(e) => setQrisUrl(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+                    className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
                     placeholder="https://link-gambar-qris.com/qris.jpg"
                   />
                 </div>
@@ -676,7 +758,7 @@ export default function NewSessionPage() {
                     required
                     value={bankAccount}
                     onChange={(e) => setBankAccount(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+                    className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
                     placeholder={BANK_TEMPLATES.find((t) => t.name === selectedTemplate)?.placeholder}
                   />
                 </div>
@@ -689,7 +771,7 @@ export default function NewSessionPage() {
                   required
                   value={bankOwner}
                   onChange={(e) => setBankOwner(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-text-50 placeholder-text-500 text-xs outline-none transition-all"
+                  className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
                   placeholder="Contoh: Muhammad Ucup"
                 />
               </div>
@@ -701,7 +783,7 @@ export default function NewSessionPage() {
   );
 
   return (
-    <main className="flex-1 flex flex-col bg-secondary-950 relative h-full min-h-0 overflow-hidden">
+    <main className="flex-1 flex flex-col bg-background text-text relative h-full min-h-0 overflow-hidden">
       {/* Mobile Header */}
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
         <Button
@@ -711,6 +793,8 @@ export default function NewSessionPage() {
           }}
           color="primary"
           size="sm"
+          aria-label="Kembali"
+          className="min-w-11 min-h-11 p-2 rounded-lg active:scale-95 transition-all flex items-center justify-center"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -728,29 +812,25 @@ export default function NewSessionPage() {
 
       {/* Form Body Scrollable */}
       <div className="flex-1 p-4 pb-28 space-y-5 overflow-y-auto">
-        {error && (
-          <div className="p-3.5 rounded-xl border border-secondary-700 bg-secondary-950 text-secondary-200 flex items-start gap-2.5">
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span className="text-xs">{error}</span>
-          </div>
-        )}
-
         {/* ============================ SCAN MODE ============================ */}
         {inputMode === "scan" && (
           <>
             {scanResult?.isMock && (
-              <div className="p-3.5 bg-primary-950 border border-[#0f3557] rounded-xl text-xs text-text-300">
+              <div className="p-3.5 bg-primary-950 border border-secondary-800 rounded-xl text-xs text-text-300">
                 Mode Demo — set GEMINI_API_KEY di <code className="text-text-50">.env</code> buat OCR beneran.
               </div>
             )}
 
             {/* Step 1: Upload File */}
             {!scanResult && (
-              <div className="bg-text-900 border border-secondary-800 rounded-xl p-4 shadow-sm space-y-4">
+              <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">1. Pilih Foto Struk</h2>
+                  <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">1</span>
+                    Pilih Foto Struk
+                  </h2>
                   {file && (
-                    <Button onPress={() => { setFile(null); setFilePreview(null); }} color="link-gray" className="text-[10px] font-semibold text-secondary-200">
+                    <Button onPress={() => { setFile(null); setFilePreview(null); }} color="link-gray" className="text-xs font-semibold text-secondary-200">
                       Hapus Foto
                     </Button>
                   )}
@@ -760,19 +840,22 @@ export default function NewSessionPage() {
                   <div
                     onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
                     onClick={() => document.getElementById("file-input")?.click()}
-                    className={`border border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-[0.98] ${isDragOver ? "border-primary-500 bg-primary-950" : "border-text-700 bg-text-950 hover:border-text-500"}`}
+                    className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-[0.99] group ${isDragOver ? "border-primary-500 bg-primary-950/40" : "border-secondary-700/80 bg-secondary-900/30 hover:border-primary-500/60 hover:bg-secondary-900/60"}`}
                   >
                     <input id="file-input" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                    <div className="p-2.5 bg-secondary-800 rounded-lg border border-text-700 mb-3">
-                      <UploadCloud01 className="w-5 h-5 text-text-300" />
+                    <div className="w-14 h-14 rounded-xl bg-primary-500/10 border border-primary-500/20 text-primary-400 flex items-center justify-center mb-3 group-hover:scale-105 group-hover:bg-primary-500/20 transition-all shadow-xs">
+                      <UploadCloud01 className="w-7 h-7" />
                     </div>
-                    <p className="text-xs font-semibold text-text-50 mb-0.5">Upload foto struk lo</p>
-                    <p className="text-[10px] text-text-300">Foto atau pilih dari galeri</p>
+                    <p className="text-sm font-bold text-text-50 mb-1">Upload foto struk lo</p>
+                    <p className="text-xs text-text-300">Sentuh untuk buka kamera / galeri</p>
+                    <span className="text-[10px] text-text-400 mt-2 bg-secondary-900/80 border border-secondary-800 px-2.5 py-1 rounded-full">
+                      Format: JPG, PNG, WebP (maks. 10MB)
+                    </span>
                   </div>
                 ) : (
-                  <div className="relative aspect-[3/2] w-full rounded-xl overflow-hidden bg-text-950 border border-secondary-800">
+                  <div className="relative aspect-3/2 w-full rounded-2xl overflow-hidden bg-secondary-950/60 border border-secondary-800 p-2 flex items-center justify-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={filePreview} alt="Struk" className="w-full h-full object-contain" />
+                    <img src={filePreview} alt="Struk" className="w-full h-full object-contain rounded-xl" />
                   </div>
                 )}
               </div>
@@ -782,7 +865,7 @@ export default function NewSessionPage() {
             {scanResult && (
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">Menu yang ketauan</h2>
+                  <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider">Menu yang ketauan</h2>
                   <Badge color="gray" size="sm" type="pill-color" className="inline-flex font-semibold">
                     {scanResult.items.length} Menu
                   </Badge>
@@ -790,36 +873,36 @@ export default function NewSessionPage() {
 
                 <div className="space-y-2">
                   {scanResult.items.map((item, idx) => (
-                    <div key={idx} className="bg-text-900 border border-secondary-800 rounded-xl p-3 flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <span className="text-xs font-semibold text-text-50 block">{item.name}</span>
-                        <span className="text-[10px] text-text-300">{item.quantity}x • Rp {Number(item.unitPrice).toLocaleString("id-ID")}</span>
+                    <div key={idx} className="bg-secondary-900/40 border border-secondary-800/80 rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-3">
+                      <div className="space-y-0.5 min-w-0 flex-1">
+                        <span className="text-xs sm:text-sm font-bold text-text-50 block truncate">{item.name}</span>
+                        <span className="text-[11px] text-text-300">{item.quantity}x &bull; Rp {Number(item.unitPrice).toLocaleString("id-ID")}</span>
                       </div>
-                      <span className="text-xs font-bold text-text-50">Rp {Number(item.totalPrice).toLocaleString("id-ID")}</span>
+                      <span className="text-xs sm:text-sm font-extrabold text-text-50 shrink-0">Rp {Number(item.totalPrice).toLocaleString("id-ID")}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="bg-text-900 border border-secondary-800 rounded-xl p-3.5 space-y-2 text-xs text-text-300">
-                  <div className="flex justify-between">
+                <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 space-y-2.5 text-xs text-text-300">
+                  <div className="flex justify-between items-center">
                     <span>Subtotal</span>
-                    <span className="text-text-50 font-medium">
+                    <span className="text-text-50 font-semibold">
                       Rp {scanResult.items.reduce((acc, i) => acc + i.totalPrice, 0).toLocaleString("id-ID")}
                     </span>
                   </div>
                   {scanResult.taxAmount > 0 && (
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span>Pajak (PPN)</span>
-                      <span className="text-text-50">Rp {Number(scanResult.taxAmount).toLocaleString("id-ID")}</span>
+                      <span className="text-text-50 font-semibold">Rp {Number(scanResult.taxAmount).toLocaleString("id-ID")}</span>
                     </div>
                   )}
                   {scanResult.tipAmount > 0 && (
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span>Service Charge / Tip</span>
-                      <span className="text-text-50">Rp {Number(scanResult.tipAmount).toLocaleString("id-ID")}</span>
+                      <span className="text-text-50 font-semibold">Rp {Number(scanResult.tipAmount).toLocaleString("id-ID")}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-sm font-bold text-text-50 pt-2.5 border-t border-secondary-800">
+                  <div className="flex justify-between items-center text-sm sm:text-base font-extrabold text-text-50 pt-2.5 border-t border-secondary-800">
                     <span>Total Tagihan</span>
                     <span className="text-primary-400">Rp {Number(scanResult.totalAmount).toLocaleString("id-ID")}</span>
                   </div>
@@ -835,89 +918,113 @@ export default function NewSessionPage() {
         {inputMode === "manual" && (
           <div className="space-y-4 pb-20">
             {/* Step Indicator */}
-            <div className="flex items-center justify-between px-1">
-              <span className="text-[10px] font-bold text-primary-400 uppercase tracking-widest">
-                Langkah {wizardStep} dari 3
-              </span>
-              <div className="flex gap-1">
-                <div className={`h-1.5 w-6 rounded-full transition-all ${wizardStep >= 1 ? "bg-secondary-800" : "bg-primary"}`} />
-                <div className={`h-1.5 w-6 rounded-full transition-all ${wizardStep >= 2 ? "bg-secondary-800" : "bg-primary"}`} />
-                <div className={`h-1.5 w-6 rounded-full transition-all ${wizardStep >= 3 ? "bg-secondary-800" : "bg-primary"}`} />
+            <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-3.5 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-extrabold text-primary-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">
+                    {wizardStep}
+                  </span>
+                  {wizardStep === 1 && "Langkah 1: Input Daftar Menu"}
+                  {wizardStep === 2 && "Langkah 2: Tambah Teman Patungan"}
+                  {wizardStep === 3 && "Langkah 3: Bagi Porsi & Info Bayar"}
+                </span>
+                <span className="text-[10px] font-bold text-text-400">
+                  {wizardStep}/3
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                <div className={`h-1.5 rounded-full transition-all ${wizardStep >= 1 ? "bg-primary-500" : "bg-secondary-800"}`} />
+                <div className={`h-1.5 rounded-full transition-all ${wizardStep >= 2 ? "bg-primary-500" : "bg-secondary-800"}`} />
+                <div className={`h-1.5 rounded-full transition-all ${wizardStep >= 3 ? "bg-primary-500" : "bg-secondary-800"}`} />
               </div>
             </div>
 
             {/* WIZARD STEP 1: INPUT ITEMS */}
             {wizardStep === 1 && (
               <div className="space-y-4">
-                <div className="bg-text-900 border border-secondary-800 rounded-xl p-4 space-y-4">
-                  <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>1. Masukin Semua Menu Dulu</span>
-                  </h2>
+                <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">1</span>
+                      Masukin Semua Menu Dulu
+                    </h2>
+                  </div>
 
                   <div className="space-y-3.5">
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-text-400 uppercase">Nama Menu / Item</label>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-text-100">Nama Menu / Item</label>
                       <input
                         type="text"
+                        aria-label="Nama Menu / Item"
                         value={draftItemName}
                         onChange={(e) => setDraftItemName(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
+                        className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                         placeholder="Nasi Goreng, Es Teh, Tiket Bioskop..."
                       />
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-text-400 uppercase">Porsi / Qty</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-text-100">Porsi / Qty</label>
                         <input
                           type="number"
+                          aria-label="Porsi atau Jumlah"
                           min={1}
+                          inputMode="numeric"
                           value={draftItemQty}
                           onChange={(e) => handleDraftItemQtyChange(e.target.value)}
-                          className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 outline-none focus:border-primary-500 transition-all"
+                          className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                         />
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-text-400 uppercase">Tipe Harga</label>
-                        <div className="grid grid-cols-2 gap-1 bg-text-950/80 p-1 rounded-xl border border-secondary-800/40 h-9 items-center">
-                          <Button
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-text-100">Tipe Harga</label>
+                        <div className="grid grid-cols-2 gap-1 bg-secondary-900/80 p-1 rounded-lg border border-secondary-700/80 min-h-11 items-center">
+                          <button
                             type="button"
-                            onPress={() => setAddPriceMode("unit")}
-                            color={addPriceMode === "unit" ? "primary" : "tertiary"}
-                            size="xs"
-                            className="h-full text-[10px] font-bold rounded-lg"
+                            onClick={() => setAddPriceMode("unit")}
+                            className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
+                              addPriceMode === "unit"
+                                ? "bg-primary-500 text-white shadow-xs"
+                                : "text-text-400 hover:text-text-200"
+                            }`}
                           >
                             Satuan
-                          </Button>
-                          <Button
+                          </button>
+                          <button
                             type="button"
-                            onPress={() => setAddPriceMode("total")}
-                            color={addPriceMode === "total" ? "primary" : "tertiary"}
-                            size="xs"
-                            className="h-full text-[10px] font-bold rounded-lg"
+                            onClick={() => setAddPriceMode("total")}
+                            className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
+                              addPriceMode === "total"
+                                ? "bg-primary-500 text-white shadow-xs"
+                                : "text-text-400 hover:text-text-200"
+                            }`}
                           >
                             Total
-                          </Button>
+                          </button>
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-text-400 uppercase">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-text-100">
                           {addPriceMode === "unit" ? "Harga Satuan" : "Harga Total"}
                         </label>
                         {addPriceMode === "unit" ? (
                           <input
                             type="text"
+                            inputMode="numeric"
+                            aria-label="Harga Satuan"
                             value={formatRupiah(draftItemPrice)}
                             onChange={(e) => handleDraftItemPriceChange(parseRupiah(e.target.value))}
-                            className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
+                            className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                             placeholder="Rp Satuan"
                           />
                         ) : (
                           <input
                             type="text"
+                            inputMode="numeric"
+                            aria-label="Harga Total"
                             value={formatRupiah(draftItemAmount)}
                             onChange={(e) => handleDraftItemAmountChange(parseRupiah(e.target.value))}
-                            className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
+                            className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                             placeholder="Rp Total"
                           />
                         )}
@@ -927,8 +1034,8 @@ export default function NewSessionPage() {
                     <Button
                       type="button"
                       onPress={handleAddDraftItem}
-                      iconLeading={<Plus />}
-                      className="w-full py-2.5 mt-2"
+                      iconLeading={<Plus className="w-4 h-4" />}
+                      className="w-full min-h-11 py-2.5 mt-2 rounded-lg font-bold text-xs active:scale-[0.96] transition-transform"
                       color="primary"
                     >
                       Tambahin Menu ke Daftar
@@ -938,26 +1045,34 @@ export default function NewSessionPage() {
 
                 {/* Daftar Item yang sudah ditambah */}
                 {manualItems.length > 0 && (
-                  <div className="bg-text-900 border border-secondary-800 rounded-xl p-4 space-y-3">
-                    <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">Menu yang Udah Masuk</h2>
+                  <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider">
+                        Menu yang Udah Masuk ({manualItems.length})
+                      </h2>
+                    </div>
                     <div className="space-y-2">
                       {manualItems.map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-text-950 border border-text-800">
-                          <div>
-                            <p className="text-xs font-semibold text-text-50">{item.name}</p>
-                            <p className="text-[10px] text-text-400">{item.quantity}x • Rp {item.totalPrice.toLocaleString("id-ID")}</p>
+                        <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-secondary-900/40 border border-secondary-800/80 gap-3">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm font-bold text-text-50 truncate">{item.name}</p>
+                            <p className="text-[11px] text-text-300 mt-0.5">
+                              {item.quantity}x &bull; Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/porsi = Rp {item.totalPrice.toLocaleString("id-ID")}
+                            </p>
                           </div>
                           <button
                             type="button"
                             onClick={() => handleRemoveManualItem(idx)}
-                            className="text-rose-400 hover:text-rose-300 text-xs font-semibold px-2 py-1"
+                            aria-label={`Hapus ${item.name}`}
+                            className="min-w-8 min-h-8 flex items-center justify-center rounded-lg text-danger-400 hover:text-danger-300 hover:bg-danger-950/30 transition-all active:scale-90 cursor-pointer"
+                            title="Hapus menu"
                           >
-                            Hapus
+                            <Trash01 className="w-4 h-4" />
                           </button>
                         </div>
                       ))}
                     </div>
-                    <div className="flex justify-between pt-2 border-t border-text-800 text-xs font-bold text-text-50">
+                    <div className="flex justify-between items-center pt-3 border-t border-secondary-800 text-xs sm:text-sm font-extrabold text-text-50">
                       <span>Total Sementara</span>
                       <span className="text-primary-400">Rp {manualSubtotal.toLocaleString("id-ID")}</span>
                     </div>
@@ -968,25 +1083,45 @@ export default function NewSessionPage() {
 
             {/* WIZARD STEP 2: INPUT MEMBERS */}
             {wizardStep === 2 && (
-              <div className="bg-text-900 border border-secondary-800 rounded-xl p-4 space-y-4">
-                <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">2. Siapa Aja yang Ikut PETE-PETE?</h2>
+              <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">2</span>
+                    Siapa Aja yang Ikut PETE-PETE?
+                  </h2>
+                </div>
                 <div className="flex gap-2">
                   <input
                     type="text"
+                    aria-label="Nama teman baru"
                     value={newMemberInput}
                     onChange={(e) => setNewMemberInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddMember(); } }}
-                    className="flex-1 px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text-50 placeholder-text-500 outline-none focus:border-primary-500 transition-all"
-                    placeholder="Nama temen lo..."
+                    className="flex-1 min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                    placeholder="Nama temen lo (misal: Budi, Sarah)..."
                   />
-                  <Button type="button" onPress={handleAddMember} size="sm" iconLeading={<Plus />}>Tambahin</Button>
+                  <Button
+                    type="button"
+                    onPress={handleAddMember}
+                    size="sm"
+                    color="primary"
+                    iconLeading={<Plus className="w-4 h-4" />}
+                    className="min-h-11 px-4 rounded-lg font-bold text-xs active:scale-[0.96] transition-transform shrink-0"
+                  >
+                    Tambahin
+                  </Button>
                 </div>
-                <div className="flex flex-wrap gap-4 pt-3">
+                <div className="flex flex-wrap gap-4 pt-2">
                   {/* User (Owner) */}
                   <div className="flex flex-col items-center gap-1.5 w-16 shrink-0">
-                    <Avatar alt={currentUserName} size="lg" className="shadow-md border border-primary-700 ring-2 ring-primary-900" />
+                    <div className="relative">
+                      <Avatar alt={currentUserName} size="lg" className="shadow-md border border-primary-500 ring-2 ring-primary-500/40" />
+                      <span className="absolute -bottom-1 -right-1 bg-primary-500 text-white rounded-full px-1 py-0.2 text-[8px] font-extrabold shadow-xs">
+                        Gua
+                      </span>
+                    </div>
                     <p className="text-[10px] text-text font-bold truncate w-full text-center">
-                      {currentUserName} <span className="text-[9px] opacity-60 font-normal">(Gua)</span>
+                      {currentUserName}
                     </p>
                   </div>
                   {/* Added Friends */}
@@ -997,6 +1132,7 @@ export default function NewSessionPage() {
                           <Avatar alt={m} size="lg" className="shadow-md border border-secondary-800" />
                           <input
                             type="text"
+                            aria-label="Ubah nama teman"
                             value={editingManualName}
                             onChange={(e) => setEditingManualName(e.target.value)}
                             onBlur={() => handleSaveManualRename(idx)}
@@ -1005,7 +1141,7 @@ export default function NewSessionPage() {
                               if (e.key === "Escape") setEditingManualIndex(null);
                             }}
                             autoFocus
-                            className="w-full text-[9px] px-0.5 py-0.5 rounded bg-text-950 border border-text-700 text-text text-center outline-none"
+                            className="w-full text-xs px-1.5 py-1 rounded bg-secondary-900 border border-primary-500 text-text text-center outline-none"
                           />
                         </div>
                       ) : (
@@ -1016,10 +1152,11 @@ export default function NewSessionPage() {
                               setEditingManualIndex(idx);
                               setEditingManualName(m);
                             }}
-                            className="focus:outline-none cursor-pointer"
+                            className="focus:outline-none cursor-pointer group-hover:scale-105 transition-all"
                             title="Klik untuk ubah nama"
+                            aria-label={`Ubah nama ${m}`}
                           >
-                            <Avatar alt={m} size="lg" className="shadow-md border border-secondary-800 hover:scale-105 transition-all" />
+                            <Avatar alt={m} size="lg" className="shadow-md border border-secondary-800" />
                           </button>
                           <p
                             onClick={() => {
@@ -1034,10 +1171,11 @@ export default function NewSessionPage() {
                           <button
                             type="button"
                             onClick={() => setManualMembers((prev) => prev.filter((x) => x !== m))}
-                            className="absolute top-0 right-0 bg-rose-600 hover:bg-rose-700 text-white rounded-full size-4 flex items-center justify-center text-[10px] font-bold shadow-md cursor-pointer transition-all active:scale-90"
+                            className="absolute -top-1 -right-1 bg-danger-600 hover:bg-danger-700 text-white rounded-full size-5 flex items-center justify-center text-[10px] font-bold shadow-md cursor-pointer transition-all active:scale-90"
                             title="Hapus"
+                            aria-label={`Hapus ${m}`}
                           >
-                            &times;
+                            <XClose className="w-3 h-3" />
                           </button>
                         </>
                       )}
@@ -1051,25 +1189,30 @@ export default function NewSessionPage() {
             {wizardStep === 3 && (
               <div className="space-y-4">
                 {/* Portion Allocations */}
-                <div className="bg-text-900 border border-secondary-800 rounded-xl p-4 space-y-4">
-                  <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">3. Siapa Pesen Apa Nih?</h2>
-                  <div className="space-y-4">
+                <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">3</span>
+                      Siapa Pesen Apa Nih?
+                    </h2>
+                  </div>
+                  <div className="space-y-3.5">
                     {manualItems.map((item, idx) => {
                       const itemAlloc = manualItemAllocations[idx] || {};
                       const allocatedCount = Object.values(itemAlloc).reduce((a, b) => a + b, 0);
                       const isComplete = allocatedCount > 0;
 
                       return (
-                        <div key={idx} className="p-3.5 rounded-xl border border-secondary-800 bg-text-950/40 space-y-3">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className="font-bold text-text-50 text-xs">{item.name}</h4>
-                              <p className="text-[10px] text-text-400 mt-0.5">
-                                Qty: {item.quantity}x • Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/org
+                        <div key={idx} className="p-3.5 rounded-xl border border-secondary-800/80 bg-secondary-900/40 space-y-3">
+                          <div className="flex justify-between items-start gap-2">
+                            <div className="min-w-0 flex-1">
+                              <h4 className="font-bold text-text-50 text-xs sm:text-sm leading-snug line-clamp-2">{item.name}</h4>
+                              <p className="text-[11px] text-text-300 mt-0.5">
+                                Qty: {item.quantity}x &bull; Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/porsi
                               </p>
                             </div>
-                            <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold">
-                              {isComplete ? `Udah dibagi: ${allocatedCount} porsi` : "Belum dibagi"}
+                            <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold text-[10px] shrink-0">
+                              {isComplete ? `Dibagi: ${allocatedCount} porsi` : "Belum dibagi"}
                             </Badge>
                           </div>
 
@@ -1077,7 +1220,7 @@ export default function NewSessionPage() {
                             {allPeople.map((person) => {
                               const qty = itemAlloc[person] || 0;
                               return (
-                                <div key={person} className="flex flex-col items-center gap-1.5 w-12 shrink-0 relative">
+                                <div key={person} className="flex flex-col items-center gap-1.5 w-14 shrink-0 relative">
                                   <div className="relative">
                                     <button
                                       type="button"
@@ -1090,22 +1233,23 @@ export default function NewSessionPage() {
                                           },
                                         }));
                                       }}
-                                      className="focus:outline-none transition-transform active:scale-95 cursor-pointer"
+                                      className="focus:outline-none transition-transform active:scale-95 cursor-pointer rounded-full min-w-11 min-h-11 flex items-center justify-center p-0.5"
+                                      aria-label={`Tambah porsi untuk ${person}`}
                                     >
                                       <Avatar
                                         alt={person}
                                         size="md"
-                                        className={`shadow-md transition-all duration-200 ${qty > 0 ? "ring-2 ring-primary border-primary scale-105" : "opacity-40"}`}
+                                        className={`shadow-md transition-all duration-200 ${qty > 0 ? "ring-2 ring-primary-500 border-primary-500 scale-105" : "opacity-40"}`}
                                       />
                                     </button>
 
                                     {qty > 0 && (
                                       <>
                                         {/* Quantity Badge on Top Right */}
-                                        <span className="absolute -top-1 -right-1 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-md border border-text-950">
+                                        <span className="absolute -top-1 -right-1 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-md border border-secondary-950 pointer-events-none">
                                           {qty}
                                         </span>
-                                        {/* Tiny Minus Button on Bottom Right */}
+                                        {/* Minus Button on Bottom Right */}
                                         <button
                                           type="button"
                                           onClick={(e) => {
@@ -1118,15 +1262,16 @@ export default function NewSessionPage() {
                                               },
                                             }));
                                           }}
-                                          className="absolute -bottom-1 -right-1 bg-rose-600 hover:bg-rose-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold shadow-md cursor-pointer border border-text-950 active:scale-90"
+                                          className="absolute -bottom-1.5 -right-1.5 bg-danger-600 hover:bg-danger-700 text-white rounded-full w-6 h-6 min-w-6 min-h-6 flex items-center justify-center text-xs font-bold shadow-md cursor-pointer border border-secondary-950 active:scale-90"
                                           title="Kurangi porsi"
+                                          aria-label={`Kurangi porsi untuk ${person}`}
                                         >
                                           -
                                         </button>
                                       </>
                                     )}
                                   </div>
-                                  <p className={`text-[10px] truncate w-full text-center font-semibold ${qty > 0 ? "text-text font-bold" : "text-text-400"}`}>
+                                  <p className={`text-[10px] truncate w-full text-center font-semibold ${qty > 0 ? "text-text-50 font-bold" : "text-text-400"}`}>
                                     {person === currentUserName ? "Gua" : person}
                                   </p>
                                 </div>
@@ -1147,18 +1292,28 @@ export default function NewSessionPage() {
         )}
       </div>
 
-      {/* Sticky Bottom Action */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-secondary-800 bg-secondary-950/95 backdrop-blur-md z-20">
+      {/* Fixed Bottom Action */}
+      <div className="fixed bottom-0 inset-x-0 max-w-md mx-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-secondary-800 bg-secondary-950/95 backdrop-blur-md z-30">
         {inputMode === "scan" && !scanResult ? (
-          file && (
+          file ? (
             <Button
               type="button"
               onPress={handleScanReceipt}
               isDisabled={loading}
               isLoading={loading}
-              className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-700 text-text-50 text-xs font-semibold"
+              color="primary"
+              className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
             >
               Mulai Scan Struk
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              onPress={() => document.getElementById("file-input")?.click()}
+              color="secondary"
+              className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
+            >
+              Pilih Foto Struk Dulu
             </Button>
           )
         ) : inputMode === "manual" ? (
@@ -1168,7 +1323,7 @@ export default function NewSessionPage() {
                 type="button"
                 onPress={() => setWizardStep(prev => prev - 1)}
                 color="secondary"
-                className="flex-1 py-3 text-xs"
+                className="flex-1 min-h-12 py-3.5 text-sm font-semibold rounded-lg active:scale-[0.96] transition-transform"
               >
                 Balik
               </Button>
@@ -1184,7 +1339,7 @@ export default function NewSessionPage() {
                   setWizardStep(prev => prev + 1);
                 }}
                 color="primary"
-                className="flex-1 py-3 text-white text-xs font-bold"
+                className="flex-1 min-h-12 py-3.5 text-white text-sm font-bold rounded-lg active:scale-[0.96] transition-transform"
               >
                 Lanjut Bos
               </Button>
@@ -1205,7 +1360,7 @@ export default function NewSessionPage() {
                 isDisabled={loading}
                 isLoading={loading}
                 color="primary"
-                className="flex-1 py-3 text-white text-xs font-bold"
+                className="flex-1 min-h-12 py-3.5 text-white text-sm font-bold rounded-lg active:scale-[0.96] transition-transform"
               >
                 Bikin Bill Patungan
               </Button>
@@ -1216,7 +1371,7 @@ export default function NewSessionPage() {
             onPress={() => handleCreate()}
             isDisabled={loading}
             isLoading={loading}
-            className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-700 text-text-50 text-xs font-semibold"
+            className="w-full min-h-12 py-3.5 px-4 rounded-lg bg-primary hover:bg-primary-700 text-text-50 text-sm font-bold active:scale-[0.96] transition-transform"
           >
             Buat Bill &amp; Mulai Pembagian
           </Button>
