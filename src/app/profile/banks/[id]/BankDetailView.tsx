@@ -59,7 +59,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
         <Button
           href="/profile/banks"
           aria-label="Kembali ke semua wallet"
-          className="absolute left-4 min-w-[44px] min-h-[44px] p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all flex items-center justify-center"
+          className="absolute left-4 min-w-11 min-h-11 p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all flex items-center justify-center"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -83,7 +83,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
           }`}
         >
           {/* Badge */}
-          <span className="absolute top-4 right-4 text-[8px] font-bold uppercase tracking-wider bg-white/15 backdrop-blur-sm text-white px-2.5 py-1 rounded-full">
+          <span className="absolute top-4 right-4 text-4xs font-bold uppercase tracking-wider bg-white/15 backdrop-blur-sm text-white px-2.5 py-1 rounded-full">
             {isQris ? "QRIS" : isEWallet ? "E-Wallet" : "Bank Account"}
           </span>
 
@@ -111,7 +111,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
           {/* Account Info */}
           <div className="space-y-1">
             <p className="text-sm font-bold text-white uppercase">{bank.bankOwner}</p>
-            <p className="text-[10px] text-white/60 font-semibold uppercase">{bank.bankName}</p>
+            <p className="text-2xs text-white/60 font-semibold uppercase">{bank.bankName}</p>
             <div className="flex items-center gap-2 mt-2">
               <p className="text-lg font-bold text-white tracking-widest">
                 {showAccount ? bank.bankAccount : maskedAccount}
@@ -121,7 +121,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
                   type="button"
                   onClick={() => setShowAccount(!showAccount)}
                   aria-label={showAccount ? "Sembunyikan nomor rekening" : "Tampilkan nomor rekening"}
-                  className="min-w-[40px] min-h-[40px] p-2 flex items-center justify-center text-white/60 hover:text-white transition-all cursor-pointer rounded-lg active:scale-95"
+                  className="min-w-10 min-h-10 p-2 flex items-center justify-center text-white/60 hover:text-white transition-all cursor-pointer rounded-lg active:scale-95"
                 >
                   {showAccount ? (
                     <EyeOff className="w-5 h-5" />
@@ -142,7 +142,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
               navigator.clipboard.writeText(bank.bankAccount);
               toast.success("Nomor rekening disalin!");
             }}
-            className="flex items-center justify-center gap-2 min-h-[48px] py-3.5 px-4 rounded-lg border border-secondary-800 bg-text-900 text-text-100 text-xs font-bold hover:bg-text-800 active:scale-[0.96] transition-transform cursor-pointer"
+            className="flex items-center justify-center gap-2 min-h-12 py-3.5 px-4 rounded-lg border border-secondary-800 bg-text-900 text-text-100 text-xs font-bold hover:bg-text-800 active:scale-[0.96] transition-transform cursor-pointer"
           >
             <Copy01 className="w-4 h-4" /> Salin Nomor
           </button>
@@ -152,7 +152,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
               const text = `💳 Transfer ke ${bank.bankName}\n👤 A/N: ${bank.bankOwner}\n🔢 No. Rek: ${bank.bankAccount}\n\n🙏 Ditunggu transferannya ya, Bos! Thank you.`;
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
             }}
-            className="flex items-center justify-center gap-2 min-h-[48px] py-3.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold active:scale-[0.96] transition-transform cursor-pointer"
+            className="flex items-center justify-center gap-2 min-h-12 py-3.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold active:scale-[0.96] transition-transform cursor-pointer"
           >
             <Share07 className="w-4 h-4" /> Share WA
           </button>
@@ -164,7 +164,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
             disabled={deleting}
-            className="w-full flex items-center justify-center gap-2 min-h-[44px] py-3 text-sm font-semibold text-rose-400 hover:text-rose-300 disabled:opacity-50 active:scale-[0.96] transition-transform cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 min-h-11 py-3 text-sm font-semibold text-danger-400 hover:text-danger-300 disabled:opacity-50 active:scale-[0.96] transition-transform cursor-pointer"
           >
             <Trash01 className="w-4 h-4" /> Hapus Rekening
           </button>

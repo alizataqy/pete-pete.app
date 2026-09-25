@@ -24,20 +24,20 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
             color="primary"
             size="sm"
             aria-label="Kembali ke profil"
-            className="min-w-[44px] min-h-[44px] p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+            className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
             <h1 className="text-sm font-extrabold text-text-50">Semua Wallet</h1>
-            <p className="text-[10px] text-text-300 mt-0.5">Daftar bank &amp; e-wallet terdaftar</p>
+            <p className="text-2xs text-text-300 mt-0.5">Daftar bank &amp; e-wallet terdaftar</p>
           </div>
         </div>
         <Button
           type="button"
           onPress={() => router.push("/profile/banks/new")}
           iconLeading={<Plus className="w-4 h-4" />}
-          className="text-xs min-h-[44px] py-2 px-3.5 rounded-lg font-bold active:scale-[0.96] transition-transform"
+          className="text-xs min-h-11 py-2 px-3.5 rounded-lg font-bold active:scale-[0.96] transition-transform"
           color="primary"
         >
           Tambah Bank
@@ -52,7 +52,7 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
             <Button
               onPress={() => router.push("/profile/banks/new")}
               color="primary"
-              className="text-xs font-bold min-h-[44px] px-4 rounded-lg active:scale-[0.96] transition-transform"
+              className="text-xs font-bold min-h-11 px-4 rounded-lg active:scale-[0.96] transition-transform"
             >
               Tambah rekening pertama lo
             </Button>
@@ -86,7 +86,7 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
                       "bg-primary text-text-950"
                     }`}
                 >
-                  <span className="absolute top-3 right-3 text-[8px] font-bold uppercase tracking-wider bg-white/15 backdrop-blur-sm text-white px-2 py-0.5 rounded-full">
+                  <span className="absolute top-3 right-3 text-4xs font-bold uppercase tracking-wider bg-white/15 backdrop-blur-sm text-white px-2 py-0.5 rounded-full">
                     {isQris ? "QRIS" : isEWallet ? "E-Wallet" : "Bank Account"}
                   </span>
 
@@ -104,7 +104,7 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
 
                   <div className="space-y-0.5">
                     <p className="text-xs font-bold text-white/90 uppercase">{b.bankOwner}</p>
-                    <p className="text-[10px] text-white/60 font-semibold uppercase">{b.bankName}</p>
+                    <p className="text-2xs text-white/60 font-semibold uppercase">{b.bankName}</p>
                     <p className="text-sm font-bold text-white tracking-wider mt-1">{maskedAccount}</p>
                   </div>
                 </div>

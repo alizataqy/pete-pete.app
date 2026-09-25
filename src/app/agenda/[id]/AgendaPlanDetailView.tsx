@@ -649,7 +649,6 @@ export default function VacationPlanDetailView({
   };
 
   const { balances, transfers } = calculateSettlements();
-  const totalBudget = plan.budget;
   const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
 
   return (
@@ -662,13 +661,13 @@ export default function VacationPlanDetailView({
             color="primary"
             size="sm"
             aria-label="Kembali ke daftar agenda"
-            className="min-w-[44px] min-h-[44px] p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+            className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
             <h1 className="text-sm font-extrabold text-text wrap-break-word">{plan.title}</h1>
-            <p className="text-[10px] text-text-300 flex items-center gap-1.5 flex-wrap">
+            <p className="text-2xs text-text-300 flex items-center gap-1.5 flex-wrap">
               <span>{plan.description || "Pete-Pete Seru & Kumpul Bareng"}</span>
               {plan.date && (
                 <>
@@ -689,7 +688,7 @@ export default function VacationPlanDetailView({
         {/* Info Summary */}
         <div className="p-4 rounded-xl border border-secondary-800 bg-secondary-950/15 flex items-center justify-between shrink-0">
           <div>
-            <p className="text-[10px] text-text-400 font-bold uppercase tracking-wider">Total Pengeluaran Kelompok</p>
+            <p className="text-2xs text-text-400 font-bold uppercase tracking-wider">Total Pengeluaran Kelompok</p>
             <p className="text-lg font-black text-text-50 mt-0.5">{formatRupiah(totalSpent)}</p>
           </div>
           <div className="p-2 bg-text-900 border border-secondary-800 rounded-lg">
@@ -716,7 +715,7 @@ export default function VacationPlanDetailView({
               <FeaturedIcon icon={Users01} size="sm" color="brand" theme="modern" />
               <div>
                 <h2 className="text-xs font-bold text-text-50">{members.length} Sohib yang Join</h2>
-                <p className="text-[10px] text-text-400">Buka ini untuk menambah Sohib lo</p>
+                <p className="text-2xs text-text-400">Buka ini untuk menambah Sohib lo</p>
               </div>
             </div>
             <Button
@@ -760,7 +759,7 @@ export default function VacationPlanDetailView({
               {/* Members list */}
               {members.length === 0 ? (
                 <div className="p-4 rounded-xl border border-dashed border-secondary-800 bg-secondary-950/10 flex items-center justify-center text-center">
-                  <p className="text-[11px] text-text-400">Belum ada sohib yang didaftarin nih, tambahin di atas ya!</p>
+                  <p className="text-xs text-text-400">Belum ada sohib yang didaftarin nih, tambahin di atas ya!</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-2 flex-1 overflow-y-auto pr-1 scrollbar-hide min-h-0">
@@ -787,7 +786,7 @@ export default function VacationPlanDetailView({
                                 onPress={() => setEditingMemberId(null)}
                                 color="secondary"
                                 size="xs"
-                                className="h-7 text-[10px]"
+                                className="h-7 text-2xs"
                               >
                                 Gak Jadi
                               </Button>
@@ -795,7 +794,7 @@ export default function VacationPlanDetailView({
                                 onPress={() => handleRenameMember(member.id)}
                                 color="primary"
                                 size="xs"
-                                className="h-7 text-[10px]"
+                                className="h-7 text-2xs"
                               >
                                 Simpan
                               </Button>
@@ -811,7 +810,7 @@ export default function VacationPlanDetailView({
                                     color="brand"
                                     size="sm"
                                     type="pill-color"
-                                    className="text-[9px] px-1.5 py-0 font-medium"
+                                    className="text-3xs px-1.5 py-0 font-medium"
                                   >
                                     Gua
                                   </Badge>
@@ -823,7 +822,7 @@ export default function VacationPlanDetailView({
                                     color="error"
                                     size="sm"
                                     type="pill-color"
-                                    className="text-[10px] font-semibold px-2 py-0.5"
+                                    className="text-2xs font-semibold px-2 py-0.5"
                                   >
                                     Utang: {formatRupiah(Math.abs(balance))}
                                   </Badge>
@@ -832,7 +831,7 @@ export default function VacationPlanDetailView({
                                     color="success"
                                     size="sm"
                                     type="pill-color"
-                                    className="text-[10px] font-semibold px-2 py-0.5"
+                                    className="text-2xs font-semibold px-2 py-0.5"
                                   >
                                     Piutang: {formatRupiah(balance)}
                                   </Badge>
@@ -841,7 +840,7 @@ export default function VacationPlanDetailView({
                                     color="gray"
                                     size="sm"
                                     type="pill-color"
-                                    className="text-[10px] font-medium px-2 py-0.5"
+                                    className="text-2xs font-medium px-2 py-0.5"
                                   >
                                     Lunas
                                   </Badge>
@@ -859,7 +858,7 @@ export default function VacationPlanDetailView({
                                 color="secondary"
                                 size="xs"
                                 aria-label={`Bagikan rincian tagihan ${member.name}`}
-                                className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+                                className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
                               >
                                 {copiedId === member.id ? (
                                   <Check className="w-4 h-4 text-emerald-400" />
@@ -876,7 +875,7 @@ export default function VacationPlanDetailView({
                                 color="secondary"
                                 size="xs"
                                 aria-label={`Ubah nama ${member.name}`}
-                                className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+                                className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
                               >
                                 <Edit02 className="w-4 h-4 text-text-400" />
                               </Button>
@@ -895,7 +894,7 @@ export default function VacationPlanDetailView({
                                   color="secondary-destructive"
                                   size="xs"
                                   aria-label={`Hapus ${member.name} dari tim`}
-                                  className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+                                  className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
                                 >
                                   <Trash01 className="w-4 h-4 text-danger-400" />
                                 </Button>
@@ -931,7 +930,7 @@ export default function VacationPlanDetailView({
               <FeaturedIcon icon={Receipt} size="sm" color="success" theme="modern" />
               <div>
                 <h2 className="text-xs font-bold text-text-50">Daftar Pengeluaran</h2>
-                <p className="text-[10px] text-text-400">{expenses.length} Biaya Tercatat</p>
+                <p className="text-2xs text-text-400">{expenses.length} Biaya Tercatat</p>
               </div>
             </div>
             <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
@@ -960,7 +959,7 @@ export default function VacationPlanDetailView({
           {showExpenses && (
             expenses.length === 0 ? (
               <div className="p-4 rounded-xl border border-dashed border-secondary-800 bg-secondary-950/10 flex flex-col items-center justify-center text-center gap-1.5 shrink-0">
-                <p className="text-[10px] text-text-400">Belum ada catatan pengeluaran kumpul-kumpul.</p>
+                <p className="text-2xs text-text-400">Belum ada catatan pengeluaran kumpul-kumpul.</p>
               </div>
             ) : (
               <div className="space-y-2 flex-1 overflow-y-auto pr-1 scrollbar-hide min-h-0">
@@ -972,7 +971,7 @@ export default function VacationPlanDetailView({
                     <div className="min-w-0 flex-1 space-y-1">
                       <div>
                         <p className="text-xs font-bold text-text-50 wrap-break-word">{exp.title}</p>
-                        <p className="text-[10px] text-text-400">
+                        <p className="text-2xs text-text-400">
                           Dibayar oleh: <span className="font-semibold text-text-300">{exp.payerName}</span>
                         </p>
                       </div>
@@ -983,9 +982,9 @@ export default function VacationPlanDetailView({
                             color="gray"
                             size="sm"
                             type="color"
-                            className="flex items-center gap-1 text-[10px] font-semibold"
+                            className="flex items-center gap-1 text-2xs font-semibold"
                           >
-                            <Avatar alt={sh.memberName} size="xs" className="h-4 w-4 min-w-[16px]" />
+                            <Avatar alt={sh.memberName} size="xs" className="h-4 w-4 min-w-4" />
                             {sh.memberName} ({formatRupiah(sh.amount)})
                           </Badge>
                         ))}
@@ -1001,7 +1000,7 @@ export default function VacationPlanDetailView({
                           color="tertiary"
                           size="xs"
                           aria-label={`Edit ${exp.title}`}
-                          className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg text-primary-400/80 hover:text-primary-400 flex items-center justify-center active:scale-95 transition-transform"
+                          className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg text-primary-400/80 hover:text-primary-400 flex items-center justify-center active:scale-95 transition-transform"
                         >
                           <Edit02 className="w-4 h-4" />
                         </Button>
@@ -1018,7 +1017,7 @@ export default function VacationPlanDetailView({
                           color="tertiary"
                           size="xs"
                           aria-label={`Hapus ${exp.title}`}
-                          className="min-w-[36px] min-h-[36px] h-9 w-9 p-0 rounded-lg text-danger-400/80 hover:text-danger-400 flex items-center justify-center active:scale-95 transition-transform"
+                          className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg text-danger-400/80 hover:text-danger-400 flex items-center justify-center active:scale-95 transition-transform"
                         >
                           <Trash01 className="w-4 h-4" />
                         </Button>
@@ -1054,11 +1053,11 @@ export default function VacationPlanDetailView({
                 </div>
                 <div>
                   {transfers.length > 0 ? (
-                    <div className="flex items-center gap-2 text-[11px] text-text-400">
+                    <div className="flex items-center gap-2 text-xs text-text-400">
                       {transfers.length} transfer patungan tercatat
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 text-[11px] text-text-400">
+                    <div className="flex items-center gap-2 text-xs text-text-400">
                       <p className="font-semibold">Tidak ada transfer patungan</p>
                     </div>
                   )}
@@ -1091,7 +1090,7 @@ export default function VacationPlanDetailView({
           {showSettlements && (
             transfers.length === 0 ? (
               <div className="p-4 rounded-xl border border-secondary-800 bg-secondary-950/10 flex items-center justify-center gap-2 text-center shrink-0">
-                <p className="text-[10px] text-text-400">
+                <p className="text-2xs text-text-400">
                   Semua aman! Tidak ada utang-piutang transfer yang perlu diselesaikan.
                 </p>
               </div>
@@ -1107,7 +1106,7 @@ export default function VacationPlanDetailView({
                     <div
                       key={idx}
                       className={`p-3.5 rounded-lg border transition-all flex flex-col gap-2.5 ${isFromMe
-                        ? "border-rose-900/60 bg-rose-950/15"
+                        ? "border-danger-900/60 bg-danger-950/15"
                         : isToMe
                           ? "border-primary-800/60 bg-primary-950/15"
                           : "border-secondary-800 bg-secondary-950/40"
@@ -1120,7 +1119,7 @@ export default function VacationPlanDetailView({
                             color={isFromMe ? "error" : "success"}
                             size="sm"
                             type="color"
-                            className="text-[9px] font-bold inline-flex items-center gap-1"
+                            className="text-3xs font-bold inline-flex items-center gap-1"
                           >
                             {isFromMe ? "Lo Harus Transfer" : "Lo Bakal Terima Uang"}
                           </Badge>
@@ -1135,16 +1134,16 @@ export default function VacationPlanDetailView({
                             alt={t.from}
                             size="sm"
                             className={`shadow-md border shrink-0 ${isFromMe
-                              ? "border-rose-500/70 ring-1 ring-rose-500/50"
+                              ? "border-danger-500/70 ring-1 ring-danger-500/50"
                               : "border-secondary-800"
                               }`}
                           />
                           <div className="min-w-0">
-                            <p className="text-[11px] font-bold text-text-50 wrap-break-word flex items-center gap-1">
+                            <p className="text-xs font-bold text-text-50 wrap-break-word flex items-center gap-1">
                               {t.from}
-                              {isFromMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
+                              {isFromMe && <span className="text-3xs font-normal text-danger-400">(Gua)</span>}
                             </p>
-                            <p className="text-[9px] text-text-400 font-medium">Yang Bayar</p>
+                            <p className="text-3xs text-text-400 font-medium">Yang Bayar</p>
                           </div>
                         </div>
 
@@ -1165,11 +1164,11 @@ export default function VacationPlanDetailView({
                         {/* Receiver (To) */}
                         <div className="flex items-center justify-end gap-2.5 min-w-0 flex-1 text-right">
                           <div className="min-w-0">
-                            <p className="text-[11px] font-bold text-text-50 wrap-break-word flex items-center justify-end gap-1">
-                              {isToMe && <span className="text-[9px] font-normal text-danger-400">(Gua)</span>}
+                            <p className="text-xs font-bold text-text-50 wrap-break-word flex items-center justify-end gap-1">
+                              {isToMe && <span className="text-3xs font-normal text-danger-400">(Gua)</span>}
                               {t.to}
                             </p>
-                            <p className="text-[9px] text-text-400 font-medium">Penerima</p>
+                            <p className="text-3xs text-text-400 font-medium">Penerima</p>
                           </div>
                           <Avatar
                             alt={t.to}
@@ -1200,7 +1199,7 @@ export default function VacationPlanDetailView({
                   <Heading slot="title" className="text-sm font-bold text-text">
                     {editingExpenseId ? "Ubah Rincian Pengeluaran" : "Catat Pengeluaran Baru"}
                   </Heading>
-                  <p className="text-[10px] text-text-400">
+                  <p className="text-2xs text-text-400">
                     Masukkan nominal pengeluaran dan siapa saja yang pete-pete.
                   </p>
                 </div>
@@ -1224,8 +1223,8 @@ export default function VacationPlanDetailView({
 
                   {/* Payer selection */}
                   <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold text-text-400 uppercase block">Siapa yang Bayar?</label>
-                    <div className="flex flex-wrap gap-3.5 max-h-[110px] overflow-y-auto p-1 scrollbar-hide">
+                    <label className="text-3xs font-bold text-text-400 uppercase block">Siapa yang Bayar?</label>
+                    <div className="flex flex-wrap gap-3.5 max-h-28 overflow-y-auto p-1 scrollbar-hide">
                       {members.map((m) => {
                         const isSelected = expensePayerId === m.id;
                         return (
@@ -1233,9 +1232,9 @@ export default function VacationPlanDetailView({
                             key={m.id}
                             type="button"
                             onClick={() => setExpensePayerId(m.id)}
-                            className="flex flex-col items-center gap-1.5 w-12 shrink-0 focus:outline-hidden active:scale-95 transition-all cursor-pointer group min-h-[56px]"
+                            className="flex flex-col items-center gap-1.5 w-12 shrink-0 focus:outline-hidden active:scale-95 transition-all cursor-pointer group min-h-14"
                           >
-                            <div className="relative min-w-[44px] min-h-[44px] flex items-center justify-center">
+                            <div className="relative min-w-11 min-h-11 flex items-center justify-center">
                               <Avatar
                                 alt={m.name}
                                 size="md"
@@ -1251,7 +1250,7 @@ export default function VacationPlanDetailView({
                               )}
                             </div>
                             <p
-                              className={`text-[10px] wrap-break-word w-full text-center leading-tight font-semibold ${isSelected ? "text-text font-bold" : "text-text-400"
+                              className={`text-2xs wrap-break-word w-full text-center leading-tight font-semibold ${isSelected ? "text-text font-bold" : "text-text-400"
                                 }`}
                             >
                               {m.name}
@@ -1266,7 +1265,7 @@ export default function VacationPlanDetailView({
                   {/* Participants checkboxes */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="text-[9px] font-bold text-text-400 uppercase block">Sohib yang Ikut Pete-Pete</label>
+                      <label className="text-3xs font-bold text-text-400 uppercase block">Sohib yang Ikut Pete-Pete</label>
                       <button
                         type="button"
                         onClick={() => {
@@ -1276,12 +1275,12 @@ export default function VacationPlanDetailView({
                             setExpenseParticipants(members.map((m) => m.id));
                           }
                         }}
-                        className="text-[9px] font-semibold text-primary-400 hover:text-primary-300 transition-colors cursor-pointer"
+                        className="text-3xs font-semibold text-primary-400 hover:text-primary-300 transition-colors cursor-pointer"
                       >
                         {expenseParticipants.length === members.length ? "Batal Semua" : "Pilih Semua"}
                       </button>
                     </div>
-                    <div className="flex flex-wrap gap-3.5 max-h-[120px] overflow-y-auto p-1 scrollbar-hide">
+                    <div className="flex flex-wrap gap-3.5 max-h-30 overflow-y-auto p-1 scrollbar-hide">
                       {members.map((m) => {
                         const isParticipating = expenseParticipants.includes(m.id);
                         return (
@@ -1289,9 +1288,9 @@ export default function VacationPlanDetailView({
                             key={m.id}
                             type="button"
                             onClick={() => handleToggleParticipant(m.id)}
-                            className="flex flex-col items-center gap-1.5 w-12 shrink-0 focus:outline-hidden active:scale-95 transition-all cursor-pointer group min-h-[56px]"
+                            className="flex flex-col items-center gap-1.5 w-12 shrink-0 focus:outline-hidden active:scale-95 transition-all cursor-pointer group min-h-14"
                           >
-                            <div className="relative min-w-[44px] min-h-[44px] flex items-center justify-center">
+                            <div className="relative min-w-11 min-h-11 flex items-center justify-center">
                               <Avatar
                                 alt={m.name}
                                 size="md"
@@ -1307,7 +1306,7 @@ export default function VacationPlanDetailView({
                               )}
                             </div>
                             <p
-                              className={`text-[10px] wrap-break-word w-full text-center leading-tight font-semibold ${isParticipating ? "text-text font-bold" : "text-text-400"
+                              className={`text-2xs wrap-break-word w-full text-center leading-tight font-semibold ${isParticipating ? "text-text font-bold" : "text-text-400"
                                 }`}
                             >
                               {m.name}
@@ -1327,7 +1326,7 @@ export default function VacationPlanDetailView({
                     color="secondary"
                     size="sm"
                     isDisabled={loading}
-                    className="min-h-[44px] px-4 rounded-lg text-sm font-semibold active:scale-95 transition-transform"
+                    className="min-h-11 px-4 rounded-lg text-sm font-semibold active:scale-95 transition-transform"
                   >
                     Batal
                   </Button>
@@ -1337,7 +1336,7 @@ export default function VacationPlanDetailView({
                     size="sm"
                     isLoading={loading}
                     isDisabled={loading}
-                    className="min-h-[44px] px-4 rounded-lg text-sm font-bold active:scale-95 transition-transform"
+                    className="min-h-11 px-4 rounded-lg text-sm font-bold active:scale-95 transition-transform"
                   >
                     Simpan Biaya
                   </Button>
@@ -1403,7 +1402,7 @@ export default function VacationPlanDetailView({
                       color="secondary"
                       size="sm"
                       iconLeading={Copy01}
-                      className="w-full justify-center min-h-[44px] py-3 text-xs font-bold rounded-lg active:scale-[0.96] transition-transform"
+                      className="w-full justify-center min-h-11 py-3 text-xs font-bold rounded-lg active:scale-[0.96] transition-transform"
                       onPress={() => handleShareToClipboard(shareModalConfig.text, shareModalConfig.memberId)}
                     >
                       Salin ke Clipboard
@@ -1412,7 +1411,7 @@ export default function VacationPlanDetailView({
                       color="primary"
                       size="sm"
                       iconLeading={MessageChatSquare}
-                      className="w-full justify-center min-h-[44px] py-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg active:scale-[0.96] transition-transform"
+                      className="w-full justify-center min-h-11 py-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg active:scale-[0.96] transition-transform"
                       onPress={() => handleShareToWhatsApp(shareModalConfig.text)}
                     >
                       Kirim ke WhatsApp

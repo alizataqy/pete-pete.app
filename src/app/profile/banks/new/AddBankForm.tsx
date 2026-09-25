@@ -83,7 +83,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
         </Button>
         <div>
           <h1 className="text-sm font-extrabold text-text-50">Tambah Rekening Baru</h1>
-          <p className="text-[10px] text-text-300 mt-0.5">Daftarkan bank atau e-wallet lo</p>
+          <p className="text-2xs text-text-300 mt-0.5">Daftarkan bank atau e-wallet lo</p>
         </div>
       </header>
 
@@ -106,7 +106,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={t.logo} alt={t.name} className="w-8 h-8 object-contain" />
-                  <span className="text-[9px] font-bold text-text-100">{t.name}</span>
+                  <span className="text-3xs font-bold text-text-100">{t.name}</span>
                 </button>
               ))}
             </div>

@@ -142,7 +142,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
           color="primary"
           size="sm"
           aria-label="Kembali ke tongkrongan"
-          className="min-w-[44px] min-h-[44px] p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+          className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -159,7 +159,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
             <h2 className="text-xs font-bold text-text-50 uppercase tracking-widest">
               Plan Kumpul Lo
             </h2>
-            <p className="text-[10px] text-text-400">
+            <p className="text-2xs text-text-400">
               Kelola pete-pete liburan, bakar-bakar, atau agenda seru bareng geng lo biar ga pusing
             </p>
           </div>
@@ -167,7 +167,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
             onPress={() => setIsOpen(true)}
             color="primary"
             size="xs"
-            className="rounded-lg min-h-[44px] px-3.5 text-xs font-bold active:scale-95 transition-all shadow-md"
+            className="rounded-lg min-h-11 px-3.5 text-xs font-bold active:scale-95 transition-all shadow-md"
             iconLeading={Plus}
           >
             Bikin Plan
@@ -182,7 +182,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
             </div>
             <div className="space-y-1">
               <h3 className="text-xs font-bold text-text-50">Belum Ada Plan Kumpul</h3>
-              <p className="text-[10px] text-text-400 max-w-[240px]">
+              <p className="text-2xs text-text-400 max-w-60">
                 Bikin plan kumpul-kumpul atau liburan bareng sohib lo sekarang, kuy!
               </p>
             </div>
@@ -190,7 +190,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
               onPress={() => setIsOpen(true)}
               color="secondary"
               size="xs"
-              className="mt-2 min-h-[44px] px-4 rounded-lg active:scale-95 transition-all font-semibold"
+              className="mt-2 min-h-11 px-4 rounded-lg active:scale-95 transition-all font-semibold"
               iconLeading={Plus}
             >
               Mulai Bikin Plan
@@ -209,11 +209,11 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     <h3 className="text-xs font-bold text-text-50 group-hover:text-primary-400 transition-colors">
                       {plan.title}
                     </h3>
-                    <p className="text-[10px] text-text-400 mt-0.5 wrap-break-word">
+                    <p className="text-2xs text-text-400 mt-0.5 wrap-break-word">
                       {plan.description || "Gak ada deskripsi plan."}
                     </p>
                     {plan.date && (
-                      <p className="text-[9px] text-primary-400 font-bold mt-1 flex items-center gap-1">
+                      <p className="text-3xs text-primary-400 font-bold mt-1 flex items-center gap-1">
                         📅 {formatDateString(plan.date)}
                       </p>
                     )}
@@ -223,18 +223,18 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                   </Badge>
                 </div>
 
-                <div className="pt-2 border-t border-secondary-900/60 flex items-center justify-between text-[10px] text-text-400">
+                <div className="pt-2 border-t border-secondary-900/60 flex items-center justify-between text-2xs text-text-400">
                   <div className="flex items-center gap-1.5">
                     <Users01 className="w-3.5 h-3.5 text-primary-400" />
                     <div>
-                      <p className="text-[8px] text-text-500 uppercase font-semibold">Sohib Group</p>
+                      <p className="text-4xs text-text-500 uppercase font-semibold">Sohib Group</p>
                       <p className="font-bold text-text-50">{plan.membersCount} Sohib</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <CreditCard01 className="w-3.5 h-3.5 text-text-50" />
                     <div>
-                      <p className="text-[8px] text-text-500 uppercase font-semibold">Total Pete-Petean</p>
+                      <p className="text-4xs text-text-500 uppercase font-semibold">Total Pete-Petean</p>
                       <p className="font-bold text-text-50">
                         {formatRupiah(plan.totalExpenses)}
                       </p>
@@ -257,13 +257,13 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                   <Heading slot="title" className="text-sm font-bold text-text">
                     Bikin Plan Baru
                   </Heading>
-                  <p className="text-[10px] text-text-400">
+                  <p className="text-2xs text-text-400">
                     Isi detail rencana kumpul-kumpul atau liburan bareng temen-temen lo.
                   </p>
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[9px] font-bold text-text-400 uppercase">Judul Acara</label>
+                  <label className="text-3xs font-bold text-text-400 uppercase">Judul Acara</label>
                   <Input
                     isRequired
                     value={title}
@@ -272,7 +272,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                   />
 
                   <div className="space-y-1 flex flex-col">
-                    <label className="text-[9px] font-bold text-text-400 uppercase">Tanggal Acara (Opsional)</label>
+                    <label className="text-3xs font-bold text-text-400 uppercase">Tanggal Acara (Opsional)</label>
                     <DatePicker
                       value={dateValue}
                       onChange={setDateValue}
@@ -280,7 +280,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[9px] font-bold text-text-400 uppercase">Deskripsi (Opsional)</label>
+                    <label className="text-3xs font-bold text-text-400 uppercase">Deskripsi (Opsional)</label>
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
@@ -292,7 +292,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
 
                   {/* Tim Liburan */}
                   <div className="space-y-2 pt-1">
-                    <label className="text-[9px] font-bold text-text-400 uppercase block">Sohib yang Ikut</label>
+                    <label className="text-3xs font-bold text-text-400 uppercase block">Sohib yang Ikut</label>
                     <div className="flex gap-1.5 items-end">
                       <div className="flex-1">
                         <Input
@@ -312,13 +312,13 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                         onPress={handleAddMember}
                         color="secondary"
                         size="md"
-                        className="h-10 min-h-[44px] px-3.5 rounded-lg font-semibold active:scale-95 transition-transform"
+                        className="h-10 min-h-11 px-3.5 rounded-lg font-semibold active:scale-95 transition-transform"
                       >
                         Tambah
                       </Button>
                     </div>
 
-                    <div className="flex flex-wrap gap-1.5 max-h-[80px] overflow-y-auto pr-1">
+                    <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto pr-1">
                       <Badge color="brand" size="sm" type="pill-color" className="flex items-center gap-1.5 font-bold">
                         <Avatar alt={userName} size="xs" />
                         {userName} (Gua)
@@ -336,7 +336,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                           <button
                             type="button"
                             onClick={() => handleRemoveMember(m)}
-                            className="text-rose-400 hover:text-rose-300 font-bold ml-1 w-6 h-6 min-w-6 min-h-6 flex items-center justify-center rounded-full text-sm active:scale-90"
+                            className="text-danger-400 hover:text-danger-300 font-bold ml-1 w-6 h-6 min-w-6 min-h-6 flex items-center justify-center rounded-full text-sm active:scale-90"
                             aria-label={`Hapus ${m}`}
                           >
                             &times;
@@ -354,7 +354,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     color="secondary"
                     size="sm"
                     isDisabled={loading}
-                    className="min-h-[44px] px-4 rounded-lg text-sm font-semibold active:scale-95 transition-transform"
+                    className="min-h-11 px-4 rounded-lg text-sm font-semibold active:scale-95 transition-transform"
                   >
                     Batal
                   </Button>
@@ -364,7 +364,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     size="sm"
                     isLoading={loading}
                     isDisabled={loading}
-                    className="min-h-[44px] px-4 rounded-lg text-sm font-bold active:scale-95 transition-transform"
+                    className="min-h-11 px-4 rounded-lg text-sm font-bold active:scale-95 transition-transform"
                   >
                     Bikin Plan
                   </Button>

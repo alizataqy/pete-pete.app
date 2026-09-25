@@ -33,13 +33,13 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
             color="primary"
             size="sm"
             aria-label="Kembali ke tongkrongan"
-            className="min-w-[44px] min-h-[44px] p-2 rounded-lg active:scale-95 transition-all shrink-0 flex items-center justify-center"
+            className="min-w-11 min-h-11 p-2 rounded-lg active:scale-95 transition-all shrink-0 flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="min-w-0 flex-1">
             <h1 className="text-sm font-extrabold text-text-50">Cek Menu Struk</h1>
-            <p className="text-[10px] text-text-300">
+            <p className="text-2xs text-text-300">
               {session.merchantName ? `${session.title} • ${session.merchantName}` : session.title}
             </p>
           </div>
@@ -59,25 +59,25 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
             </div>
             <div className="min-w-0">
               <h2 className="text-xs font-bold text-text-50">Rincian Biaya Struk</h2>
-              <p className="text-[10px] text-text-400">Pajak & servis otomatis dibagi rata pas patungan</p>
+              <p className="text-2xs text-text-400">Pajak & servis otomatis dibagi rata pas patungan</p>
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-2 pt-2 border-t border-secondary-800/80 text-center">
             <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
-              <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Subtotal</p>
+              <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Subtotal</p>
               <p className="text-xs font-bold text-text-100 mt-1">
                 Rp {itemsSubtotal.toLocaleString("id-ID")}
               </p>
             </div>
             <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
-              <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Pajak</p>
+              <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Pajak</p>
               <p className="text-xs font-bold text-text-100 mt-1">
                 Rp {tax.toLocaleString("id-ID")}
               </p>
             </div>
             <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
-              <p className="text-[9px] text-text-400 font-semibold uppercase tracking-wider">Servis</p>
+              <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Servis</p>
               <p className="text-xs font-bold text-text-100 mt-1">
                 Rp {tip.toLocaleString("id-ID")}
               </p>
@@ -92,7 +92,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
               <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">
                 Daftar Menu ({session.items.length})
               </h2>
-              <p className="text-[10px] text-text-400 mt-0.5">
+              <p className="text-2xs text-text-400 mt-0.5">
                 Pastiin pesenan & harganya udah pas ya, Bos!
               </p>
             </div>
@@ -117,7 +117,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
                       <span className="text-xs font-bold text-text-50 block wrap-break-word">
                         {item.name}
                       </span>
-                      <span className="text-[10px] text-text-400 block">
+                      <span className="text-2xs text-text-400 block">
                         Rp {unitPrice.toLocaleString("id-ID")} / porsi
                       </span>
                     </div>
@@ -135,7 +135,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
         <div className="p-4 rounded-2xl bg-secondary-950/70 border border-secondary-800 flex justify-between items-center shadow-sm">
           <div>
             <span className="text-xs font-bold text-text-100 block">Total Keseluruhan Struk</span>
-            <span className="text-[10px] text-text-400 block mt-0.5">Termasuk pajak & biaya servis</span>
+            <span className="text-2xs text-text-400 block mt-0.5">Termasuk pajak & biaya servis</span>
           </div>
           <span className="text-base font-extrabold text-primary-400">
             Rp {total.toLocaleString("id-ID")}
@@ -150,7 +150,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
           color="primary"
           size="lg"
           noTextPadding
-          className="w-full min-h-[48px] py-3.5 text-sm font-bold active:scale-[0.96] transition-transform"
+          className="w-full min-h-12 py-3.5 text-sm font-bold active:scale-[0.96] transition-transform"
         >
           <span className="inline-flex items-center justify-center gap-2">
             <span>Lanjut Bagi Tagihan</span>

@@ -56,19 +56,19 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
     <div className="p-4 rounded-xl border border-secondary-800 bg-text-900 space-y-3">
       <div>
         <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Gabung Bill</h3>
-        <p className="text-[10px] text-text-300 mt-0.5">
+        <p className="text-2xs text-text-300 mt-0.5">
           Minta kode 6 digit dari temen lo yang bikin Bill, terus masukin di sini.
         </p>
       </div>
 
       {error && (
-        <div className="p-2.5 text-[10px] text-secondary-200 bg-secondary-900 border border-secondary-700 rounded-lg">
+        <div className="p-2.5 text-2xs text-secondary-200 bg-secondary-900 border border-secondary-700 rounded-lg">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="p-2.5 text-[10px] text-emerald-300 bg-emerald-950 border border-emerald-800 rounded-lg">
+        <div className="p-2.5 text-2xs text-emerald-300 bg-emerald-950 border border-emerald-800 rounded-lg">
           Berhasil! Nunggu bentar ya...
         </div>
       )}

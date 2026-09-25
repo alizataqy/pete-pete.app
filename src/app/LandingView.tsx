@@ -92,7 +92,7 @@ export default function LandingView({ user }: UserSessionProp) {
             <Button
               href="/tongkrongan"
               iconTrailing={ArrowRight}
-              className="min-h-[40px] sm:min-h-[44px] py-2 px-4 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
+              className="min-h-10 sm:min-h-11 py-2 px-4 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
             >
               Tongkrongan Gua
             </Button>
@@ -101,13 +101,13 @@ export default function LandingView({ user }: UserSessionProp) {
               <Button
                 href="/login"
                 color="secondary"
-                className="min-h-[40px] sm:min-h-[44px] py-2 px-3.5 rounded-lg border border-secondary-800 bg-text-950/40 hover:bg-text-900 active:scale-[0.96] text-text-200 text-xs font-semibold transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
+                className="min-h-10 sm:min-h-11 py-2 px-3.5 rounded-lg border border-secondary-800 bg-text-950/40 hover:bg-text-900 active:scale-[0.96] text-text-200 text-xs font-semibold transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
               >
                 Masuk
               </Button>
               <Button
                 href="/pete-pete/new"
-                className="min-h-[40px] sm:min-h-[44px] py-2 px-4 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
+                className="min-h-10 sm:min-h-11 py-2 px-4 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
               >
                 Coba Gratis
               </Button>
@@ -274,12 +274,12 @@ export default function LandingView({ user }: UserSessionProp) {
               </div>
 
               {/* Right Mockup Preview */}
-              <div className="md:col-span-5 flex justify-center bg-text-900/40 p-5 rounded-2xl border border-secondary-800/10 min-h-[200px]">
+              <div className="md:col-span-5 flex justify-center bg-text-900/40 p-5 rounded-2xl border border-secondary-800/10 min-h-50">
                 {currentStep.id === "ocr" && (
-                  <div className="w-full max-w-[260px] bg-text-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 relative overflow-hidden animate-in fade-in duration-200">
+                  <div className="w-full max-w-65 bg-text-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 relative overflow-hidden animate-in fade-in duration-200">
                     <div className="flex items-center justify-between border-b border-text-800 pb-2">
                       <span className="text-xs text-text-400 uppercase tracking-wider font-bold">Struk Makan</span>
-                      <Badge size="sm" color="brand" type="pill-color" className="text-[11px] font-semibold">
+                      <Badge size="sm" color="brand" type="pill-color" className="text-xs font-semibold">
                         Terbaca AI
                       </Badge>
                     </div>
@@ -307,7 +307,7 @@ export default function LandingView({ user }: UserSessionProp) {
                 )}
 
                 {currentStep.id === "split" && (
-                  <div className="w-full max-w-[260px] bg-text-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 animate-in fade-in duration-200">
+                  <div className="w-full max-w-65 bg-text-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 animate-in fade-in duration-200">
                     <div className="border-b border-text-800 pb-2">
                       <span className="text-xs text-text-400 uppercase tracking-wider font-bold">Pilih Pemilik Menu</span>
                     </div>
@@ -319,8 +319,8 @@ export default function LandingView({ user }: UserSessionProp) {
                           <span className="text-primary-300 tabular-nums">Rp 45.000</span>
                         </div>
                         <div className="flex gap-1.5">
-                          <span className="text-[11px] bg-primary-900/60 border border-primary-800/40 text-primary-200 px-2 py-0.5 rounded-full font-medium">Budi</span>
-                          <span className="text-[11px] bg-primary-950/60 border border-primary-900/40 text-primary-300 px-2 py-0.5 rounded-full font-medium">Ucup</span>
+                          <span className="text-xs bg-primary-900/60 border border-primary-800/40 text-primary-200 px-2 py-0.5 rounded-full font-medium">Budi</span>
+                          <span className="text-xs bg-primary-950/60 border border-primary-900/40 text-primary-300 px-2 py-0.5 rounded-full font-medium">Ucup</span>
                         </div>
                       </div>
 
@@ -330,7 +330,7 @@ export default function LandingView({ user }: UserSessionProp) {
                           <span className="text-primary-300 tabular-nums">Rp 28.000</span>
                         </div>
                         <div className="flex gap-1.5">
-                          <span className="text-[11px] bg-primary-900/60 border border-primary-800/40 text-primary-200 px-2 py-0.5 rounded-full font-medium">Siti</span>
+                          <span className="text-xs bg-primary-900/60 border border-primary-800/40 text-primary-200 px-2 py-0.5 rounded-full font-medium">Siti</span>
                         </div>
                       </div>
                     </div>
@@ -338,7 +338,7 @@ export default function LandingView({ user }: UserSessionProp) {
                 )}
 
                 {currentStep.id === "share" && (
-                  <div className="w-full max-w-[260px] bg-background-950 p-4 rounded-xl border border-secondary-800/40 shadow-lg space-y-2.5 animate-in fade-in duration-200">
+                  <div className="w-full max-w-65 bg-background-950 p-4 rounded-xl border border-secondary-800/40 shadow-lg space-y-2.5 animate-in fade-in duration-200">
                     <div className="flex items-center gap-2 border-b border-secondary-800/40 pb-2">
                       <div className="w-2 h-2 rounded-full bg-emerald-500" />
                       <span className="text-xs text-text-50 font-bold">Preview Pesan WA</span>
@@ -346,8 +346,8 @@ export default function LandingView({ user }: UserSessionProp) {
 
                     <div className="bg-background-900 p-3 rounded-xl text-xs text-text-100 space-y-1 border-s-2 border-primary-500">
                       <p className="font-bold text-primary-300">Rincian Patungan: Ramen</p>
-                      <p className="text-text-300 text-[11px]">Budi: <strong className="text-text-50">Rp 57.000</strong></p>
-                      <p className="text-text-300 text-[11px]">Ucup: <strong className="text-text-50">Rp 45.000</strong></p>
+                      <p className="text-text-300 text-xs">Budi: <strong className="text-text-50">Rp 57.000</strong></p>
+                      <p className="text-text-300 text-xs">Ucup: <strong className="text-text-50">Rp 45.000</strong></p>
                       <div className="mt-2 text-center bg-primary-600 py-2 rounded-xl font-bold text-white text-xs shadow-sm shadow-primary-600/25">
                         Siap Kirim ke Grup WA
                       </div>

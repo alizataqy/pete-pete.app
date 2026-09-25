@@ -868,7 +868,7 @@ ${bonUrl}
           </Button>
           <div className="min-w-0 flex-1">
             <h1 className="text-sm font-extrabold text-text wrap-break-word">{session.title}</h1>
-            <div className="text-[9px] text-text-300 flex items-center gap-1.5 mt-0.5">
+            <div className="text-3xs text-text-300 flex items-center gap-1.5 mt-0.5">
               <span className="shrink-0">Kode: {session.inviteCode}</span>
               <span>•</span>
               <Badge
@@ -881,7 +881,7 @@ ${bonUrl}
                 }
                 size="sm"
                 type="color"
-                className="inline-flex font-semibold text-[9px] py-0 px-1.5 shrink-0"
+                className="inline-flex font-semibold text-3xs py-0 px-1.5 shrink-0"
               >
                 {sessionStatus === "COMPLETED"
                   ? "Kelar"
@@ -925,7 +925,7 @@ ${bonUrl}
                   : (session.bankAccount && session.bankAccount.length > 4
                     ? `••••${session.bankAccount.slice(-4)}`
                     : session.bankAccount)}{" "}
-                <span className="text-[10px] text-text-400 shrink-0">(A/N: {session.bankOwner})</span>
+                <span className="text-2xs text-text-400 shrink-0">(A/N: {session.bankOwner})</span>
               </p>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
@@ -996,7 +996,7 @@ ${bonUrl}
                   {saveStatus === "saved" && <span className="text-emerald-500 font-medium shrink-0"> <Dot color="success" /> </span>}
                   {saveStatus === "error" && <span className="text-danger-500 font-medium shrink-0"> <Dot color="danger" /> </span>}
                 </div>
-                <span className="text-[10px] text-text-400 wrap-break-word">Pencet buat kelola sohib lo</span>
+                <span className="text-2xs text-text-400 wrap-break-word">Pencet buat kelola sohib lo</span>
               </div>
             </div>
             <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -1010,7 +1010,7 @@ ${bonUrl}
                 }}
                 color="secondary"
                 size="xs"
-                className={`px-2 py-1 text-[10px] shrink-0 ${sessionStatus !== "COMPLETED" ? "opacity-60" : ""}`}
+                className={`px-2 py-1 text-2xs shrink-0 ${sessionStatus !== "COMPLETED" ? "opacity-60" : ""}`}
                 iconLeading={Share07}
               >
                 Bagikan Rekap
@@ -1089,9 +1089,9 @@ ${bonUrl}
                         ) : (
                           <div className="flex flex-col min-w-0">
                             <p className="font-semibold text-text text-xs wrap-break-word">
-                              {member.name} {member.userId === session.userId && <span className="text-[9px] font-normal text-text-400">(Gua)</span>}
+                              {member.name} {member.userId === session.userId && <span className="text-3xs font-normal text-text-400">(Gua)</span>}
                             </p>
-                            <p className="text-[10px] text-primary-400 font-medium">
+                            <p className="text-2xs text-primary-400 font-medium">
                               Patungan: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
                             </p>
                           </div>
@@ -1105,7 +1105,7 @@ ${bonUrl}
                             color={!member.isPaid ? "primary" : "secondary"}
                             size="xs"
                             iconLeading={!member.isPaid ? Check : X}
-                            className={`text-[10px] font-bold tracking-wide transition-all duration-300 ${!member.isPaid
+                            className={`text-2xs font-bold tracking-wide transition-all duration-300 ${!member.isPaid
                               ? "shadow-sm shadow-emerald-950/20"
                               : "opacity-80 hover:opacity-100"
                               }`}
@@ -1181,7 +1181,7 @@ ${bonUrl}
                 <Target01 className="w-4 h-4 text-text-300 shrink-0" />
                 <span>Siapa Pesen Apa Nih?</span>
               </h2>
-              <p className="text-[10px] text-text-400 leading-normal">
+              <p className="text-2xs text-text-400 leading-normal">
                 Klik avatar sohib lo buat bagi porsi makanannya, Bos!
               </p>
             </div>
@@ -1190,7 +1190,7 @@ ${bonUrl}
                 onPress={() => setShowAddForm(!showAddForm)}
                 color="secondary"
                 size="xs"
-                className="px-2.5 py-1 text-[10px] shrink-0"
+                className="px-2.5 py-1 text-2xs shrink-0"
                 iconLeading={showAddForm ? undefined : Plus}
               >
                 {showAddForm ? "Gak Jadi" : "Tambah Menu"}
@@ -1201,7 +1201,7 @@ ${bonUrl}
           {/* Form Tambah Menu Manual */}
           {showAddForm && (
             <form onSubmit={handleAddItem} className="p-3.5 rounded-xl bg-secondary-950/60 border border-secondary-800 space-y-3">
-              <h4 className="text-[10px] font-bold text-text uppercase tracking-wider">Tambah Menu Baru</h4>
+              <h4 className="text-2xs font-bold text-text uppercase tracking-wider">Tambah Menu Baru</h4>
 
               <div className="space-y-2">
                 <input
@@ -1216,7 +1216,7 @@ ${bonUrl}
 
                 <div className="grid grid-cols-3 gap-2">
                   <div className="space-y-1">
-                    <label className="text-[9px] text-text-400 uppercase font-bold">Jumlah (Qty)</label>
+                    <label className="text-3xs text-text-400 uppercase font-bold">Jumlah (Qty)</label>
                     <input
                       type="text"
                       required
@@ -1227,14 +1227,14 @@ ${bonUrl}
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[9px] text-text-400 uppercase font-bold">Tipe Harga</label>
+                    <label className="text-3xs text-text-400 uppercase font-bold">Tipe Harga</label>
                     <div className="grid grid-cols-2 gap-1 bg-secondary-950/80 p-1 rounded-xl border border-secondary-800/60 h-9 items-center">
                       <Button
                         type="button"
                         onPress={() => setAddPriceMode("unit")}
                         color={addPriceMode === "unit" ? "primary" : "tertiary"}
                         size="xs"
-                        className="h-full text-[10px] font-bold rounded-lg"
+                        className="h-full text-2xs font-bold rounded-lg"
                       >
                         Satuan
                       </Button>
@@ -1243,14 +1243,14 @@ ${bonUrl}
                         onPress={() => setAddPriceMode("total")}
                         color={addPriceMode === "total" ? "primary" : "tertiary"}
                         size="xs"
-                        className="h-full text-[10px] font-bold rounded-lg"
+                        className="h-full text-2xs font-bold rounded-lg"
                       >
                         Total
                       </Button>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[9px] text-text-400 uppercase font-bold">
+                    <label className="text-3xs text-text-400 uppercase font-bold">
                       {addPriceMode === "unit" ? "Harga Satuan" : "Harga Total"}
                     </label>
                     {addPriceMode === "unit" ? (
@@ -1310,7 +1310,7 @@ ${bonUrl}
                         />
                         <div className="grid grid-cols-3 gap-2">
                           <div className="space-y-1">
-                            <label className="text-[9px] text-text-400 uppercase font-bold">Jumlah (Qty)</label>
+                            <label className="text-3xs text-text-400 uppercase font-bold">Jumlah (Qty)</label>
                             <input
                               type="text"
                               required
@@ -1322,14 +1322,14 @@ ${bonUrl}
                             />
                           </div>
                           <div className="space-y-1">
-                            <label className="text-[9px] text-text-400 uppercase font-bold">Tipe Harga</label>
+                            <label className="text-3xs text-text-400 uppercase font-bold">Tipe Harga</label>
                             <div className="grid grid-cols-2 gap-1 bg-secondary-950/80 p-1 rounded-xl border border-secondary-800/60 h-9 items-center">
                               <Button
                                 type="button"
                                 onPress={() => setEditPriceMode("unit")}
                                 color={editPriceMode === "unit" ? "primary" : "tertiary"}
                                 size="xs"
-                                className="h-full text-[10px] font-bold rounded-lg"
+                                className="h-full text-2xs font-bold rounded-lg"
                               >
                                 Satuan
                               </Button>
@@ -1338,14 +1338,14 @@ ${bonUrl}
                                 onPress={() => setEditPriceMode("total")}
                                 color={editPriceMode === "total" ? "primary" : "tertiary"}
                                 size="xs"
-                                className="h-full text-[10px] font-bold rounded-lg"
+                                className="h-full text-2xs font-bold rounded-lg"
                               >
                                 Total
                               </Button>
                             </div>
                           </div>
                           <div className="space-y-1">
-                            <label className="text-[9px] text-text-400 uppercase font-bold">
+                            <label className="text-3xs text-text-400 uppercase font-bold">
                               {editPriceMode === "unit" ? "Harga Satuan" : "Harga Total"}
                             </label>
                             {editPriceMode === "unit" ? (
@@ -1370,7 +1370,7 @@ ${bonUrl}
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-2 justify-end text-[10px]">
+                      <div className="flex gap-2 justify-end text-2xs">
                         <Button
                           type="button"
                           onPress={() => setEditingItemId(null)}
@@ -1406,7 +1406,7 @@ ${bonUrl}
                                 <h4 className="font-bold text-text text-xs leading-snug wrap-break-word" title={item.name}>
                                   {item.name}
                                 </h4>
-                                <p className="text-[10px] text-text-400 mt-0.5">
+                                <p className="text-2xs text-text-400 mt-0.5">
                                   {item.quantity} porsi ({item.quantity > 0 ? `Rp ${Math.round(Number(item.totalPrice) / item.quantity).toLocaleString("id-ID")}/porsi` : ""})
                                 </p>
                               </div>
@@ -1448,14 +1448,14 @@ ${bonUrl}
                             </div>
 
                             {/* Sub row: Allocation Badge & Clean Status */}
-                            <div className="flex items-center justify-between gap-2 flex-wrap text-[10px]">
-                              <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold text-[10px]">
+                            <div className="flex items-center justify-between gap-2 flex-wrap text-2xs">
+                              <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold text-2xs">
                                 {isComplete
                                   ? `${totalAllocatedCount} porsi dibagi • Rp ${Math.round(Number(item.totalPrice) / (totalAllocatedCount || 1)).toLocaleString("id-ID")}/porsi`
                                   : "Belum dibagi"}
                               </Badge>
                               {itemAllocations.length > 0 && (
-                                <span className="text-[10px] text-text-400 font-medium">
+                                <span className="text-2xs text-text-400 font-medium">
                                   {itemAllocations.length} orang patungan
                                 </span>
                               )}
@@ -1502,14 +1502,14 @@ ${bonUrl}
                                               <Minus className="w-3 h-3 stroke-[3px]" />
                                             </button>
                                             {/* Quantity Badge on Top Right */}
-                                            <span className="absolute -top-1.5 -right-1.5 z-10 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-md border border-secondary-950 pointer-events-none">
+                                            <span className="absolute -top-1.5 -right-1.5 z-10 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-2xs font-bold shadow-md border border-secondary-950 pointer-events-none">
                                               {qty}
                                             </span>
                                           </>
                                         )}
                                       </div>
                                       <p
-                                        className={`text-[10px] wrap-break-word w-full text-center leading-tight font-semibold ${qty > 0 ? "text-text font-bold" : "text-text-400"}`}
+                                        className={`text-2xs wrap-break-word w-full text-center leading-tight font-semibold ${qty > 0 ? "text-text font-bold" : "text-text-400"}`}
                                         title={member.name}
                                       >
                                         {member.userId === session.userId ? "Gua" : member.name}

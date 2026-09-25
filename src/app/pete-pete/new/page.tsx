@@ -468,7 +468,7 @@ export default function NewSessionPage() {
           </Button>
           <div className="min-w-0 flex-1">
             <h1 className="text-sm font-extrabold text-text-50">Bikin Bill PETE-PETE</h1>
-            <p className="text-[10px] text-text-300">Pilih cara input menu patungan</p>
+            <p className="text-2xs text-text-300">Pilih cara input menu patungan</p>
           </div>
         </header>
 
@@ -503,7 +503,7 @@ export default function NewSessionPage() {
                       <h3 className="text-sm font-extrabold text-text-50 group-hover:text-primary-300 transition-colors">
                         Scan Foto Struk
                       </h3>
-                      <Badge color="brand" size="sm" type="pill-color" className="font-extrabold text-[9px] px-2 py-0.5 shadow-2xs">
+                      <Badge color="brand" size="sm" type="pill-color" className="font-extrabold text-3xs px-2 py-0.5 shadow-xs">
                         Rekomendasi
                       </Badge>
                     </div>
@@ -522,11 +522,11 @@ export default function NewSessionPage() {
             <button
               type="button"
               onClick={() => setInputMode("manual")}
-              className="w-full text-left p-4 sm:p-5 rounded-2xl border border-secondary-800 bg-secondary-950/40 hover:border-secondary-700 hover:bg-secondary-950/70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-2xs group cursor-pointer relative"
+              className="w-full text-left p-4 sm:p-5 rounded-2xl border border-secondary-800 bg-secondary-950/40 hover:border-secondary-700 hover:bg-secondary-950/70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3.5 min-w-0 flex-1">
-                  <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary-900 border border-secondary-700/80 text-secondary-300 flex items-center justify-center group-hover:scale-105 group-hover:bg-secondary-800 transition-all shadow-2xs mt-0.5">
+                  <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary-900 border border-secondary-700/80 text-secondary-300 flex items-center justify-center group-hover:scale-105 group-hover:bg-secondary-800 transition-all shadow-xs mt-0.5">
                     <Edit02 className="w-6 h-6" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -534,7 +534,7 @@ export default function NewSessionPage() {
                       <h3 className="text-sm font-extrabold text-text-50 group-hover:text-primary-300 transition-colors">
                         Input Menu Manual
                       </h3>
-                      <Badge color="gray" size="sm" type="pill-color" className="font-semibold text-[9px] px-2 py-0.5">
+                      <Badge color="gray" size="sm" type="pill-color" className="font-semibold text-3xs px-2 py-0.5">
                         Alternatif
                       </Badge>
                     </div>
@@ -551,23 +551,23 @@ export default function NewSessionPage() {
           </div>
 
           {/* Quick Perks / Trust Highlights */}
-          <div className="p-3.5 sm:p-4 rounded-2xl border border-secondary-800/80 bg-secondary-950/30 backdrop-blur-xs space-y-2.5 mt-auto shadow-2xs">
+          <div className="p-3.5 sm:p-4 rounded-2xl border border-secondary-800/80 bg-secondary-950/30 backdrop-blur-xs space-y-2.5 mt-auto shadow-xs">
             <div className="flex items-center gap-1.5">
               <Zap className="w-3.5 h-3.5 text-primary-400" />
-              <p className="text-[10px] font-extrabold uppercase tracking-wider text-text-400">
+              <p className="text-2xs font-extrabold uppercase tracking-wider text-text-400">
                 Kenapa Enak Pake Ceban Pertama?
               </p>
             </div>
             <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-[11px] text-text-300">
+              <div className="flex items-center gap-2 text-xs text-text-300">
                 <CheckCircle className="w-4 h-4 text-primary-400 shrink-0" />
                 <span>Pajak &amp; diskon struk dihitung adil proporsional</span>
               </div>
-              <div className="flex items-center gap-2 text-[11px] text-text-300">
+              <div className="flex items-center gap-2 text-xs text-text-300">
                 <CheckCircle className="w-4 h-4 text-primary-400 shrink-0" />
                 <span>Bisa dibagi rata atau spesifik per porsi sohib</span>
               </div>
-              <div className="flex items-center gap-2 text-[11px] text-text-300">
+              <div className="flex items-center gap-2 text-xs text-text-300">
                 <CheckCircle className="w-4 h-4 text-primary-400 shrink-0" />
                 <span>Link bon publik langsung kirim via WhatsApp tanpa login</span>
               </div>
@@ -586,7 +586,7 @@ export default function NewSessionPage() {
     <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-          <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">2</span>
+          <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">2</span>
           Detail Bill &amp; Info Transfer
         </h2>
       </div>
@@ -698,7 +698,7 @@ export default function NewSessionPage() {
                           />
                           <div>
                             <p className="font-bold text-text-50">{b.bankName}</p>
-                            <p className="text-[11px] text-text-300 mt-0.5">
+                            <p className="text-xs text-text-300 mt-0.5">
                               {b.bankName === "QRIS" ? "Gambar QRIS" : b.bankAccount} (A/N {b.bankOwner})
                             </p>
                           </div>
@@ -732,7 +732,7 @@ export default function NewSessionPage() {
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={t.logo} alt={t.name} className="w-6 h-6 object-contain" />
-                      <span className="text-[10px] font-bold wrap-break-word text-center">{t.name}</span>
+                      <span className="text-2xs font-bold wrap-break-word text-center">{t.name}</span>
                     </button>
                   ))}
                 </div>
@@ -802,7 +802,7 @@ export default function NewSessionPage() {
           <h1 className="text-base font-semibold text-text-50">
             {inputMode === "scan" ? "Scan Struk" : "Input Manual"}
           </h1>
-          <p className="text-[10px] text-text-300">
+          <p className="text-2xs text-text-300">
             {inputMode === "scan"
               ? (scanResult ? "Langkah 2: Detail Bill" : "Langkah 1: Upload Foto")
               : "Masukkan item & detail Bill"}
@@ -826,7 +826,7 @@ export default function NewSessionPage() {
               <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">1</span>
+                    <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">1</span>
                     Pilih Foto Struk
                   </h2>
                   {file && (
@@ -848,7 +848,7 @@ export default function NewSessionPage() {
                     </div>
                     <p className="text-sm font-bold text-text-50 mb-1">Upload foto struk lo</p>
                     <p className="text-xs text-text-300">Sentuh untuk buka kamera / galeri</p>
-                    <span className="text-[10px] text-text-400 mt-2 bg-secondary-900/80 border border-secondary-800 px-2.5 py-1 rounded-full">
+                    <span className="text-2xs text-text-400 mt-2 bg-secondary-900/80 border border-secondary-800 px-2.5 py-1 rounded-full">
                       Format: JPG, PNG, WebP (maks. 10MB)
                     </span>
                   </div>
@@ -876,7 +876,7 @@ export default function NewSessionPage() {
                     <div key={idx} className="bg-secondary-900/40 border border-secondary-800/80 rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-3">
                       <div className="space-y-0.5 min-w-0 flex-1">
                         <span className="text-xs sm:text-sm font-bold text-text-50 block wrap-break-word">{item.name}</span>
-                        <span className="text-[11px] text-text-300">{item.quantity}x &bull; Rp {Number(item.unitPrice).toLocaleString("id-ID")}</span>
+                        <span className="text-xs text-text-300">{item.quantity}x &bull; Rp {Number(item.unitPrice).toLocaleString("id-ID")}</span>
                       </div>
                       <span className="text-xs sm:text-sm font-extrabold text-text-50 shrink-0">Rp {Number(item.totalPrice).toLocaleString("id-ID")}</span>
                     </div>
@@ -920,15 +920,15 @@ export default function NewSessionPage() {
             {/* Step Indicator */}
             <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-3.5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-extrabold text-primary-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">
+                <span className="text-xs font-extrabold text-primary-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
                     {wizardStep}
                   </span>
                   {wizardStep === 1 && "Langkah 1: Input Daftar Menu"}
                   {wizardStep === 2 && "Langkah 2: Tambah Teman Patungan"}
                   {wizardStep === 3 && "Langkah 3: Bagi Porsi & Info Bayar"}
                 </span>
-                <span className="text-[10px] font-bold text-text-400">
+                <span className="text-2xs font-bold text-text-400">
                   {wizardStep}/3
                 </span>
               </div>
@@ -945,7 +945,7 @@ export default function NewSessionPage() {
                 <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">1</span>
+                      <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">1</span>
                       Masukin Semua Menu Dulu
                     </h2>
                   </div>
@@ -1054,7 +1054,7 @@ export default function NewSessionPage() {
                         <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-secondary-900/40 border border-secondary-800/80 gap-3">
                           <div className="min-w-0 flex-1">
                             <p className="text-xs sm:text-sm font-bold text-text-50 wrap-break-word">{item.name}</p>
-                            <p className="text-[11px] text-text-300 mt-0.5">
+                            <p className="text-xs text-text-300 mt-0.5">
                               {item.quantity}x &bull; Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/porsi = Rp {item.totalPrice.toLocaleString("id-ID")}
                             </p>
                           </div>
@@ -1084,7 +1084,7 @@ export default function NewSessionPage() {
               <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">2</span>
+                    <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">2</span>
                     Siapa Aja yang Ikut PETE-PETE?
                   </h2>
                 </div>
@@ -1114,11 +1114,11 @@ export default function NewSessionPage() {
                   <div className="flex flex-col items-center gap-1.5 w-16 shrink-0">
                     <div className="relative">
                       <Avatar alt={currentUserName} size="lg" className="shadow-md border border-primary-500 ring-2 ring-primary-500/40" />
-                      <span className="absolute -bottom-1 -right-1 bg-primary-500 text-white rounded-full px-1 py-0.2 text-[8px] font-extrabold shadow-xs">
+                      <span className="absolute -bottom-1 -right-1 bg-primary-500 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs">
                         Gua
                       </span>
                     </div>
-                    <p className="text-[10px] text-text font-bold wrap-break-word w-full text-center leading-tight">
+                    <p className="text-2xs text-text font-bold wrap-break-word w-full text-center leading-tight">
                       {currentUserName}
                     </p>
                   </div>
@@ -1161,7 +1161,7 @@ export default function NewSessionPage() {
                               setEditingManualIndex(idx);
                               setEditingManualName(m);
                             }}
-                            className="text-[10px] text-text font-semibold wrap-break-word w-full text-center leading-tight cursor-pointer hover:underline"
+                            className="text-2xs text-text font-semibold wrap-break-word w-full text-center leading-tight cursor-pointer hover:underline"
                             title="Klik untuk ubah nama"
                           >
                             {m}
@@ -1169,7 +1169,7 @@ export default function NewSessionPage() {
                           <button
                             type="button"
                             onClick={() => setManualMembers((prev) => prev.filter((x) => x !== m))}
-                            className="absolute -top-1 -right-1 bg-danger-600 hover:bg-danger-700 text-white rounded-full size-5 flex items-center justify-center text-[10px] font-bold shadow-md cursor-pointer transition-all active:scale-90"
+                            className="absolute -top-1 -right-1 bg-danger-600 hover:bg-danger-700 text-white rounded-full size-5 flex items-center justify-center text-2xs font-bold shadow-md cursor-pointer transition-all active:scale-90"
                             title="Hapus"
                             aria-label={`Hapus ${m}`}
                           >
@@ -1190,7 +1190,7 @@ export default function NewSessionPage() {
                 <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-[10px] font-extrabold">3</span>
+                      <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">3</span>
                       Siapa Pesen Apa Nih?
                     </h2>
                   </div>
@@ -1205,11 +1205,11 @@ export default function NewSessionPage() {
                           <div className="flex justify-between items-start gap-2">
                             <div className="min-w-0 flex-1">
                               <h4 className="font-bold text-text-50 text-xs sm:text-sm leading-snug wrap-break-word">{item.name}</h4>
-                              <p className="text-[11px] text-text-300 mt-0.5">
+                              <p className="text-xs text-text-300 mt-0.5">
                                 Qty: {item.quantity}x &bull; Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/porsi
                               </p>
                             </div>
-                            <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold text-[10px] shrink-0">
+                            <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold text-2xs shrink-0">
                               {isComplete ? `Dibagi: ${allocatedCount} porsi` : "Belum dibagi"}
                             </Badge>
                           </div>
@@ -1244,7 +1244,7 @@ export default function NewSessionPage() {
                                     {qty > 0 && (
                                       <>
                                         {/* Quantity Badge on Top Right */}
-                                        <span className="absolute -top-1 -right-1 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow-md border border-secondary-950 pointer-events-none">
+                                        <span className="absolute -top-1 -right-1 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-2xs font-bold shadow-md border border-secondary-950 pointer-events-none">
                                           {qty}
                                         </span>
                                         {/* Minus Button on Bottom Right */}
@@ -1269,7 +1269,7 @@ export default function NewSessionPage() {
                                       </>
                                     )}
                                   </div>
-                                  <p className={`text-[10px] wrap-break-word w-full text-center leading-tight font-semibold ${qty > 0 ? "text-text-50 font-bold" : "text-text-400"}`}>
+                                  <p className={`text-2xs wrap-break-word w-full text-center leading-tight font-semibold ${qty > 0 ? "text-text-50 font-bold" : "text-text-400"}`}>
                                     {person === currentUserName ? "Gua" : person}
                                   </p>
                                 </div>

@@ -18,6 +18,7 @@ import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface BonItemAllocation {
   memberId: string;
@@ -69,6 +70,7 @@ export default function BonView({
   members,
   preselectedMemberId,
 }: BonViewProps) {
+  const router = useRouter();
   // Jika ada query param member yang cocok, langsung jadikan default selected
   const initialMember = useMemo(() => {
     if (preselectedMemberId) {
@@ -198,10 +200,10 @@ export default function BonView({
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-3 sm:px-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <Button
-            href="/"
+            onPress={() => router.back()}
             color="primary"
             size="sm"
-            aria-label="Kembali ke beranda"
+            aria-label="Kembali"
             className="size-10 min-w-10 min-h-10 p-2 rounded-lg active:scale-95 transition-all shrink-0 flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -215,12 +217,12 @@ export default function BonView({
                 color={session.status === "COMPLETED" ? "success" : "warning"}
                 size="sm"
                 type="pill-color"
-                className="font-bold shrink-0 text-[10px] px-1.5 py-0.5"
+                className="font-bold shrink-0 text-2xs px-1.5 py-0.5"
               >
                 {session.status === "COMPLETED" ? "Kelar" : "Draft"}
               </Badge>
             </div>
-            <p className="text-[10px] text-text-400 leading-tight mt-0.5 flex items-center gap-1.5">
+            <p className="text-2xs text-text-400 leading-tight mt-0.5 flex items-center gap-1.5">
               {session.merchantName ? (
                 <>
                   <span className="text-text-300 font-medium">{session.merchantName}</span>
@@ -269,7 +271,7 @@ export default function BonView({
               <User01 className="w-3.5 h-3.5 text-primary-400" />
               <span>Pilih Nama Lo Buat Cek Bagian</span>
             </h2>
-            <span className="text-[10px] text-text-400 font-medium">
+            <span className="text-2xs text-text-400 font-medium">
               {members.length} Orang
             </span>
           </div>
@@ -341,7 +343,7 @@ export default function BonView({
                         {displayName}
                       </span>
                       <span
-                        className={`inline-block text-[10px] font-bold tabular-nums px-2 py-0.5 rounded-full border transition-all ${isSelected
+                        className={`inline-block text-2xs font-bold tabular-nums px-2 py-0.5 rounded-full border transition-all ${isSelected
                             ? "bg-primary-500/20 border-primary-500/40 text-primary-200"
                             : "bg-secondary-900/80 border-secondary-800/80 text-text-300"
                           }`}
@@ -377,7 +379,7 @@ export default function BonView({
                     <h3 className="text-sm font-extrabold text-text-50 wrap-break-word">
                       {displayName}
                     </h3>
-                    <p className="text-[10px] text-text-400 mt-0.5">
+                    <p className="text-2xs text-text-400 mt-0.5">
                       {activeMemberDetail.items.length} menu makanan/minuman
                     </p>
                   </div>
@@ -386,7 +388,7 @@ export default function BonView({
                   color={activeMemberDetail.member.isPaid ? "success" : "warning"}
                   size="sm"
                   type="pill-color"
-                  className="font-bold shrink-0 text-[10px]"
+                  className="font-bold shrink-0 text-2xs"
                 >
                   {activeMemberDetail.member.isPaid ? "Udah Lunas" : "Belum Bayar"}
                 </Badge>
@@ -395,10 +397,10 @@ export default function BonView({
               {/* Menu-menu yang dimakan */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-text-400 uppercase tracking-wider">
+                  <span className="text-2xs font-bold text-text-400 uppercase tracking-wider">
                     Menu Yang Lo Pesen
                   </span>
-                  <span className="text-[10px] font-medium text-text-400">
+                  <span className="text-2xs font-medium text-text-400">
                     {activeMemberDetail.items.length} item
                   </span>
                 </div>
@@ -411,14 +413,14 @@ export default function BonView({
                     {activeMemberDetail.items.map((item) => (
                       <div
                         key={item.id}
-                        className="p-3 rounded-xl bg-secondary-900/30 hover:bg-secondary-900/50 border border-secondary-800/80 hover:border-secondary-700/80 transition-all flex items-center justify-between gap-3 shadow-2xs"
+                        className="p-3 rounded-xl bg-secondary-900/30 hover:bg-secondary-900/50 border border-secondary-800/80 hover:border-secondary-700/80 transition-all flex items-center justify-between gap-3 shadow-xs"
                       >
                         <div className="min-w-0 flex-1">
                           <span className="text-xs font-bold text-text-50 block wrap-break-word">
                             {item.name}
                           </span>
                           <div className="flex items-center gap-1.5 mt-1">
-                            <span className="inline-flex items-center text-[9px] font-semibold text-primary-400 bg-primary-500/10 border border-primary-500/20 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                            <span className="inline-flex items-center text-3xs font-semibold text-primary-400 bg-primary-500/10 border border-primary-500/20 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                               {item.portionCount === item.totalPortions && item.totalPortions === 1
                                 ? "1 porsi penuh"
                                 : `${item.portionCount} dari ${item.totalPortions} porsi`}
@@ -437,14 +439,14 @@ export default function BonView({
               {/* Rincian Biaya & Grand Total */}
               <div className="space-y-2 pt-2 border-t border-secondary-800/80 text-xs">
                 <div className="space-y-1.5 px-0.5">
-                  <div className="flex justify-between text-text-300 text-[11px]">
+                  <div className="flex justify-between text-text-300 text-xs">
                     <span>Subtotal Menu</span>
                     <span className="font-semibold tabular-nums text-text-200">
                       Rp {activeMemberDetail.subtotal.toLocaleString("id-ID")}
                     </span>
                   </div>
                   {activeMemberDetail.tax > 0 && (
-                    <div className="flex justify-between text-text-300 text-[11px]">
+                    <div className="flex justify-between text-text-300 text-xs">
                       <span>Porsi Pajak</span>
                       <span className="font-semibold tabular-nums text-text-200">
                         Rp {activeMemberDetail.tax.toLocaleString("id-ID")}
@@ -452,7 +454,7 @@ export default function BonView({
                     </div>
                   )}
                   {activeMemberDetail.tip > 0 && (
-                    <div className="flex justify-between text-text-300 text-[11px]">
+                    <div className="flex justify-between text-text-300 text-xs">
                       <span>Porsi Servis / Tip</span>
                       <span className="font-semibold tabular-nums text-text-200">
                         Rp {activeMemberDetail.tip.toLocaleString("id-ID")}
@@ -461,12 +463,12 @@ export default function BonView({
                   )}
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-primary-500/10 border border-primary-500/20 flex justify-between items-center mt-2.5 shadow-2xs">
+                <div className="p-3.5 rounded-xl bg-primary-500/10 border border-primary-500/20 flex justify-between items-center mt-2.5 shadow-xs">
                   <div>
                     <span className="text-xs font-bold text-text-50 block">
                       Total Yang Mesti Lo Bayar
                     </span>
-                    <span className="text-[10px] text-text-400 block mt-0.5">
+                    <span className="text-2xs text-text-400 block mt-0.5">
                       {activeMemberDetail.member.isPaid ? "Udah beres dibayar" : "Belum ditransfer ke yang nalangin"}
                     </span>
                   </div>
@@ -505,7 +507,7 @@ export default function BonView({
                 <span className="text-xs font-bold text-text-100 block">
                   Transparansi Semua Menu Struk
                 </span>
-                <span className="text-[10px] text-text-400 block">
+                <span className="text-2xs text-text-400 block">
                   Total {items.length} menu • Rp {session.totalAmount.toLocaleString("id-ID")}
                 </span>
               </div>
@@ -531,14 +533,14 @@ export default function BonView({
                 return (
                   <div
                     key={item.id}
-                    className="p-3 rounded-xl bg-secondary-950/60 border border-secondary-800/70 hover:border-secondary-700/80 transition-all space-y-2 shadow-2xs"
+                    className="p-3 rounded-xl bg-secondary-950/60 border border-secondary-800/70 hover:border-secondary-700/80 transition-all space-y-2 shadow-xs"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
                         <span className="text-xs font-bold text-text-50 block leading-snug wrap-break-word">
                           {item.name}
                         </span>
-                        <span className="text-[10px] text-text-400 font-medium block mt-0.5">
+                        <span className="text-2xs text-text-400 font-medium block mt-0.5">
                           {item.quantity}x @ Rp {item.unitPrice.toLocaleString("id-ID")}
                         </span>
                       </div>
@@ -548,7 +550,7 @@ export default function BonView({
                     </div>
 
                     <div className="pt-2 border-t border-secondary-800/60 flex items-center justify-between gap-2 flex-wrap">
-                      <span className="text-[10px] font-bold text-text-400 uppercase tracking-wider shrink-0">
+                      <span className="text-2xs font-bold text-text-400 uppercase tracking-wider shrink-0">
                         Dibagi:
                       </span>
                       {allocatedMembers.length > 0 ? (
@@ -556,7 +558,7 @@ export default function BonView({
                           {allocatedMembers.map(({ member, quantity }) => (
                             <div
                               key={member.id}
-                              className="inline-flex items-center gap-1.5 pl-0.5 pr-2 py-0.5 rounded-full bg-secondary-900/90 border border-secondary-800 text-[10px] shadow-2xs"
+                              className="inline-flex items-center gap-1.5 pl-0.5 pr-2 py-0.5 rounded-full bg-secondary-900/90 border border-secondary-800 text-2xs shadow-xs"
                             >
                               <Avatar
                                 alt={member.name}
@@ -566,14 +568,14 @@ export default function BonView({
                               <span className="font-semibold text-text-100 max-w-20 wrap-break-word leading-tight">
                                 {member.name}
                               </span>
-                              <span className="text-[9px] font-bold text-primary-400 bg-primary-500/10 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                              <span className="text-3xs font-bold text-primary-400 bg-primary-500/10 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                                 {quantity} porsi
                               </span>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <span className="text-[10px] text-text-400 italic">
+                        <span className="text-2xs text-text-400 italic">
                           Belum dibagi
                         </span>
                       )}
@@ -588,7 +590,7 @@ export default function BonView({
 
       {/* Docked Footer CTA to Home/App */}
       <footer className="shrink-0 p-3.5 pb-[max(0.875rem,env(safe-area-inset-bottom))] border-t border-secondary-800 bg-secondary-950/95 backdrop-blur-md z-20 text-center">
-        <p className="text-[11px] text-text-400">
+        <p className="text-xs text-text-400">
           Patungan anti drama pakai{" "}
           <Link href="/" className="font-extrabold text-primary-400 hover:underline">
             Ceban Pertama

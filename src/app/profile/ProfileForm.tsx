@@ -145,7 +145,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         </Button>
         <div>
           <h1 className="text-sm font-extrabold text-text-50">Profil lo</h1>
-          <p className="text-[10px] text-text-300 mt-0.5">Atur akun &amp; info rekening lo</p>
+          <p className="text-2xs text-text-300 mt-0.5">Atur akun &amp; info rekening lo</p>
         </div>
       </header>
 
@@ -156,7 +156,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
           <div>
             <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Info Akun</h3>
-            <p className="text-[10px] text-text-300 mt-0.5">Ubah nama dan alamat email login lo.</p>
+            <p className="text-2xs text-text-300 mt-0.5">Ubah nama dan alamat email login lo.</p>
           </div>
 
           <div className="flex gap-2">
@@ -227,7 +227,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-text-50">{banks.length} Wallet</p>
-                  <p className="text-[10px] text-text-300">
+                  <p className="text-2xs text-text-300">
                     {banks.filter((b: UserBankData) => !["GoPay", "OVO", "Dana", "QRIS"].includes(b.bankName)).length} Bank
                     {" "}&bull;{" "}
                     {banks.filter((b: UserBankData) => ["GoPay", "OVO", "Dana"].includes(b.bankName)).length} E-Wallet
@@ -263,11 +263,11 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
           <div>
             <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Ganti Password</h3>
-            <p className="text-[10px] text-text-300 mt-0.5">Jangan lupa ganti password secara berkala biar aman.</p>
+            <p className="text-2xs text-text-300 mt-0.5">Jangan lupa ganti password secara berkala biar aman.</p>
           </div>
 
           {passwordSuccess && (
-            <div className="p-2.5 text-[10px] text-emerald-300 bg-emerald-950 border border-emerald-800 rounded-lg">
+            <div className="p-2.5 text-2xs text-emerald-300 bg-emerald-950 border border-emerald-800 rounded-lg">
               Password udah diganti!
             </div>
           )}
