@@ -165,49 +165,88 @@ Rules:
 4. Ensure all prices are returned as clean integer numbers (e.g. 35000 instead of 35.000 or 35,000).
 5. Output ONLY the raw JSON object, do not wrap in markdown \`\`\`json block.`;
 
-    // Menggunakan model gemini-3.5-flash
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
+    // Daftar model alternatif jika terjadi 503 high demand spike atau 429 rate limit
+    const candidateModels = [
+      "gemini-3.5-flash",
+      "gemini-3.1-flash-lite",
+      "gemini-3.5-flash-lite",
+      "gemini-3.8-flash",
+      "gemini-flash-latest",
+    ];
 
-    const response = await fetch(geminiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: prompt },
+    let parsedData: {
+      merchantName?: string;
+      items?: { name: string; quantity: number; unitPrice: number; totalPrice: number }[];
+      taxAmount?: number;
+      tipAmount?: number;
+      totalAmount?: number;
+    } | null = null;
+    let lastError: Error | null = null;
+    const MAX_RETRIES = 5;
+
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      const modelToUse = candidateModels[(attempt - 1) % candidateModels.length];
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${apiKey}`;
+
+      try {
+        const response = await fetch(geminiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
               {
-                inlineData: {
-                  mimeType: mimeType,
-                  data: base64Data,
-                },
+                parts: [
+                  { text: prompt },
+                  {
+                    inlineData: {
+                      mimeType: mimeType,
+                      data: base64Data,
+                    },
+                  },
+                ],
               },
             ],
-          },
-        ],
-        generationConfig: {
-          responseMimeType: "application/json",
-        },
-      }),
-    });
+            generationConfig: {
+              responseMimeType: "application/json",
+            },
+          }),
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Gemini API Error: ${response.status} - ${errorText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.warn(`[OCR Attempt ${attempt}/${MAX_RETRIES}] (${modelToUse}) Status ${response.status}: ${errorText.slice(0, 150)}`);
+          if (attempt < MAX_RETRIES) {
+            await new Promise((r) => setTimeout(r, attempt * 800));
+            continue;
+          }
+          throw new Error(`Gemini API Error: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!textResponse) {
+          throw new Error(`Gemini tidak mengembalikan teks hasil OCR pada percobaan ke-${attempt}.`);
+        }
+
+        // Parse hasil JSON dari Gemini
+        const cleanJsonText = textResponse.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+        parsedData = JSON.parse(cleanJsonText);
+        break; // Berhasil!
+      } catch (err) {
+        lastError = err instanceof Error ? err : new Error(String(err));
+        console.warn(`[OCR Attempt ${attempt}/${MAX_RETRIES}] Exception:`, lastError.message);
+        if (attempt < MAX_RETRIES) {
+          await new Promise((r) => setTimeout(r, attempt * 800));
+        }
+      }
     }
 
-    const data = await response.json();
-    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!textResponse) {
-      throw new Error("Gemini tidak mengembalikan teks hasil OCR.");
+    if (!parsedData) {
+      throw lastError || new Error("Gagal memproses struk setelah 5 kali percobaan.");
     }
-
-    // Parse hasil JSON dari Gemini
-    const cleanJsonText = textResponse.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
-    const parsedData = JSON.parse(cleanJsonText);
 
     // log the scan
     if (session?.user?.id) {
@@ -249,7 +288,7 @@ Rules:
   } catch (error) {
     console.error("OCR Scan Error:", error);
     return NextResponse.json(
-      { error: "Struk lo gagal dibaca sama sistem nih. Pastiin fotonya terang, fokus, dan gak burem, atau input manual aja ya, Bos!" },
+      { error: "Struk lo gagal dibaca sama sistem nih setelah 5 kali percobaan. Pastiin fotonya terang, fokus, dan gak burem, atau klik coba lagi / input manual ya, Bos!" },
       { status: 500 }
     );
   }

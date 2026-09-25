@@ -109,7 +109,9 @@ export default function NewSessionPage() {
     }
   }, [authSession, setSelectedBankId, setUseProfileBank]);
 
-  // Scan mode state
+  const [draftPriceMode, setDraftPriceMode] = useState<"unit" | "total">("unit");
+
+  // Scan mode state  
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [scanResult, setScanResult] = useSessionStorageState<ScanResult | null>("pete-pete-new-scan-result", null);
@@ -157,6 +159,53 @@ export default function NewSessionPage() {
   const [manualItems, setManualItems] = useSessionStorageState<ScanItem[]>("pete-pete-new-manual-items", []);
   const [manualTax, setManualTax] = useSessionStorageState<number>("pete-pete-new-manual-tax", 0);
   const [manualTip, setManualTip] = useSessionStorageState<number>("pete-pete-new-manual-tip", 0);
+  const [showScanItemForm, setShowScanItemForm] = useState(false);
+
+  const handleAddScanDraftItem = () => {
+    const name = draftItemName.trim();
+    const total = parseFloat(draftItemAmount);
+    const qty = parseInt(draftItemQty) || 1;
+    if (!name || isNaN(total) || total <= 0 || qty <= 0 || !scanResult) {
+      toast.error("Isi nama dan harga menu dengan bener dulu ya, Bos!");
+      return;
+    }
+
+    const newItem: ScanItem = {
+      name,
+      quantity: qty,
+      unitPrice: total / qty,
+      totalPrice: total,
+    };
+
+    const updatedItems = [...scanResult.items, newItem];
+    const itemsSubtotal = updatedItems.reduce((acc, i) => acc + i.totalPrice, 0);
+
+    setScanResult({
+      ...scanResult,
+      items: updatedItems,
+      totalAmount: itemsSubtotal + Number(scanResult.taxAmount || 0) + Number(scanResult.tipAmount || 0),
+    });
+
+    setDraftItemName("");
+    setDraftItemAmount("");
+    setDraftItemPrice("");
+    setDraftItemQty("1");
+    setShowScanItemForm(false);
+    toast.success("Menu tambahan berhasil ditambahin!");
+  };
+
+  const handleRemoveScanItem = (idx: number) => {
+    if (!scanResult) return;
+    const updatedItems = scanResult.items.filter((_, i) => i !== idx);
+    const itemsSubtotal = updatedItems.reduce((acc, i) => acc + i.totalPrice, 0);
+
+    setScanResult({
+      ...scanResult,
+      items: updatedItems,
+      totalAmount: itemsSubtotal + Number(scanResult.taxAmount || 0) + Number(scanResult.tipAmount || 0),
+    });
+    toast.success("Menu berhasil dihapus!");
+  };
 
   const [editingManualIndex, setEditingManualIndex] = useState<number | null>(null);
   const [editingManualName, setEditingManualName] = useState("");
@@ -625,32 +674,54 @@ export default function NewSessionPage() {
           />
         </div>
 
-        {inputMode === "manual" && (
-          <div className="grid grid-cols-2 gap-3 pt-1.5">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-text-100">Pajak / Tax (Rp)</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={formatRupiah(manualTax)}
-                onChange={(e) => setManualTax(Number(parseRupiah(e.target.value)) || 0)}
-                className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
-                placeholder="Contoh: Rp 10.000"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-text-100">Servis / Tip (Rp)</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={formatRupiah(manualTip)}
-                onChange={(e) => setManualTip(Number(parseRupiah(e.target.value)) || 0)}
-                className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
-                placeholder="Contoh: Rp 5.000"
-              />
-            </div>
+        <div className="grid grid-cols-2 gap-3 pt-1.5">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-text-100">Pajak / Tax (Rp)</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={formatRupiah(inputMode === "scan" ? (scanResult?.taxAmount ?? 0) : manualTax)}
+              onChange={(e) => {
+                const val = Number(parseRupiah(e.target.value)) || 0;
+                if (inputMode === "scan" && scanResult) {
+                  const subtotal = scanResult.items.reduce((acc, i) => acc + i.totalPrice, 0);
+                  setScanResult({
+                    ...scanResult,
+                    taxAmount: val,
+                    totalAmount: subtotal + val + Number(scanResult.tipAmount || 0),
+                  });
+                } else {
+                  setManualTax(val);
+                }
+              }}
+              className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
+              placeholder="Contoh: Rp 10.000"
+            />
           </div>
-        )}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-text-100">Servis / Tip (Rp)</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={formatRupiah(inputMode === "scan" ? (scanResult?.tipAmount ?? 0) : manualTip)}
+              onChange={(e) => {
+                const val = Number(parseRupiah(e.target.value)) || 0;
+                if (inputMode === "scan" && scanResult) {
+                  const subtotal = scanResult.items.reduce((acc, i) => acc + i.totalPrice, 0);
+                  setScanResult({
+                    ...scanResult,
+                    tipAmount: val,
+                    totalAmount: subtotal + Number(scanResult.taxAmount || 0) + val,
+                  });
+                } else {
+                  setManualTip(val);
+                }
+              }}
+              className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
+              placeholder="Contoh: Rp 5.000"
+            />
+          </div>
+        </div>
 
         <div className="border-t border-secondary-800 pt-3 space-y-3">
           <h3 className="text-xs font-bold text-primary-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -865,7 +936,10 @@ export default function NewSessionPage() {
             {scanResult && (
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider">Menu yang ketauan</h2>
+                  <div>
+                    <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider">Menu yang ketauan</h2>
+                    <p className="text-2xs text-text-400">Ada struk kedua atau menu kurang? Tambahin langsung di bawah ya!</p>
+                  </div>
                   <Badge color="gray" size="sm" type="pill-color" className="inline-flex font-semibold">
                     {scanResult.items.length} Menu
                   </Badge>
@@ -878,10 +952,145 @@ export default function NewSessionPage() {
                         <span className="text-xs sm:text-sm font-bold text-text-50 block wrap-break-word">{item.name}</span>
                         <span className="text-xs text-text-300">{item.quantity}x &bull; Rp {Number(item.unitPrice).toLocaleString("id-ID")}</span>
                       </div>
-                      <span className="text-xs sm:text-sm font-extrabold text-text-50 shrink-0">Rp {Number(item.totalPrice).toLocaleString("id-ID")}</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs sm:text-sm font-extrabold text-text-50">Rp {Number(item.totalPrice).toLocaleString("id-ID")}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveScanItem(idx)}
+                          className="p-1.5 rounded-lg text-text-400 hover:text-red-400 hover:bg-secondary-800/60 active:scale-95 transition-all cursor-pointer"
+                          aria-label={`Hapus ${item.name}`}
+                        >
+                          <Trash01 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
+
+                {/* Tambah Menu Manual / Struk Kedua */}
+                {!showScanItemForm ? (
+                  <Button
+                    type="button"
+                    onPress={() => setShowScanItemForm(true)}
+                    iconLeading={<Plus className="w-4 h-4" />}
+                    color="secondary"
+                    className="w-full min-h-11 py-2.5 rounded-xl border border-dashed border-secondary-700 hover:border-primary-500/60 text-xs font-bold transition-all text-text-200"
+                  >
+                    Tambah Menu Manual / Dari Struk Kedua
+                  </Button>
+                ) : (
+                  <div className="p-4 sm:p-5 rounded-2xl border border-primary-500/30 bg-primary-950/20 space-y-4 shadow-sm">
+                    <h4 className="text-2xs font-bold text-text uppercase tracking-wider">Tambah Menu Tambahan</h4>
+                    <div className="space-y-1.5">
+                      <label className="text-3xs font-extrabold text-primary-400 uppercase tracking-wider block">Nama Menu</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Nama Menu (misal: Nasi Goreng)"
+                        aria-label="Nama menu tambahan"
+                        value={draftItemName}
+                        onChange={(e) => setDraftItemName(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                      />
+                    </div>
+
+
+                    {/* 3 Kolom Sejajar: JUMLAH (QTY) | TIPE HARGA | HARGA TOTAL / SATUAN */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                      <div className="space-y-1.5">
+                        <label className="text-3xs font-extrabold text-primary-400 uppercase tracking-wider block">
+                          JUMLAH (QTY)
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          inputMode="numeric"
+                          value={draftItemQty}
+                          onChange={(e) => handleDraftItemQtyChange(e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-3xs font-extrabold text-primary-400 uppercase tracking-wider block">
+                          TIPE HARGA
+                        </label>
+                        <div className="grid grid-cols-2 gap-1 bg-secondary-950/80 p-1 rounded-xl border border-secondary-800/60 h-10 items-center">
+                          <Button
+                            type="button"
+                            color={draftPriceMode === "unit" ? "primary" : "tertiary"}
+                            size="sm"
+                            onPress={() => setDraftPriceMode("unit")}
+                            className="h-full text-2xs font-bold rounded-lg"
+                          >
+                            Satuan
+                          </Button>
+                          <Button
+                            type="button"
+                            color={draftPriceMode === "total" ? "primary" : "tertiary"}
+                            size="sm"
+                            onPress={() => setDraftPriceMode("total")}
+                            className="h-full text-2xs font-bold rounded-lg"
+                          >
+                            Total
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-3xs text-text-400 uppercase font-bold">
+                          {draftPriceMode === "unit" ? "Harga Satuan" : "Harga Total"}
+                        </label>
+                        {draftPriceMode === "unit" ? (
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            value={formatRupiah(draftItemPrice)}
+                            onChange={(e) => handleDraftItemPriceChange(parseRupiah(e.target.value))}
+                            placeholder="Rp Satuan"
+                            className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            value={formatRupiah(draftItemAmount)}
+                            onChange={(e) => handleDraftItemAmountChange(parseRupiah(e.target.value))}
+                            placeholder="Rp Total"
+                            className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Tombol Aksi di Kanan Bawah: Batal & Simpan */}
+                    <div className="flex justify-end gap-2.5 pt-2">
+                      <Button
+                        type="button"
+                        onPress={() => {
+                          setDraftItemName("");
+                          setDraftItemAmount("");
+                          setDraftItemPrice("");
+                          setDraftItemQty("1");
+                          setShowScanItemForm(false);
+                        }}
+                        color="secondary"
+                        size="sm"
+                      >
+                        Batal
+                      </Button>
+                      <Button
+                        type="button"
+                        onPress={handleAddScanDraftItem}
+                        color="primary"
+                        size="sm"
+                        className="text-sm"
+                      >
+                        Simpan
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 space-y-2.5 text-xs text-text-300">
                   <div className="flex justify-between items-center">
@@ -983,8 +1192,8 @@ export default function NewSessionPage() {
                             type="button"
                             onClick={() => setAddPriceMode("unit")}
                             className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${addPriceMode === "unit"
-                                ? "bg-primary-500 text-white shadow-xs"
-                                : "text-text-400 hover:text-text-200"
+                              ? "bg-primary-500 text-white shadow-xs"
+                              : "text-text-400 hover:text-text-200"
                               }`}
                           >
                             Satuan
@@ -993,8 +1202,8 @@ export default function NewSessionPage() {
                             type="button"
                             onClick={() => setAddPriceMode("total")}
                             className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${addPriceMode === "total"
-                                ? "bg-primary-500 text-white shadow-xs"
-                                : "text-text-400 hover:text-text-200"
+                              ? "bg-primary-500 text-white shadow-xs"
+                              : "text-text-400 hover:text-text-200"
                               }`}
                           >
                             Total

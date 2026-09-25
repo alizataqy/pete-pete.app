@@ -1225,6 +1225,7 @@ ${bonUrl}
               <h4 className="text-2xs font-bold text-text uppercase tracking-wider">Tambah Menu Baru</h4>
 
               <div className="space-y-2">
+                <label className="text-3xs text-text-400 uppercase font-bold">Nama Menu</label>
                 <input
                   type="text"
                   required
@@ -1320,14 +1321,17 @@ ${bonUrl}
                   {isEditing ? (
                     // Form Edit Item Inline
                     <form onSubmit={(e) => handleUpdateItem(e, item.id)} className="space-y-3">
+                      <h4 className="text-2xs font-bold text-text uppercase tracking-wider">Ubah Menu</h4>
                       <div className="space-y-2">
+                        <label className="text-3xs text-text-400 uppercase font-bold">Nama Menu</label>
                         <input
                           type="text"
                           required
+                          placeholder="Nama Menu (misal: Nasi Goreng)"
                           aria-label="Ubah nama menu"
                           value={editItemName}
                           onChange={(e) => setEditItemName(e.target.value)}
-                          className="w-full px-3 py-1.5 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                          className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
                         />
                         <div className="grid grid-cols-3 gap-2">
                           <div className="space-y-1">
@@ -1338,7 +1342,7 @@ ${bonUrl}
                               aria-label="Ubah jumlah porsi menu"
                               value={editItemQty}
                               onChange={(e) => handleEditItemQtyChange(e.target.value)}
-                              className="w-full px-3 py-1.5 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                              className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
                               placeholder="Qty"
                             />
                           </div>
@@ -1375,7 +1379,7 @@ ${bonUrl}
                                 aria-label="Ubah harga satuan menu"
                                 value={formatRupiah(editItemPrice)}
                                 onChange={(e) => handleEditItemPriceChange(parseRupiah(e.target.value))}
-                                className="w-full px-3 py-1.5 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                                className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
                                 placeholder="Rp Satuan"
                               />
                             ) : (
@@ -1384,7 +1388,7 @@ ${bonUrl}
                                 aria-label="Ubah harga total menu"
                                 value={formatRupiah(editItemTotal)}
                                 onChange={(e) => handleEditItemTotalChange(parseRupiah(e.target.value))}
-                                className="w-full px-3 py-1.5 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                                className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
                                 placeholder="Rp Total"
                               />
                             )}
