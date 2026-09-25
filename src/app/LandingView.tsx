@@ -12,6 +12,8 @@ import {
   Zap,
   Star01,
   Lock01,
+  ChevronDown,
+  HelpCircle,
 } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
@@ -136,14 +138,14 @@ export default function LandingView({ user }: UserSessionProp) {
           {/* Hero Content */}
           <div className="space-y-6 text-center flex flex-col items-center max-w-2xl">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-text leading-[1.15] [text-wrap:balance]">
-              Bagi Tagihan Makan <br />
+              Aplikasi Split Bill <br />
               <span className="text-primary-400">
                 Tinggal Foto Struk Aja!
               </span>
             </h1>
 
             <p className="text-xs sm:text-sm md:text-base text-text-300 leading-relaxed max-w-lg [text-wrap:pretty]">
-              Gak perlu lagi capek ngitung manual pake kalkulator. Foto struknya, pilih siapa makan apa, langsung kirim rinciannya ke WhatsApp temen lo. Beres seketika!
+              Aplikasi split bill online tercepat buat tongkrongan lo. Gak perlu lagi capek ngitung manual pake kalkulator. Foto struknya, pilih siapa makan apa, langsung kirim rinciannya ke WhatsApp temen lo. Beres seketika!
             </p>
 
             {/* Trust highlights */}
@@ -379,6 +381,62 @@ export default function LandingView({ user }: UserSessionProp) {
             <p className="text-xs text-text-300 leading-relaxed [text-wrap:pretty]">
               Rinciannya jelas dan transparan. Gak ada lagi yang ngerasa nombok atau bayar kemahalan. Selesai nongkrong, langsung beres!
             </p>
+          </div>
+        </section>
+
+        {/* FAQ Split Bill Section (SEO & User Experience) */}
+        <section className="px-6 py-6 w-full max-w-5xl z-10 text-left">
+          <div className="p-6 md:p-10 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md space-y-6">
+            <div className="space-y-1.5">
+              <h2 className="text-xs font-black text-primary-400 uppercase tracking-widest flex items-center gap-1.5">
+                <HelpCircle className="w-3.5 h-3.5 text-primary-400" /> Tanya Jawab
+              </h2>
+              <p className="text-xl md:text-2xl font-extrabold text-text">
+                Seputar Split Bill di Ceban Pertama
+              </p>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <details className="group rounded-2xl border border-secondary-800/40 bg-text-950/60 p-4 transition-colors open:bg-text-900/40">
+                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
+                  <span>Apa itu aplikasi split bill Ceban Pertama?</span>
+                  <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
+                </summary>
+                <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
+                  Ceban Pertama adalah aplikasi split bill online dan kalkulator patungan otomatis gratis di Indonesia. Lo cuma perlu foto struk makanan atau belanja, AI otomatis mendeteksi nama menu, harga satuan, pajak resto, dan service charge tanpa harus repot ngetik manual.
+                </p>
+              </details>
+
+              <details className="group rounded-2xl border border-secondary-800/40 bg-text-950/60 p-4 transition-colors open:bg-text-900/40">
+                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
+                  <span>Gimana cara hitung split bill dengan pajak dan diskon restoran?</span>
+                  <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
+                </summary>
+                <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
+                  Ceban Pertama menghitung pajak (PPN 10-11%) dan service charge secara proporsional sesuai nominal menu yang dipesan tiap orang. Jadi yang pesannya sedikit gak bakal nombokin pajak pesanan teman yang lebih mahal.
+                </p>
+              </details>
+
+              <details className="group rounded-2xl border border-secondary-800/40 bg-text-950/60 p-4 transition-colors open:bg-text-900/40">
+                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
+                  <span>Apakah Ceban Pertama gratis dan harus install aplikasi?</span>
+                  <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
+                </summary>
+                <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
+                  100% gratis! Ceban Pertama berbasis website (PWA-ready), jadi bisa langsung lo akses lewat browser HP atau laptop tanpa wajib download dari Play Store/App Store dan tanpa perlu daftar akun terlebih dahulu.
+                </p>
+              </details>
+
+              <details className="group rounded-2xl border border-secondary-800/40 bg-text-950/60 p-4 transition-colors open:bg-text-900/40">
+                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
+                  <span>Bisa langsung bagi tagihan dan kirim ke WhatsApp?</span>
+                  <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
+                </summary>
+                <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
+                  Bisa banget. Begitu penentuan menu selesai, Ceban Pertama langsung bikinin teks rincian patungan siap kirim ke WhatsApp group lengkap sama nomor rekening atau e-wallet lo.
+                </p>
+              </details>
+            </div>
           </div>
         </section>
 
