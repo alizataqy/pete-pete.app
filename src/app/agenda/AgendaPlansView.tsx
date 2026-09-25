@@ -160,7 +160,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
               Plan Kumpul Lo
             </h2>
             <p className="text-2xs text-text-400">
-              Kelola pete-pete liburan, bakar-bakar, atau agenda seru bareng geng lo biar ga pusing
+              Manage pete-pete liburan, bakar-bakar, atau agenda seru bareng geng lo biar ga pusing
             </p>
           </div>
           <Button

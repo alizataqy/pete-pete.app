@@ -715,7 +715,7 @@ export default function VacationPlanDetailView({
               <FeaturedIcon icon={Users01} size="sm" color="brand" theme="modern" />
               <div>
                 <h2 className="text-xs font-bold text-text-50">{members.length} Sohib yang Join</h2>
-                <p className="text-2xs text-text-400">Buka ini untuk menambah Sohib lo</p>
+                <p className="text-2xs text-text-400">Buka ini untuk lokit sohib lo</p>
               </div>
             </div>
             <Button

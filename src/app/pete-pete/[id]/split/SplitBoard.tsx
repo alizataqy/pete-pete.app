@@ -435,6 +435,27 @@ export default function SplitBoard({
     });
   };
 
+  // Bagi rata porsi menu ke semua anggota
+  const handleSplitEqually = (itemId: string) => {
+    if (members.length === 0) return;
+    setAllocations((prev) => {
+      const otherAllocs = prev.filter((a) => a.itemId !== itemId);
+      const newAllocs = members.map((m) => ({
+        itemId,
+        memberId: m.id,
+        quantity: 1,
+      }));
+      return [...otherAllocs, ...newAllocs];
+    });
+    toast.success("Menu berhasil dibagi rata ke semua sohib!");
+  };
+
+  // Reset alokasi porsi untuk satu menu
+  const handleClearAllocations = (itemId: string) => {
+    setAllocations((prev) => prev.filter((a) => a.itemId !== itemId));
+    toast.success("Alokasi porsi menu ini di-reset!");
+  };
+
   const handleCompleteSession = () => {
     setShowCompleteConfirm(true);
   };
@@ -996,7 +1017,7 @@ ${bonUrl}
                   {saveStatus === "saved" && <span className="text-emerald-500 font-medium shrink-0"> <Dot color="success" /> </span>}
                   {saveStatus === "error" && <span className="text-danger-500 font-medium shrink-0"> <Dot color="danger" /> </span>}
                 </div>
-                <span className="text-2xs text-text-400 wrap-break-word">Pencet buat kelola sohib lo</span>
+                <span className="text-2xs text-text-400 wrap-break-word">Buka ini untuk lokit sohib lo</span>
               </div>
             </div>
             <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -1397,31 +1418,38 @@ ${bonUrl}
                       {(() => {
                         const itemAllocations = allocations.filter((a) => a.itemId === item.id);
                         const totalAllocatedCount = itemAllocations.reduce((sum, a) => sum + a.quantity, 0);
-                        const isComplete = totalAllocatedCount > 0;
+                        const hasAllocations = totalAllocatedCount > 0;
+                        const isExact = totalAllocatedCount === item.quantity;
+                        const isUnder = totalAllocatedCount < item.quantity && totalAllocatedCount > 0;
+                        const isOver = totalAllocatedCount > item.quantity;
+                        const sharePerPortion = totalAllocatedCount > 0
+                          ? Math.round(Number(item.totalPrice) / totalAllocatedCount)
+                          : (item.quantity > 0 ? Math.round(Number(item.totalPrice) / item.quantity) : 0);
 
                         return (
                           <>
-                            <div className="flex items-start justify-between gap-2">
+                            {/* Baris 1: Header Nama Menu & Harga */}
+                            <div className="flex items-start justify-between gap-2.5">
                               <div className="min-w-0 flex-1">
-                                <h4 className="font-bold text-text text-xs leading-snug wrap-break-word" title={item.name}>
+                                <h4 className="font-bold text-text text-sm leading-snug wrap-break-word" title={item.name}>
                                   {item.name}
                                 </h4>
-                                <p className="text-2xs text-text-400 mt-0.5">
-                                  {item.quantity} porsi ({item.quantity > 0 ? `Rp ${Math.round(Number(item.totalPrice) / item.quantity).toLocaleString("id-ID")}/porsi` : ""})
+                                <p className="text-2xs text-text-400 mt-0.5 font-medium">
+                                  {item.quantity} porsi {item.quantity > 0 && `(Rp ${Math.round(Number(item.totalPrice) / item.quantity).toLocaleString("id-ID")}/porsi)`}
                                 </p>
                               </div>
-                              <div className="flex items-center gap-2 shrink-0">
-                                <span className="text-xs font-extrabold text-primary-400 whitespace-nowrap">
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="text-sm font-extrabold text-primary-400 whitespace-nowrap">
                                   Rp {Number(item.totalPrice).toLocaleString("id-ID")}
                                 </span>
                                 {session.status !== "COMPLETED" && (
-                                  <div className="flex items-center gap-0.5">
+                                  <div className="flex items-center gap-0.5 ml-1">
                                     <Button
                                       onPress={() => startEditItem(item)}
                                       color="tertiary"
                                       size="xs"
                                       aria-label={`Ubah menu ${item.name}`}
-                                      className="p-1 min-w-7 min-h-7 rounded-lg active:scale-95 transition-all text-text-400 hover:text-primary-400 flex items-center justify-center"
+                                      className="p-1.5 min-w-7 min-h-7 rounded-lg active:scale-90 transition-transform duration-160 text-text-400 hover:text-primary-400 flex items-center justify-center"
                                     >
                                       <Edit02 className="w-3.5 h-3.5" />
                                     </Button>
@@ -1430,7 +1458,7 @@ ${bonUrl}
                                         setDeleteConfig({
                                           isOpen: true,
                                           title: "Hapus Menu Makanan?",
-                                          description: `Beneran mau hapus menu "${item.name}"? Porsi/alokasi temen-temen lo buat menu ini bakal ilang.`,
+                                          description: `Beneran mau hapus menu "${item.name}"? Porsi temen-temen lo buat menu ini bakal ikut kehapus.`,
                                           confirmText: "Hapus Menu",
                                           onConfirm: () => handleDeleteItem(item.id),
                                         });
@@ -1438,7 +1466,7 @@ ${bonUrl}
                                       color="tertiary"
                                       size="xs"
                                       aria-label={`Hapus menu ${item.name}`}
-                                      className="p-1 min-w-7 min-h-7 rounded-lg active:scale-95 transition-all text-danger-400/80 hover:text-danger-400 flex items-center justify-center"
+                                      className="p-1.5 min-w-7 min-h-7 rounded-lg active:scale-90 transition-transform duration-160 text-danger-400/80 hover:text-danger-400 flex items-center justify-center"
                                     >
                                       <Trash01 className="w-3.5 h-3.5" />
                                     </Button>
@@ -1447,23 +1475,59 @@ ${bonUrl}
                               </div>
                             </div>
 
-                            {/* Sub row: Allocation Badge & Clean Status */}
-                            <div className="flex items-center justify-between gap-2 flex-wrap text-2xs">
-                              <Badge color={isComplete ? "success" : "warning"} size="sm" type="pill-color" className="inline-flex font-semibold text-2xs">
-                                {isComplete
-                                  ? `${totalAllocatedCount} porsi dibagi • Rp ${Math.round(Number(item.totalPrice) / (totalAllocatedCount || 1)).toLocaleString("id-ID")}/porsi`
-                                  : "Belum dibagi"}
-                              </Badge>
-                              {itemAllocations.length > 0 && (
-                                <span className="text-2xs text-text-400 font-medium">
-                                  {itemAllocations.length} orang patungan
-                                </span>
+                            {/* Baris 2: Status Alokasi & Tombol Aksi Cepat (Bagi Rata) */}
+                            <div className="flex items-center justify-between gap-2 flex-wrap pt-0.5">
+                              <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                                {isExact && (
+                                  <Badge color="success" size="sm" type="pill-color" className="inline-flex font-semibold text-3xs sm:text-2xs">
+                                    Pas {totalAllocatedCount} porsi • Rp {sharePerPortion.toLocaleString("id-ID")}/porsi
+                                  </Badge>
+                                )}
+                                {isUnder && (
+                                  <Badge color="warning" size="sm" type="pill-color" className="inline-flex font-semibold text-3xs sm:text-2xs">
+                                    {totalAllocatedCount} dari {item.quantity} porsi (Kurang {item.quantity - totalAllocatedCount}) • Rp {sharePerPortion.toLocaleString("id-ID")}/porsi
+                                  </Badge>
+                                )}
+                                {isOver && (
+                                  <Badge color="brand" size="sm" type="pill-color" className="inline-flex font-semibold text-3xs sm:text-2xs">
+                                    {totalAllocatedCount} porsi patungan • Rp {sharePerPortion.toLocaleString("id-ID")}/porsi
+                                  </Badge>
+                                )}
+                                {!hasAllocations && (
+                                  <Badge color="gray" size="sm" type="pill-color" className="inline-flex font-semibold text-3xs sm:text-2xs">
+                                    Belum dibagi
+                                  </Badge>
+                                )}
+                              </div>
+
+                              {session.status !== "COMPLETED" && (
+                                <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+                                  <Button
+                                    onPress={() => handleSplitEqually(item.id)}
+                                    color="secondary"
+                                    size="xs"
+                                    iconLeading={Users01}
+                                    className="px-2 py-1 text-3xs font-semibold rounded-lg active:scale-95 transition-transform duration-160"
+                                  >
+                                    Bagi ke Semua
+                                  </Button>
+                                  {hasAllocations && (
+                                    <Button
+                                      onPress={() => handleClearAllocations(item.id)}
+                                      color="tertiary"
+                                      size="xs"
+                                      className="px-2 py-1 text-3xs text-text-400 hover:text-danger-400 rounded-lg active:scale-95 transition-transform duration-160"
+                                    >
+                                      Reset
+                                    </Button>
+                                  )}
+                                </div>
                               )}
                             </div>
 
-                            {/* Avatar Pemilihan Anggota (Thumb friendly tap targets) */}
+                            {/* Baris 3: Avatar Pemilihan Anggota (Format Kompak & Rapat) */}
                             {members.length > 0 && (
-                              <div className="flex flex-wrap gap-4 pt-1">
+                              <div className="flex flex-wrap gap-x-2.5 sm:gap-x-3 gap-y-2.5 sm:gap-y-3 items-start pt-1.5">
                                 {members.map((member) => {
                                   const alloc = allocations.find(
                                     (a) => a.itemId === item.id && a.memberId === member.id
@@ -1471,19 +1535,19 @@ ${bonUrl}
                                   const qty = alloc ? alloc.quantity : 0;
 
                                   return (
-                                    <div key={member.id} className="flex flex-col items-center gap-1.5 w-14 shrink-0 relative">
+                                    <div key={member.id} className="flex flex-col items-center w-12 sm:w-13 shrink-0 relative">
                                       <div className="relative">
                                         <button
                                           type="button"
                                           onClick={() => handleIncreaseAllocation(item.id, member.id)}
                                           disabled={session.status === "COMPLETED"}
                                           aria-label={`Tambah porsi untuk ${member.name}`}
-                                          className="focus:outline-none transition-transform active:scale-95 cursor-pointer rounded-full min-w-11 min-h-11 flex items-center justify-center p-0.5"
+                                          className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-full transition-transform active:scale-95 cursor-pointer min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center p-0.5"
                                         >
                                           <Avatar
                                             alt={member.name}
                                             size="md"
-                                            className={`shadow-md transition-all duration-200 ${qty > 0 ? "ring-2 ring-primary border-primary scale-105" : "opacity-40"}`}
+                                            className={`shadow-md transition-all duration-200 ${qty > 0 ? "ring-2 ring-primary border-primary scale-105" : "opacity-45 hover:opacity-80"}`}
                                           />
                                         </button>
                                         {qty > 0 && session.status !== "COMPLETED" && (
@@ -1495,21 +1559,21 @@ ${bonUrl}
                                                 e.stopPropagation();
                                                 handleDecreaseAllocation(item.id, member.id);
                                               }}
-                                              className="absolute -top-1.5 -left-1.5 z-10 bg-danger-600 hover:bg-danger-700 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md cursor-pointer border border-secondary-950 active:scale-90 transition-transform"
+                                              className="absolute -top-1 -left-1 z-10 bg-danger-600 hover:bg-danger-700 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md cursor-pointer border border-secondary-950 active:scale-90 transition-transform"
                                               title="Kurangi porsi"
                                               aria-label={`Kurangi porsi untuk ${member.name}`}
                                             >
                                               <Minus className="w-3 h-3 stroke-[3px]" />
                                             </button>
                                             {/* Quantity Badge on Top Right */}
-                                            <span className="absolute -top-1.5 -right-1.5 z-10 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-2xs font-bold shadow-md border border-secondary-950 pointer-events-none">
+                                            <span className="absolute -top-1 -right-1 z-10 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-3xs font-bold shadow-md border border-secondary-950 pointer-events-none">
                                               {qty}
                                             </span>
                                           </>
                                         )}
                                       </div>
                                       <p
-                                        className={`text-2xs wrap-break-word w-full text-center leading-tight font-semibold ${qty > 0 ? "text-text font-bold" : "text-text-400"}`}
+                                        className={`text-3xs sm:text-2xs truncate w-full text-center leading-tight font-semibold ${qty > 0 ? "text-text font-bold" : "text-text-400"}`}
                                         title={member.name}
                                       >
                                         {member.userId === session.userId ? "Gua" : member.name}
