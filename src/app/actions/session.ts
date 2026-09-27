@@ -20,6 +20,7 @@ interface CreateSessionData {
   totalAmount: number;
   taxAmount?: number;
   tipAmount?: number;
+  discountAmount?: number;
   userId?: string;
   bankName?: string;
   bankAccount?: string;
@@ -73,6 +74,8 @@ export async function createBillSession(data: CreateSessionData) {
         totalAmount: data.totalAmount,
         taxAmount: data.taxAmount || 0,
         tipAmount: data.tipAmount || 0,
+        // @ts-expect-error discountAmount added to schema.prisma, typed on prisma generate
+  discountAmount: data.discountAmount || 0,
         inviteCode,
         userId: data.userId || null,
         bankName: data.bankName || firstBank?.bankName,
@@ -262,17 +265,20 @@ export async function recalculateSessionShares(sessionId: string) {
     });
   });
 
-  // Hitung proporsi pajak & tips secara adil berdasarkan subtotal belanjaan
+  // Hitung proporsi pajak, tips, & diskon secara adil berdasarkan subtotal belanjaan
   const totalSubtotal = Object.values(memberSubtotals).reduce((a, b) => a + b, 0);
-  const taxAndTipsRatio =
+  const taxAmount = Number(session.taxAmount) || 0;
+  const tipAmount = Number(session.tipAmount) || 0;
+  const discountAmount = Number((session as unknown as { discountAmount?: number }).discountAmount) || 0;
+  const adjustmentsRatio =
     totalSubtotal > 0
-      ? (Number(session.taxAmount) + Number(session.tipAmount)) / totalSubtotal
+      ? (taxAmount + tipAmount - discountAmount) / totalSubtotal
       : 0;
 
   // Update shareAmount di database untuk masing-masing member
   for (const member of session.members) {
     const subtotal = memberSubtotals[member.id] || 0;
-    const shareAmount = subtotal + subtotal * taxAndTipsRatio;
+    const shareAmount = Math.max(0, subtotal + subtotal * adjustmentsRatio);
 
     await prisma.billMember.update({
       where: { id: member.id },
@@ -471,6 +477,7 @@ export interface CreateManualSessionData {
   totalAmount: number;
   taxAmount?: number;
   tipAmount?: number;
+  discountAmount?: number;
   userId?: string;
   bankName?: string;
   bankAccount?: string;
@@ -498,6 +505,8 @@ export async function createManualBillSession(data: CreateManualSessionData) {
         totalAmount: data.totalAmount,
         taxAmount: data.taxAmount || 0,
         tipAmount: data.tipAmount || 0,
+        // @ts-expect-error discountAmount added to schema.prisma, typed on prisma generate
+  discountAmount: data.discountAmount || 0,
         inviteCode,
         userId: data.userId || null,
         bankName: data.bankName,

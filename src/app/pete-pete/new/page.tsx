@@ -25,6 +25,7 @@ interface ScanResult {
   items: ScanItem[];
   taxAmount: number;
   tipAmount: number;
+  discountAmount?: number;
   totalAmount: number;
   currency: string;
   isMock?: boolean;
@@ -159,12 +160,14 @@ export default function NewSessionPage() {
   const [manualItems, setManualItems] = useSessionStorageState<ScanItem[]>("pete-pete-new-manual-items", []);
   const [manualTax, setManualTax] = useSessionStorageState<number>("pete-pete-new-manual-tax", 0);
   const [manualTip, setManualTip] = useSessionStorageState<number>("pete-pete-new-manual-tip", 0);
+  const [manualDiscount, setManualDiscount] = useSessionStorageState<number>("pete-pete-new-manual-discount", 0);
   const [showScanItemForm, setShowScanItemForm] = useState(false);
 
   const updateScanResultCalculations = (
     updatedItems: ScanItem[],
     taxAmount = Number(scanResult?.taxAmount || 0),
-    tipAmount = Number(scanResult?.tipAmount || 0)
+    tipAmount = Number(scanResult?.tipAmount || 0),
+    discountAmount = Number(scanResult?.discountAmount || 0)
   ) => {
     if (!scanResult) return;
     const itemsSubtotal = updatedItems.reduce((acc, i) => acc + i.totalPrice, 0);
@@ -173,7 +176,8 @@ export default function NewSessionPage() {
       items: updatedItems,
       taxAmount,
       tipAmount,
-      totalAmount: itemsSubtotal + taxAmount + tipAmount,
+      discountAmount,
+      totalAmount: Math.max(0, itemsSubtotal + taxAmount + tipAmount - discountAmount),
     });
   };
 
@@ -233,6 +237,7 @@ export default function NewSessionPage() {
       "pete-pete-new-manual-items",
       "pete-pete-new-manual-tax",
       "pete-pete-new-manual-tip",
+      "pete-pete-new-manual-discount",
       "pete-pete-new-wizard-step",
       "pete-pete-new-manual-item-allocations",
     ];
@@ -375,7 +380,7 @@ export default function NewSessionPage() {
   };
 
   const manualSubtotal = manualItems.reduce((acc, item) => acc + item.totalPrice, 0);
-  const manualTotal = manualSubtotal + Number(manualTax) + Number(manualTip);
+  const manualTotal = Math.max(0, manualSubtotal + Number(manualTax) + Number(manualTip) - Number(manualDiscount));
 
   // --- Create Session ---
   const handleCreate = async (e?: React.SyntheticEvent) => {
@@ -405,6 +410,7 @@ export default function NewSessionPage() {
     try {
       const taxAmount = isScan ? scanResult!.taxAmount : Number(manualTax);
       const tipAmount = isScan ? scanResult!.tipAmount : Number(manualTip);
+      const discountAmount = isScan ? Number(scanResult!.discountAmount || 0) : Number(manualDiscount);
 
       let finalBankName = bankName;
       let finalBankAccount = bankAccount;
@@ -448,6 +454,7 @@ export default function NewSessionPage() {
           totalAmount: manualTotal,
           taxAmount,
           tipAmount,
+          discountAmount,
           userId: authSession?.user?.id,
           members: allPeople,
           items: itemsPayload,
@@ -474,6 +481,7 @@ export default function NewSessionPage() {
           totalAmount,
           taxAmount,
           tipAmount,
+          discountAmount,
           userId: authSession?.user?.id,
           items,
           bankName: finalBankName,
@@ -675,7 +683,7 @@ export default function NewSessionPage() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3 pt-1.5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1.5">
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-text-100">Pajak / Tax (Rp)</label>
             <input
@@ -685,7 +693,7 @@ export default function NewSessionPage() {
               onChange={(e) => {
                 const val = Number(parseRupiah(e.target.value)) || 0;
                 if (inputMode === "scan" && scanResult) {
-                  updateScanResultCalculations(scanResult.items, val, Number(scanResult.tipAmount || 0));
+                  updateScanResultCalculations(scanResult.items, val, Number(scanResult.tipAmount || 0), Number(scanResult.discountAmount || 0));
                 } else {
                   setManualTax(val);
                 }
@@ -703,13 +711,31 @@ export default function NewSessionPage() {
               onChange={(e) => {
                 const val = Number(parseRupiah(e.target.value)) || 0;
                 if (inputMode === "scan" && scanResult) {
-                  updateScanResultCalculations(scanResult.items, Number(scanResult.taxAmount || 0), val);
+                  updateScanResultCalculations(scanResult.items, Number(scanResult.taxAmount || 0), val, Number(scanResult.discountAmount || 0));
                 } else {
                   setManualTip(val);
                 }
               }}
               className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
               placeholder="Contoh: Rp 5.000"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-text-100">Diskon / Promo (Rp)</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={formatRupiah(inputMode === "scan" ? (scanResult?.discountAmount ?? 0) : manualDiscount)}
+              onChange={(e) => {
+                const val = Number(parseRupiah(e.target.value)) || 0;
+                if (inputMode === "scan" && scanResult) {
+                  updateScanResultCalculations(scanResult.items, Number(scanResult.taxAmount || 0), Number(scanResult.tipAmount || 0), val);
+                } else {
+                  setManualDiscount(val);
+                }
+              }}
+              className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-emerald-400 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
+              placeholder="Contoh: Rp 15.000"
             />
           </div>
         </div>
@@ -1100,6 +1126,12 @@ export default function NewSessionPage() {
                     <div className="flex justify-between items-center">
                       <span>Service Charge / Tip</span>
                       <span className="text-text-50 font-semibold">Rp {Number(scanResult.tipAmount).toLocaleString("id-ID")}</span>
+                    </div>
+                  )}
+                  {Number(scanResult.discountAmount || 0) > 0 && (
+                    <div className="flex justify-between items-center text-emerald-400 font-semibold">
+                      <span>Diskon / Promo</span>
+                      <span>- Rp {Number(scanResult.discountAmount).toLocaleString("id-ID")}</span>
                     </div>
                   )}
                   <div className="flex justify-between items-center text-sm sm:text-base font-extrabold text-text-50 pt-2.5 border-t border-secondary-800">

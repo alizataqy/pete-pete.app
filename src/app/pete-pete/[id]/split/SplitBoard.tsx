@@ -80,6 +80,7 @@ interface SplitBoardProps {
     totalAmount: number;
     taxAmount: number;
     tipAmount: number;
+    discountAmount?: number;
     bankName?: string;
     bankAccount?: string;
     bankOwner?: string;
@@ -155,10 +156,13 @@ export default function SplitBoard({
       return acc + (hasAlloc ? Number(item.totalPrice) : 0);
     }, 0);
 
-    const taxAndTips = Number(session.taxAmount) + Number(session.tipAmount);
-    const ratio = totalSubtotal > 0 ? taxAndTips / totalSubtotal : 0;
-    const memberTaxAndTips = Math.round(subtotal * ratio);
-    return subtotal + memberTaxAndTips;
+    const taxAmount = Number(session.taxAmount) || 0;
+    const tipAmount = Number(session.tipAmount) || 0;
+    const discountAmount = Number(session.discountAmount) || 0;
+    const adjustments = taxAmount + tipAmount - discountAmount;
+    const ratio = totalSubtotal > 0 ? adjustments / totalSubtotal : 0;
+    const memberAdjustment = Math.round(subtotal * ratio);
+    return Math.max(0, subtotal + memberAdjustment);
   };
 
   const isInitialMount = useRef(true);
@@ -696,11 +700,13 @@ export default function SplitBoard({
 
     const taxAmount = Number(session.taxAmount) || 0;
     const tipAmount = Number(session.tipAmount) || 0;
+    const discountAmount = Number(session.discountAmount) || 0;
     const taxAndTips = taxAmount + tipAmount;
     const memberTax = totalSubtotal > 0 ? Math.round(subtotal * (taxAmount / totalSubtotal)) : 0;
     const memberTips = totalSubtotal > 0 ? Math.round(subtotal * (tipAmount / totalSubtotal)) : 0;
+    const memberDiscount = totalSubtotal > 0 ? Math.round(subtotal * (discountAmount / totalSubtotal)) : 0;
     const memberTaxAndTips = memberTax + memberTips;
-    const grandTotal = subtotal + memberTaxAndTips;
+    const grandTotal = Math.max(0, subtotal + memberTaxAndTips - memberDiscount);
 
     let feeBreakdownText = "";
     if (taxAmount > 0) {
@@ -710,6 +716,10 @@ export default function SplitBoard({
     if (tipAmount > 0) {
       const tipPercent = totalSubtotal > 0 ? ((tipAmount / totalSubtotal) * 100).toFixed(1).replace(/\.0$/, "") : "0";
       feeBreakdownText += `Servis/Tip (${tipPercent}%): Rp ${memberTips.toLocaleString("id-ID")}\n`;
+    }
+    if (discountAmount > 0) {
+      const discountPercent = totalSubtotal > 0 ? ((discountAmount / totalSubtotal) * 100).toFixed(1).replace(/\.0$/, "") : "0";
+      feeBreakdownText += `Diskon/Promo (-${discountPercent}%): -Rp ${memberDiscount.toLocaleString("id-ID")}\n`;
     }
     if (!feeBreakdownText && taxAndTips > 0) {
       feeBreakdownText = `Pajak & Servis: Rp ${memberTaxAndTips.toLocaleString("id-ID")}\n`;
@@ -753,7 +763,7 @@ ${bonUrl}
 
     const taxAmount = Number(session.taxAmount) || 0;
     const tipAmount = Number(session.tipAmount) || 0;
-    const taxAndTips = taxAmount + tipAmount;
+    const discountAmount = Number(session.discountAmount) || 0;
 
     members.forEach((member) => {
       const memberAllocations = allocations.filter(a => a.memberId === member.id);
@@ -778,14 +788,18 @@ ${bonUrl}
 
       const memberTax = totalSubtotal > 0 ? Math.round(subtotal * (taxAmount / totalSubtotal)) : 0;
       const memberTips = totalSubtotal > 0 ? Math.round(subtotal * (tipAmount / totalSubtotal)) : 0;
+      const memberDiscount = totalSubtotal > 0 ? Math.round(subtotal * (discountAmount / totalSubtotal)) : 0;
       const memberTaxAndTips = memberTax + memberTips;
-      const grandTotal = subtotal + memberTaxAndTips;
+      const grandTotal = Math.max(0, subtotal + memberTaxAndTips - memberDiscount);
 
       let memberFeeText = "";
-      if (taxAmount > 0 && tipAmount > 0) {
-        memberFeeText = `  _↳ Subtotal: Rp ${subtotal.toLocaleString("id-ID")} + Pajak: Rp ${memberTax.toLocaleString("id-ID")} + Servis: Rp ${memberTips.toLocaleString("id-ID")}_\n`;
-      } else if (taxAndTips > 0) {
-        memberFeeText = `  _↳ Subtotal: Rp ${subtotal.toLocaleString("id-ID")} + Pajak/Servis: Rp ${memberTaxAndTips.toLocaleString("id-ID")}_\n`;
+      const feeParts = [];
+      if (taxAmount > 0) feeParts.push(`Pajak: Rp ${memberTax.toLocaleString("id-ID")}`);
+      if (tipAmount > 0) feeParts.push(`Servis: Rp ${memberTips.toLocaleString("id-ID")}`);
+      if (discountAmount > 0) feeParts.push(`Diskon: -Rp ${memberDiscount.toLocaleString("id-ID")}`);
+
+      if (feeParts.length > 0) {
+        memberFeeText = `  _↳ Subtotal: Rp ${subtotal.toLocaleString("id-ID")} + ${feeParts.join(" + ")}_\n`;
       }
 
       allMembersShareText += `👤 *${member.name}* : *Rp ${grandTotal.toLocaleString("id-ID")}*\n${memberItemsText || "  • Belum pilih menu\n"}${memberFeeText}\n`;
@@ -799,6 +813,10 @@ ${bonUrl}
     if (tipAmount > 0) {
       const tipPercent = totalSubtotal > 0 ? ((tipAmount / totalSubtotal) * 100).toFixed(1).replace(/\.0$/, "") : "0";
       overallFeeText += `Servis/Tip (${tipPercent}%): Rp ${tipAmount.toLocaleString("id-ID")}\n`;
+    }
+    if (discountAmount > 0) {
+      const discountPercent = totalSubtotal > 0 ? ((discountAmount / totalSubtotal) * 100).toFixed(1).replace(/\.0$/, "") : "0";
+      overallFeeText += `Diskon/Promo (-${discountPercent}%): -Rp ${discountAmount.toLocaleString("id-ID")}\n`;
     }
 
     const bankDetails = session.bankName

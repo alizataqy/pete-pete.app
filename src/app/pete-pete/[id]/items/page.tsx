@@ -1,4 +1,3 @@
-import React from "react";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ArrowLeft, ArrowRight, ReceiptCheck } from "@untitledui/icons";
@@ -21,6 +20,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
   const itemsSubtotal = session.items.reduce((acc, i) => acc + Number(i.totalPrice), 0);
   const tax = Number(session.taxAmount);
   const tip = Number(session.tipAmount);
+  const discount = Number((session as unknown as { discountAmount?: number }).discountAmount || 0);
   const total = Number(session.totalAmount);
 
   return (
@@ -63,7 +63,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-secondary-800/80 text-center">
+          <div className={`grid ${discount > 0 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"} gap-2 pt-2 border-t border-secondary-800/80 text-center`}>
             <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
               <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Subtotal</p>
               <p className="text-xs font-bold text-text-100 mt-1">
@@ -82,6 +82,14 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
                 Rp {tip.toLocaleString("id-ID")}
               </p>
             </div>
+            {discount > 0 && (
+              <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
+                <p className="text-3xs text-emerald-400 font-semibold uppercase tracking-wider">Diskon</p>
+                <p className="text-xs font-bold text-emerald-400 mt-1">
+                  - Rp {discount.toLocaleString("id-ID")}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

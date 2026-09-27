@@ -50,6 +50,7 @@ interface BonSession {
   totalAmount: number;
   taxAmount: number;
   tipAmount: number;
+  discountAmount?: number;
   bankName: string | null;
   bankOwner: string | null;
   creatorName?: string | null;
@@ -109,6 +110,7 @@ export default function BonView({
     const totalSubtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
     const tax = session.taxAmount || 0;
     const tip = session.tipAmount || 0;
+    const discount = session.discountAmount || 0;
 
     const memberDetails = members.map((member) => {
       let memberSubtotal = 0;
@@ -141,19 +143,21 @@ export default function BonView({
 
       const memberTax = totalSubtotal > 0 ? Math.round(memberSubtotal * (tax / totalSubtotal)) : 0;
       const memberTip = totalSubtotal > 0 ? Math.round(memberSubtotal * (tip / totalSubtotal)) : 0;
-      const memberGrandTotal = memberSubtotal + memberTax + memberTip;
+      const memberDiscount = totalSubtotal > 0 ? Math.round(memberSubtotal * (discount / totalSubtotal)) : 0;
+      const memberGrandTotal = Math.max(0, memberSubtotal + memberTax + memberTip - memberDiscount);
 
       return {
         member,
         subtotal: memberSubtotal,
         tax: memberTax,
         tip: memberTip,
+        discount: memberDiscount,
         grandTotal: memberGrandTotal,
         items: memberItems,
       };
     });
 
-    return { totalSubtotal, tax, tip, memberDetails };
+    return { totalSubtotal, tax, tip, discount, memberDetails };
   }, [items, members, session]);
 
   const activeMemberDetail = calculations.memberDetails.find(
@@ -458,6 +462,14 @@ export default function BonView({
                       <span>Porsi Servis / Tip</span>
                       <span className="font-semibold tabular-nums text-text-200">
                         Rp {activeMemberDetail.tip.toLocaleString("id-ID")}
+                      </span>
+                    </div>
+                  )}
+                  {activeMemberDetail.discount > 0 && (
+                    <div className="flex justify-between text-emerald-400 text-xs">
+                      <span>Porsi Diskon / Promo</span>
+                      <span className="font-semibold tabular-nums">
+                        - Rp {activeMemberDetail.discount.toLocaleString("id-ID")}
                       </span>
                     </div>
                   )}

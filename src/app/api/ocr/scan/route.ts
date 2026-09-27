@@ -155,13 +155,14 @@ export async function POST(request: NextRequest) {
   ],
   "taxAmount": "number (integer, any PPN, PB1, or tax amount, default 0)",
   "tipAmount": "number (integer, any service charge, tip, or service fee, default 0)",
+  "discountAmount": "number (integer, any voucher, promo, or receipt discount amount as a positive integer, default 0)",
   "totalAmount": "number (integer, the final grand total of the receipt)"
 }
 
 Rules:
 1. Identify all individual purchased items. Ignore subtotal lines, payment method lines, or change lines as items.
 2. If there are item-specific discounts, subtract them from the totalPrice/unitPrice of that item so that the totalPrice reflects the final paid cost of that item.
-3. If there is a general receipt discount, do not list it as an item; instead, distribute the discount proportionally across all items by reducing their totalPrice, or verify that the sum of item totalPrices + tax + tip equals the final totalAmount.
+3. If there is a general receipt discount, promo, or voucher, put the total discount value in "discountAmount" as a positive integer. Do not list it as an item.
 4. Ensure all prices are returned as clean integer numbers (e.g. 35000 instead of 35.000 or 35,000).
 5. Output ONLY the raw JSON object, do not wrap in markdown \`\`\`json block.`;
 
@@ -179,6 +180,7 @@ Rules:
       items?: { name: string; quantity: number; unitPrice: number; totalPrice: number }[];
       taxAmount?: number;
       tipAmount?: number;
+      discountAmount?: number;
       totalAmount?: number;
     } | null = null;
     let lastError: Error | null = null;
