@@ -21,6 +21,7 @@ import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import DigitalReceiptModal from "@/components/application/modals/DigitalReceiptModal";
 
 interface BonItemAllocation {
   memberId: string;
@@ -54,7 +55,7 @@ interface BonSession {
   tipAmount: number;
   discountAmount?: number;
   bankName: string | null;
-  bankAccount: string | null;
+  bankAccount?: string | null;
   bankOwner: string | null;
   creatorName?: string | null;
   status: "DRAFT" | "COMPLETED" | "CANCELLED";
@@ -94,6 +95,7 @@ export default function BonView({
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedBank, setCopiedBank] = useState(false);
   const [copiedSummary, setCopiedSummary] = useState(false);
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
 
   // Ref & status scroll untuk carousel anggota
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -190,7 +192,7 @@ export default function BonView({
       try {
         await navigator.share({
           title: `Bon: ${cleanSessionTitle}`,
-          text: `Cek rincian bon patungan "${cleanSessionTitle}" di Ceban Pertama:`,
+          text: `Cek rincian bon splitbill "${cleanSessionTitle}" di Ceban Pertama:`,
           url,
         });
         return;
@@ -249,7 +251,7 @@ export default function BonView({
     if (!activeMemberDetail) return;
     const isPlaceholder = /^(saya(\s*\(owner\))?|gua|owner)$/i.test(activeMemberDetail.member.name.trim());
     const memberName = isPlaceholder && session.creatorName ? session.creatorName : activeMemberDetail.member.name;
-    const text = `Halo, gua (${memberName}) mau konfirmasi patungan *${cleanSessionTitle}* sebesar *Rp ${activeMemberDetail.grandTotal.toLocaleString("id-ID")}* ya! Tolong dicek, thank you!`;
+    const text = `Halo, gua (${memberName}) udah transfer splitbill *${cleanSessionTitle}* sebesar *Rp ${activeMemberDetail.grandTotal.toLocaleString("id-ID")}* ya! Tolong dicek, thank you!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -378,6 +380,15 @@ export default function BonView({
             className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-50 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
           >
             <Share07 className="w-4 h-4" />
+          </Button>
+          <Button
+            onPress={() => setIsReceiptModalOpen(true)}
+            color="tertiary"
+            size="sm"
+            aria-label="Unduh kartu bon digital"
+            className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-primary-400 hover:text-primary-300 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center"
+          >
+            <Download01 className="w-3.5 h-3.5" />
           </Button>
         </div>
       </header>
@@ -683,6 +694,16 @@ export default function BonView({
                   </Button>
 
                   <Button
+                    onPress={() => setIsReceiptModalOpen(true)}
+                    color="secondary"
+                    size="md"
+                    className="w-full min-h-9 py-2 text-xs font-semibold active:scale-95 transition-all border border-secondary-800 bg-secondary-900/60 hover:bg-secondary-900 text-text-50 flex items-center justify-center gap-1.5 cursor-pointer rounded-xl"
+                  >
+                    <ReceiptCheck className="w-4 h-4 shrink-0 text-primary-400" />
+                    <span>Unduh Gambar Bon Digital (PNG / PDF)</span>
+                  </Button>
+
+                  <Button
                     onPress={handleCopySummary}
                     color="secondary"
                     size="md"
@@ -812,12 +833,44 @@ export default function BonView({
       {/* Docked Footer (Layar) */}
       <footer className="shrink-0 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-secondary-800 bg-background/95 backdrop-blur-md z-20 text-center print:hidden">
         <p className="text-xs text-text-400">
-          Patungan anti drama pakai{" "}
+          Splitbill anti drama pakai{" "}
           <Link href="/" className="font-extrabold text-primary-400 hover:underline">
             Ceban Pertama
           </Link>
         </p>
       </footer>
+
+      {/* Modal Kartu Bon Digital */}
+      {activeMemberDetail && (
+        <DigitalReceiptModal
+          isOpen={isReceiptModalOpen}
+          onClose={() => setIsReceiptModalOpen(false)}
+          data={{
+            title: session.title,
+            merchantName: session.merchantName,
+            date: new Date(session.createdAt).toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            }),
+            inviteCode: session.inviteCode,
+            memberName:
+              /^(saya(\s*\(owner\))?|gua|owner)$/i.test(activeMemberDetail.member.name.trim()) && session.creatorName
+                ? session.creatorName
+                : activeMemberDetail.member.name,
+            isPaid: activeMemberDetail.member.isPaid,
+            items: activeMemberDetail.items,
+            subtotal: activeMemberDetail.subtotal,
+            tax: activeMemberDetail.tax,
+            tip: activeMemberDetail.tip,
+            discount: activeMemberDetail.discount,
+            grandTotal: activeMemberDetail.grandTotal,
+            bankName: session.bankName,
+            bankAccount: session.bankAccount,
+            bankOwner: session.bankOwner,
+          }}
+        />
+      )}
     </main>
   );
 }

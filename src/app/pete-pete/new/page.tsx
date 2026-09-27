@@ -448,7 +448,7 @@ export default function NewSessionPage() {
         });
 
         const res = await createManualBillSession({
-          title: title || merchantName || "Bill Patungan",
+          title: title || merchantName || "Bill Splitbill",
           description,
           merchantName,
           totalAmount: manualTotal,
@@ -475,7 +475,7 @@ export default function NewSessionPage() {
         const totalAmount = scanResult!.totalAmount;
 
         const res = await createBillSession({
-          title: title || merchantName || scanResult!.merchantName || "Bill Patungan",
+          title: title || merchantName || scanResult!.merchantName || "Bill Splitbill",
           description,
           merchantName: merchantName || scanResult!.merchantName,
           totalAmount,
@@ -490,7 +490,7 @@ export default function NewSessionPage() {
         });
 
         if (!res.success) {
-          toast.error(res.error || "Gagal nyimpen sesi patungan nih, coba beberapa saat lagi ya!");
+          toast.error(res.error || "Gagal nyimpen sesi splitbill nih, coba beberapa saat lagi ya!");
         } else {
           clearSessionStorage();
           router.push(`/pete-pete/${res.session?.id}/split`);
@@ -498,7 +498,7 @@ export default function NewSessionPage() {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Terjadi kendala saat nyimpen sesi patungan nih, coba lagi ya!");
+      toast.error("Terjadi kendala saat nyimpen sesi splitbill nih, coba lagi ya!");
     } finally {
       setLoading(false);
     }
@@ -527,7 +527,7 @@ export default function NewSessionPage() {
           </Button>
           <div className="min-w-0 flex-1">
             <h1 className="text-sm font-extrabold text-text-50">Bikin Bill PETE-PETE</h1>
-            <p className="text-2xs text-text-300">Pilih cara input menu patungan</p>
+            <p className="text-2xs text-text-300">Pilih cara input menu splitbill</p>
           </div>
         </header>
 
@@ -1157,7 +1157,7 @@ export default function NewSessionPage() {
                     {wizardStep}
                   </span>
                   {wizardStep === 1 && "Langkah 1: Input Daftar Menu"}
-                  {wizardStep === 2 && "Langkah 2: Tambah Teman Patungan"}
+                  {wizardStep === 2 && "Langkah 2: Tambah Teman Splitbill"}
                   {wizardStep === 3 && "Langkah 3: Bagi Porsi & Info Bayar"}
                 </span>
                 <span className="text-2xs font-bold text-text-400">
@@ -1591,7 +1591,7 @@ export default function NewSessionPage() {
                 color="primary"
                 className="flex-1 min-h-12 py-3.5 text-white text-sm font-bold rounded-lg active:scale-[0.96] transition-transform"
               >
-                Bikin Bill Patungan
+                Bikin Bill Splitbill
               </Button>
             )}
           </div>
