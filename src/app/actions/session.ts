@@ -74,8 +74,7 @@ export async function createBillSession(data: CreateSessionData) {
         totalAmount: data.totalAmount,
         taxAmount: data.taxAmount || 0,
         tipAmount: data.tipAmount || 0,
-        // @ts-expect-error discountAmount added to schema.prisma, typed on prisma generate
-  discountAmount: data.discountAmount || 0,
+        discountAmount: data.discountAmount || 0,
         inviteCode,
         userId: data.userId || null,
         bankName: data.bankName || firstBank?.bankName,
@@ -269,7 +268,7 @@ export async function recalculateSessionShares(sessionId: string) {
   const totalSubtotal = Object.values(memberSubtotals).reduce((a, b) => a + b, 0);
   const taxAmount = Number(session.taxAmount) || 0;
   const tipAmount = Number(session.tipAmount) || 0;
-  const discountAmount = Number((session as unknown as { discountAmount?: number }).discountAmount) || 0;
+  const discountAmount = Number(session.discountAmount) || 0;
   const adjustmentsRatio =
     totalSubtotal > 0
       ? (taxAmount + tipAmount - discountAmount) / totalSubtotal
@@ -505,8 +504,7 @@ export async function createManualBillSession(data: CreateManualSessionData) {
         totalAmount: data.totalAmount,
         taxAmount: data.taxAmount || 0,
         tipAmount: data.tipAmount || 0,
-        // @ts-expect-error discountAmount added to schema.prisma, typed on prisma generate
-  discountAmount: data.discountAmount || 0,
+        discountAmount: data.discountAmount || 0,
         inviteCode,
         userId: data.userId || null,
         bankName: data.bankName,

@@ -20,7 +20,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
   const itemsSubtotal = session.items.reduce((acc, i) => acc + Number(i.totalPrice), 0);
   const tax = Number(session.taxAmount);
   const tip = Number(session.tipAmount);
-  const discount = Number((session as unknown as { discountAmount?: number }).discountAmount || 0);
+  const discount = Number(session.discountAmount || 0);
   const total = Number(session.totalAmount);
 
   return (
