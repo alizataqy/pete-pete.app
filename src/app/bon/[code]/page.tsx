@@ -88,6 +88,7 @@ export default async function BonPage({ params, searchParams }: BonPageProps) {
         tipAmount: Number(session.tipAmount),
         discountAmount: Number(session.discountAmount || 0),
         bankName: session.bankName,
+        bankAccount: session.bankAccount,
         bankOwner: session.bankOwner,
         creatorName,
         status: session.status,
