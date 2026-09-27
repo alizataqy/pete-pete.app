@@ -359,6 +359,13 @@
     text-shadow: none !important;
     box-shadow: none !important;
   }
+
+  /* Sembunyikan modal overlay, dialog, dan portal saat cetak PDF */
+  [data-rac-modal-overlay],
+  [role="dialog"],
+  div[data-portal] {
+    display: none !important;
+  }
 }
 
 :root {

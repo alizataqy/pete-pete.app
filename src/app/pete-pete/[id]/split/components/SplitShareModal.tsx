@@ -115,7 +115,7 @@ export default function SplitShareModal({
                       onClose();
                     }}
                   >
-                    Unduh Kartu Bon Digital (PNG / PDF)
+                    Cetak / Simpan Kartu Bon (PDF)
                   </Button>
                 )}
               </div>

@@ -12,8 +12,6 @@ import {
   ChevronDown,
   ReceiptCheck,
   User01,
-  CreditCard01,
-  FileCheck02,
   Printer,
   Download01,
 } from "@untitledui/icons";
@@ -94,8 +92,6 @@ export default function BonView({
   const [selectedMemberId, setSelectedMemberId] = useState<string>(initialMember);
   const [showAllItems, setShowAllItems] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
-  const [copiedBank, setCopiedBank] = useState(false);
-  const [copiedSummary, setCopiedSummary] = useState(false);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
 
   // Ref & status scroll untuk carousel anggota
@@ -210,44 +206,6 @@ export default function BonView({
     }
   };
 
-  const handleCopyBankAccount = () => {
-    if (!session.bankAccount) return;
-    navigator.clipboard.writeText(session.bankAccount);
-    setCopiedBank(true);
-    setTimeout(() => setCopiedBank(false), 2000);
-    toast.success("Nomor rekening berhasil disalin!");
-  };
-
-  const handleCopySummary = () => {
-    if (!activeMemberDetail) return;
-    const isPlaceholder = /^(saya(\s*\(owner\))?|gua|owner)$/i.test(activeMemberDetail.member.name.trim());
-    const memberName = isPlaceholder && session.creatorName ? session.creatorName : activeMemberDetail.member.name;
-
-    const itemsList = activeMemberDetail.items
-      .map(
-        (it) =>
-          `• ${it.name} (${it.portionCount === it.totalPortions && it.totalPortions === 1 ? "1 porsi" : `${it.portionCount}/${it.totalPortions} porsi`}) : Rp ${it.cost.toLocaleString("id-ID")}`
-      )
-      .join("\n");
-
-    const summaryText = `*BON PATUNGAN: ${cleanSessionTitle}*\nNama: ${memberName}\nStatus: ${activeMemberDetail.member.isPaid ? "Udah Lunas" : "Belum Bayar"}\n\n*Menu Yang Dipesen:*\n${itemsList || "• (Belum ada menu)"}\n\nSubtotal: Rp ${activeMemberDetail.subtotal.toLocaleString("id-ID")}${
-      activeMemberDetail.tax > 0 ? `\nPajak: Rp ${activeMemberDetail.tax.toLocaleString("id-ID")}` : ""
-    }${
-      activeMemberDetail.tip > 0 ? `\nServis: Rp ${activeMemberDetail.tip.toLocaleString("id-ID")}` : ""
-    }${
-      activeMemberDetail.discount > 0 ? `\nDiskon: -Rp ${activeMemberDetail.discount.toLocaleString("id-ID")}` : ""
-    }\n*TOTAL BAYAR: Rp ${activeMemberDetail.grandTotal.toLocaleString("id-ID")}*${
-      session.bankName && session.bankAccount
-        ? `\n\n*Transfer ke:*\n${session.bankName} - ${session.bankAccount} (${session.bankOwner || session.creatorName || "Penerima"})`
-        : ""
-    }\n\nCek bon digital lengkap: ${typeof window !== "undefined" ? window.location.href : ""}`;
-
-    navigator.clipboard.writeText(summaryText);
-    setCopiedSummary(true);
-    setTimeout(() => setCopiedSummary(false), 2000);
-    toast.success("Rincian tagihan berhasil disalin!");
-  };
-
   const handleConfirmTransferWA = () => {
     if (!activeMemberDetail) return;
     const isPlaceholder = /^(saya(\s*\(owner\))?|gua|owner)$/i.test(activeMemberDetail.member.name.trim());
@@ -310,7 +268,7 @@ export default function BonView({
             color="primary"
             size="sm"
             aria-label="Kembali"
-            className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg active:scale-95 transition-transform duration-100 ease-out shrink-0 flex items-center justify-center cursor-pointer"
+            className="min-w-11 min-h-11 p-2 rounded-lg active:scale-95 transition-all shrink-0 flex items-center justify-center cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -385,7 +343,7 @@ export default function BonView({
             onPress={() => setIsReceiptModalOpen(true)}
             color="tertiary"
             size="sm"
-            aria-label="Unduh kartu bon digital"
+            aria-label="Download kartu bon digital"
             className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-primary-400 hover:text-primary-300 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center"
           >
             <Download01 className="w-3.5 h-3.5" />
@@ -411,9 +369,8 @@ export default function BonView({
             {/* Scroll Indicator Shadow Kiri */}
             <div
               aria-hidden="true"
-              className={`pointer-events-none absolute left-0 top-0 bottom-2.5 w-6 bg-linear-to-r from-background to-transparent z-10 transition-opacity duration-150 ${
-                canScrollLeft ? "opacity-100" : "opacity-0"
-              }`}
+              className={`pointer-events-none absolute left-0 top-0 bottom-2.5 w-6 bg-linear-to-r from-background to-transparent z-10 transition-opacity duration-150 ${canScrollLeft ? "opacity-100" : "opacity-0"
+                }`}
             />
 
             <div
@@ -435,19 +392,17 @@ export default function BonView({
                     onClick={() => setSelectedMemberId(m.id)}
                     aria-pressed={isSelected}
                     aria-label={`Pilih ${displayName}, total bagian Rp ${grandTotal.toLocaleString("id-ID")}`}
-                    className={`group relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all duration-100 cursor-pointer min-w-22 sm:min-w-24 shrink-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 ${
-                      isSelected
-                        ? "bg-primary text-white border-primary shadow-sm"
+                    className={`group relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all duration-100 cursor-pointer min-w-22 sm:min-w-24 shrink-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 ${isSelected
+                        ? "bg-brand-solid text-white border-brand-solid shadow-sm"
                         : "bg-secondary-950/70 border-secondary-800 hover:border-secondary-700 text-text-50"
-                    }`}
+                      }`}
                   >
                     <div className="relative">
                       <Avatar
                         alt={displayName}
                         size="md"
-                        className={`transition-transform duration-100 ${
-                          isSelected ? "ring-2 ring-white shadow-xs" : "border border-secondary-800"
-                        }`}
+                        className={`transition-transform duration-100 ${isSelected ? "ring-2 ring-white shadow-xs" : "border border-secondary-800"
+                          }`}
                       />
                       {m.isPaid ? (
                         <span
@@ -468,19 +423,17 @@ export default function BonView({
 
                     <div className="w-full text-center min-w-0">
                       <span
-                        className={`text-xs block truncate leading-tight font-bold ${
-                          isSelected ? "text-white" : "text-text-50"
-                        }`}
+                        className={`text-xs block truncate leading-tight font-bold ${isSelected ? "text-white" : "text-text-50"
+                          }`}
                         title={displayName}
                       >
                         {displayName}
                       </span>
                       <span
-                        className={`inline-block text-3xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md mt-1 ${
-                          isSelected
+                        className={`inline-block text-3xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md mt-1 ${isSelected
                             ? "bg-white/20 text-white font-bold"
                             : "bg-secondary-900 text-text-300"
-                        }`}
+                          }`}
                       >
                         Rp {grandTotal.toLocaleString("id-ID")}
                       </span>
@@ -493,9 +446,8 @@ export default function BonView({
             {/* Scroll Indicator Shadow Kanan */}
             <div
               aria-hidden="true"
-              className={`pointer-events-none absolute right-0 top-0 bottom-2.5 w-6 bg-linear-to-l from-background to-transparent z-10 transition-opacity duration-150 ${
-                canScrollRight ? "opacity-100" : "opacity-0"
-              }`}
+              className={`pointer-events-none absolute right-0 top-0 bottom-2.5 w-6 bg-linear-to-l from-background to-transparent z-10 transition-opacity duration-150 ${canScrollRight ? "opacity-100" : "opacity-0"
+                }`}
             />
           </div>
         </section>
@@ -629,97 +581,26 @@ export default function BonView({
                   </div>
                 </div>
 
-                {/* Info Rekening Bank / E-Wallet Pembayaran */}
-                {(session.bankName || session.bankAccount) && (
-                  <div className="p-3 rounded-xl bg-secondary-900/60 border border-secondary-800 space-y-2 print:bg-gray-50 print:border print:border-gray-300 print:p-3 print:rounded-lg print:text-black">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <CreditCard01 className="w-3.5 h-3.5 text-primary-400 print:text-black" />
-                        <span className="text-3xs font-bold text-text-400 uppercase tracking-wider print:text-gray-700">
-                          Rekening Tujuan Transfer
-                        </span>
-                      </div>
-                      {session.bankAccount && (
-                        <Button
-                          onPress={handleCopyBankAccount}
-                          color="tertiary"
-                          size="sm"
-                          className="h-6 px-2 py-0 text-3xs font-bold rounded-md border border-secondary-700 bg-secondary-800 text-text-50 active:scale-95 transition-all flex items-center gap-1 cursor-pointer print:hidden"
-                        >
-                          {copiedBank ? (
-                            <>
-                              <Check className="w-3 h-3 text-emerald-600" />
-                              <span className="text-emerald-600">Tersalin</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy01 className="w-3 h-3" />
-                              <span>Salin Rekening</span>
-                            </>
-                          )}
-                        </Button>
-                      )}
-                    </div>
-
-                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-secondary-800/80 print:border-gray-200">
-                      <div className="min-w-0">
-                        <span className="text-xs font-bold text-text-50 block truncate print:text-black print:text-sm">
-                          {session.bankName || "Transfer Bank"}
-                        </span>
-                        {session.bankOwner && (
-                          <span className="text-3xs text-text-400 block truncate print:text-gray-600">
-                            a.n. {session.bankOwner}
-                          </span>
-                        )}
-                      </div>
-                      {session.bankAccount && (
-                        <span className="text-xs font-mono font-bold text-text-50 tracking-wider tabular-nums shrink-0 print:text-black print:text-sm">
-                          {session.bankAccount}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-
                 {/* Action Buttons (Hanya untuk Layar, tidak dicetak) */}
                 <div className="space-y-2 pt-1 print:hidden">
                   <Button
                     onPress={handleConfirmTransferWA}
                     color="primary"
                     size="lg"
-                    className="w-full min-h-11 py-3 text-xs sm:text-sm font-bold active:scale-95 transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer rounded-xl"
+                    iconLeading={Share07}
+                    className="w-full min-h-11 py-3 text-xs sm:text-sm font-bold active:scale-95 transition-all shadow-sm cursor-pointer rounded-xl"
                   >
-                    <Share07 className="w-4 h-4 shrink-0" />
-                    <span>Kirim Bukti Transfer ke Temen Lo</span>
+                    Kirim Bukti Transfer ke Temen Lo
                   </Button>
 
                   <Button
                     onPress={() => setIsReceiptModalOpen(true)}
                     color="secondary"
                     size="md"
-                    className="w-full min-h-9 py-2 text-xs font-semibold active:scale-95 transition-all border border-secondary-800 bg-secondary-900/60 hover:bg-secondary-900 text-text-50 flex items-center justify-center gap-1.5 cursor-pointer rounded-xl"
+                    iconLeading={ReceiptCheck}
+                    className="w-full min-h-9 py-2 text-xs font-semibold active:scale-95 transition-all border border-secondary-800 bg-secondary-900/60 hover:bg-secondary-900 text-text-50 cursor-pointer rounded-xl"
                   >
-                    <ReceiptCheck className="w-4 h-4 shrink-0 text-primary-400" />
-                    <span>Unduh Gambar Bon Digital (PNG / PDF)</span>
-                  </Button>
-
-                  <Button
-                    onPress={handleCopySummary}
-                    color="secondary"
-                    size="md"
-                    className="w-full min-h-9 py-2 text-xs font-semibold active:scale-95 transition-all border border-secondary-800 bg-secondary-900/60 hover:bg-secondary-900 text-text-50 flex items-center justify-center gap-1.5 cursor-pointer rounded-xl"
-                  >
-                    {copiedSummary ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-600 font-bold">Rincian Bon Berhasil Disalin!</span>
-                      </>
-                    ) : (
-                      <>
-                        <FileCheck02 className="w-3.5 h-3.5 text-text-400" />
-                        <span>Salin Rincian Teks Tagihan</span>
-                      </>
-                    )}
+                    Cetak / Simpan Bon Digital (PDF)
                   </Button>
                 </div>
               </div>
@@ -747,9 +628,8 @@ export default function BonView({
               </div>
             </div>
             <span
-              className={`p-1 text-text-400 group-hover:text-text-50 transition-transform duration-150 ease-out ${
-                showAllItems ? "rotate-180" : "rotate-0"
-              }`}
+              className={`p-1 text-text-400 group-hover:text-text-50 transition-transform duration-150 ease-out ${showAllItems ? "rotate-180" : "rotate-0"
+                }`}
             >
               <ChevronDown className="w-4 h-4" />
             </span>
@@ -825,7 +705,7 @@ export default function BonView({
 
         {/* Print Only Footer */}
         <div className="hidden print:block text-center text-xs text-gray-500 pt-6 mt-6 border-t border-gray-200">
-          <p className="font-semibold text-black">CEBAN PERTAMA — cebanpertama.com</p>
+          <p className="font-semibold text-black">CEBAN PERTAMA</p>
           <p className="mt-0.5">Dokumen ini merupakan bukti pembagian tagihan patungan digital yang sah.</p>
         </div>
       </div>
@@ -865,9 +745,6 @@ export default function BonView({
             tip: activeMemberDetail.tip,
             discount: activeMemberDetail.discount,
             grandTotal: activeMemberDetail.grandTotal,
-            bankName: session.bankName,
-            bankAccount: session.bankAccount,
-            bankOwner: session.bankOwner,
           }}
         />
       )}

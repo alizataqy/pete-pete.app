@@ -635,7 +635,7 @@ export default function SplitBoard({
             color="primary"
             size="sm"
             aria-label="Kembali ke tongkrongan"
-            className="shrink-0"
+            className="min-w-11 min-h-11 p-2 rounded-lg active:scale-95 transition-all shrink-0 flex items-center justify-center cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>

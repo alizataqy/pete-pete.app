@@ -129,9 +129,8 @@ export default function SplitMemberList({
             }}
             color="secondary"
             size="xs"
-            className={`px-2 py-1 text-2xs shrink-0 ${
-              sessionStatus !== "COMPLETED" ? "opacity-60" : ""
-            }`}
+            className={`px-2 py-1 text-2xs shrink-0 ${sessionStatus !== "COMPLETED" ? "opacity-60" : ""
+              }`}
             iconLeading={Share07}
           >
             Bagikan Rekap
@@ -227,11 +226,10 @@ export default function SplitMemberList({
                       color={!member.isPaid ? "primary" : "secondary"}
                       size="xs"
                       iconLeading={!member.isPaid ? Check : X}
-                      className={`text-2xs font-bold tracking-wide transition-all duration-300 ${
-                        !member.isPaid
+                      className={`text-2xs font-bold tracking-wide transition-all duration-300 ${!member.isPaid
                           ? "shadow-sm shadow-emerald-950/20"
                           : "opacity-80 hover:opacity-100"
-                      }`}
+                        }`}
                     >
                       {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
                     </Button>
@@ -246,9 +244,8 @@ export default function SplitMemberList({
                       color="secondary"
                       size="xs"
                       aria-label={`Bagi rincian tagihan untuk ${member.name}`}
-                      className={`p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center ${
-                        sessionStatus !== "COMPLETED" ? "opacity-60" : ""
-                      }`}
+                      className={`p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center ${sessionStatus !== "COMPLETED" ? "opacity-60" : ""
+                        }`}
                     >
                       {copiedId === member.id ? (
                         <Check className="w-3.5 h-3.5 text-emerald-400" />
@@ -260,7 +257,7 @@ export default function SplitMemberList({
                       onPress={() => onOpenReceiptModal(member)}
                       color="secondary"
                       size="xs"
-                      aria-label={`Unduh kartu bon untuk ${member.name}`}
+                      aria-label={`Download kartu bon untuk ${member.name}`}
                       className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
                     >
                       <Download01 className="w-3.5 h-3.5" />
