@@ -60,7 +60,7 @@ const formatDateString = (dateStr?: string) => {
 
 export default function AgendaPlansView({ userId, userName, initialPlans }: AgendaPlansViewProps) {
   const router = useRouter();
-  const [plans, setPlans] = useState<PlanItem[]>(initialPlans);
+  const [plans] = useState<PlanItem[]>(initialPlans);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 

@@ -6,7 +6,7 @@ import { createBillSession, createManualBillSession } from "@/app/actions/sessio
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
-import { Edit02, Camera01, Plus, ArrowLeft, UploadCloud01, CreditCard01, Zap, ChevronRight, CheckCircle, Trash01, XClose, Users01 } from "@untitledui/icons";
+import { Edit02, Camera01, Plus, ArrowLeft, UploadCloud01, CreditCard01, Zap, ChevronRight, CheckCircle, Trash01, XClose } from "@untitledui/icons";
 import { getUserBanks, UserBankData } from "@/app/actions/profile";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";
@@ -80,7 +80,7 @@ export default function NewSessionPage() {
   const [selectedBankId, setSelectedBankId] = useSessionStorageState<string>("pete-pete-new-selected-bank-id", "custom");
   const [useProfileBank, setUseProfileBank] = useSessionStorageState("pete-pete-new-use-profile-bank", false);
   const [selectedTemplate, setSelectedTemplate] = useSessionStorageState("pete-pete-new-selected-template", "BCA");
-  const [bankName, setBankName] = useSessionStorageState("pete-pete-new-bank-name", "");
+  const [bankName] = useSessionStorageState("pete-pete-new-bank-name", "");
   const [bankAccount, setBankAccount] = useSessionStorageState("pete-pete-new-bank-account", "");
   const [bankOwner, setBankOwner] = useSessionStorageState("pete-pete-new-bank-owner", "");
   const [qrisUrl, setQrisUrl] = useSessionStorageState("pete-pete-new-qris-url", "");
@@ -161,6 +161,22 @@ export default function NewSessionPage() {
   const [manualTip, setManualTip] = useSessionStorageState<number>("pete-pete-new-manual-tip", 0);
   const [showScanItemForm, setShowScanItemForm] = useState(false);
 
+  const updateScanResultCalculations = (
+    updatedItems: ScanItem[],
+    taxAmount = Number(scanResult?.taxAmount || 0),
+    tipAmount = Number(scanResult?.tipAmount || 0)
+  ) => {
+    if (!scanResult) return;
+    const itemsSubtotal = updatedItems.reduce((acc, i) => acc + i.totalPrice, 0);
+    setScanResult({
+      ...scanResult,
+      items: updatedItems,
+      taxAmount,
+      tipAmount,
+      totalAmount: itemsSubtotal + taxAmount + tipAmount,
+    });
+  };
+
   const handleAddScanDraftItem = () => {
     const name = draftItemName.trim();
     const total = parseFloat(draftItemAmount);
@@ -177,14 +193,7 @@ export default function NewSessionPage() {
       totalPrice: total,
     };
 
-    const updatedItems = [...scanResult.items, newItem];
-    const itemsSubtotal = updatedItems.reduce((acc, i) => acc + i.totalPrice, 0);
-
-    setScanResult({
-      ...scanResult,
-      items: updatedItems,
-      totalAmount: itemsSubtotal + Number(scanResult.taxAmount || 0) + Number(scanResult.tipAmount || 0),
-    });
+    updateScanResultCalculations([...scanResult.items, newItem]);
 
     setDraftItemName("");
     setDraftItemAmount("");
@@ -196,14 +205,7 @@ export default function NewSessionPage() {
 
   const handleRemoveScanItem = (idx: number) => {
     if (!scanResult) return;
-    const updatedItems = scanResult.items.filter((_, i) => i !== idx);
-    const itemsSubtotal = updatedItems.reduce((acc, i) => acc + i.totalPrice, 0);
-
-    setScanResult({
-      ...scanResult,
-      items: updatedItems,
-      totalAmount: itemsSubtotal + Number(scanResult.taxAmount || 0) + Number(scanResult.tipAmount || 0),
-    });
+    updateScanResultCalculations(scanResult.items.filter((_, i) => i !== idx));
     toast.success("Menu berhasil dihapus!");
   };
 
@@ -427,7 +429,7 @@ export default function NewSessionPage() {
         const itemsPayload = manualItems.map((item, idx) => {
           const allocationsMap = manualItemAllocations[idx] || {};
           const allocationsList = Object.entries(allocationsMap)
-            .filter(([_, qty]) => qty > 0)
+            .filter(([, qty]) => qty > 0)
             .map(([memberName, qty]) => ({ memberName, quantity: qty }));
 
           return {
@@ -525,22 +527,21 @@ export default function NewSessionPage() {
         <div className="flex-1 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto">
           {/* Welcome / Intro Hero */}
           <div className="space-y-1.5 pt-1">
-            <h2 className="text-base sm:text-lg font-extrabold text-text-50 [text-wrap:balance]">
+            <h2 className="text-base sm:text-lg font-extrabold text-text-50 text-balance">
               Mau input menu gimana nih?
             </h2>
-            <p className="text-xs text-text-300 leading-relaxed [text-wrap:pretty]">
+            <p className="text-xs text-text-300 leading-relaxed text-pretty">
               Pilih cara paling praktis buat kamu &amp; geng. Pake foto struk jauh lebih cepet dan anti ribet!
             </p>
           </div>
 
-          {/* Action Cards */}
           {/* Action Cards */}
           <div className="space-y-3">
             {/* Scan Mode Card (Recommended) */}
             <button
               type="button"
               onClick={() => setInputMode("scan")}
-              className="w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-primary-500/40 bg-gradient-to-br from-primary-950/40 via-secondary-950/60 to-secondary-950/30 hover:border-primary-500/80 hover:bg-secondary-950/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative overflow-hidden"
+              className="w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-primary-500/40 bg-linear-to-br from-primary-950/40 via-secondary-950/60 to-secondary-950/30 hover:border-primary-500/80 hover:bg-secondary-950/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative overflow-hidden"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3.5 min-w-0 flex-1">
@@ -556,7 +557,7 @@ export default function NewSessionPage() {
                         Rekomendasi
                       </Badge>
                     </div>
-                    <p className="text-xs text-text-300 mt-1 leading-relaxed [text-wrap:pretty]">
+                    <p className="text-xs text-text-300 mt-1 leading-relaxed text-pretty">
                       Foto struk kasir lo, AI otomatis deteksi nama menu, porsi, harga, pajak &amp; diskon dalam hitungan detik.
                     </p>
                   </div>
@@ -587,7 +588,7 @@ export default function NewSessionPage() {
                         Alternatif
                       </Badge>
                     </div>
-                    <p className="text-xs text-text-300 mt-1 leading-relaxed [text-wrap:pretty]">
+                    <p className="text-xs text-text-300 mt-1 leading-relaxed text-pretty">
                       Gak ada struk fisik? Masukin nama makanan, jumlah porsi, dan harga sendiri secara bebas sesuai pesanan.
                     </p>
                   </div>
@@ -684,12 +685,7 @@ export default function NewSessionPage() {
               onChange={(e) => {
                 const val = Number(parseRupiah(e.target.value)) || 0;
                 if (inputMode === "scan" && scanResult) {
-                  const subtotal = scanResult.items.reduce((acc, i) => acc + i.totalPrice, 0);
-                  setScanResult({
-                    ...scanResult,
-                    taxAmount: val,
-                    totalAmount: subtotal + val + Number(scanResult.tipAmount || 0),
-                  });
+                  updateScanResultCalculations(scanResult.items, val, Number(scanResult.tipAmount || 0));
                 } else {
                   setManualTax(val);
                 }
@@ -707,12 +703,7 @@ export default function NewSessionPage() {
               onChange={(e) => {
                 const val = Number(parseRupiah(e.target.value)) || 0;
                 if (inputMode === "scan" && scanResult) {
-                  const subtotal = scanResult.items.reduce((acc, i) => acc + i.totalPrice, 0);
-                  setScanResult({
-                    ...scanResult,
-                    tipAmount: val,
-                    totalAmount: subtotal + Number(scanResult.taxAmount || 0) + val,
-                  });
+                  updateScanResultCalculations(scanResult.items, Number(scanResult.taxAmount || 0), val);
                 } else {
                   setManualTip(val);
                 }
@@ -954,14 +945,14 @@ export default function NewSessionPage() {
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="text-xs sm:text-sm font-extrabold text-text-50">Rp {Number(item.totalPrice).toLocaleString("id-ID")}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveScanItem(idx)}
-                          className="p-1.5 rounded-lg text-text-400 hover:text-red-400 hover:bg-secondary-800/60 active:scale-95 transition-all cursor-pointer"
+                        <Button
+                          size="xs"
+                          color="tertiary-destructive"
+                          onPress={() => handleRemoveScanItem(idx)}
                           aria-label={`Hapus ${item.name}`}
-                        >
-                          <Trash01 className="w-4 h-4" />
-                        </button>
+                          iconLeading={Trash01}
+                          className="p-1.5"
+                        />
                       </div>
                     </div>
                   ))}
@@ -976,7 +967,7 @@ export default function NewSessionPage() {
                     color="secondary"
                     className="w-full min-h-11 py-2.5 rounded-xl border border-dashed border-secondary-700 hover:border-primary-500/60 text-xs font-bold transition-all text-text-200"
                   >
-                    Tambah Menu Manual / Dari Struk Kedua
+                    Tambah Menu Lain / Struk Kedua
                   </Button>
                 ) : (
                   <div className="p-4 sm:p-5 rounded-2xl border border-primary-500/30 bg-primary-950/20 space-y-4 shadow-sm">
@@ -1267,15 +1258,14 @@ export default function NewSessionPage() {
                               {item.quantity}x &bull; Rp {(item.totalPrice / item.quantity).toLocaleString("id-ID")}/porsi = Rp {item.totalPrice.toLocaleString("id-ID")}
                             </p>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveManualItem(idx)}
+                          <Button
+                            size="xs"
+                            color="tertiary-destructive"
+                            onPress={() => handleRemoveManualItem(idx)}
                             aria-label={`Hapus ${item.name}`}
-                            className="min-w-8 min-h-8 flex items-center justify-center rounded-lg text-danger-400 hover:text-danger-300 hover:bg-danger-950/30 transition-all active:scale-90 cursor-pointer"
-                            title="Hapus menu"
-                          >
-                            <Trash01 className="w-4 h-4" />
-                          </button>
+                            iconLeading={Trash01}
+                            className="p-1.5"
+                          />
                         </div>
                       ))}
                     </div>
@@ -1435,7 +1425,7 @@ export default function NewSessionPage() {
                                         setManualItemAllocations((prev) => ({
                                           ...prev,
                                           [idx]: {
-                                            ...(prev[idx] || {}),
+                                            ...prev[idx],
                                             [person]: qty + 1,
                                           },
                                         }));
@@ -1464,7 +1454,7 @@ export default function NewSessionPage() {
                                             setManualItemAllocations((prev) => ({
                                               ...prev,
                                               [idx]: {
-                                                ...(prev[idx] || {}),
+                                                ...prev[idx],
                                                 [person]: Math.max(0, qty - 1),
                                               },
                                             }));
@@ -1554,7 +1544,7 @@ export default function NewSessionPage() {
               <Button
                 onPress={() => {
                   // Validate that all items have at least one allocation
-                  const unallocatedItem = manualItems.find((item, idx) => {
+                  const unallocatedItem = manualItems.find((_, idx) => {
                     const allocatedCount = Object.values(manualItemAllocations[idx] || {}).reduce((a, b) => a + b, 0);
                     return allocatedCount === 0;
                   });

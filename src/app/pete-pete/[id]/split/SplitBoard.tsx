@@ -1321,7 +1321,7 @@ ${bonUrl}
                   {isEditing ? (
                     // Form Edit Item Inline
                     <form onSubmit={(e) => handleUpdateItem(e, item.id)} className="space-y-3">
-                      <h4 className="text-2xs font-bold text-text uppercase tracking-wider">Ubah Menu</h4>
+                      <h4 className="text-2xs font-bold text-text uppercase tracking-wider">Ganti Menu</h4>
                       <div className="space-y-2">
                         <label className="text-3xs text-text-400 uppercase font-bold">Nama Menu</label>
                         <input
