@@ -451,7 +451,7 @@ export default function VacationPlanDetailView({
     }
 
     if (expenseParticipants.length === 0) {
-      toast.error("Minimal harus ada 1 orang yang ikutan patungan!");
+      toast.error("Minimal harus ada 1 orang yang ikutan splitbill!");
       return;
     }
 
@@ -562,7 +562,7 @@ export default function VacationPlanDetailView({
     }
   };
 
-  // --- Patungan / Settlement Calculation Algorithm ---
+  // --- Splitbill / Settlement Calculation Algorithm ---
   const calculateSettlements = () => {
     // 1. Initialize balances for each member
     const balances: { [memberId: string]: number } = {};
@@ -1049,16 +1049,16 @@ export default function VacationPlanDetailView({
               <FeaturedIcon icon={CreditCard01} size="sm" color="brand" theme="modern" />
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xs font-bold text-text-50">Hasil Akhir / Transfer Patungan</h2>
+                  <h2 className="text-xs font-bold text-text-50">Hasil Akhir / Transfer Splitbill</h2>
                 </div>
                 <div>
                   {transfers.length > 0 ? (
                     <div className="flex items-center gap-2 text-xs text-text-400">
-                      {transfers.length} transfer patungan tercatat
+                      {transfers.length} transfer splitbill tercatat
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 text-xs text-text-400">
-                      <p className="font-semibold">Tidak ada transfer patungan</p>
+                      <p className="font-semibold">Tidak ada transfer splitbill</p>
                     </div>
                   )}
                 </div>
@@ -1080,7 +1080,7 @@ export default function VacationPlanDetailView({
                 onPress={() => setShowSettlements(!showSettlements)}
                 color="secondary"
                 className="px-2 py-1"
-                aria-label={showSettlements ? "Tutup hasil akhir patungan" : "Buka hasil akhir patungan"}
+                aria-label={showSettlements ? "Tutup hasil akhir splitbill" : "Buka hasil akhir splitbill"}
               >
                 {showSettlements ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
               </Button>

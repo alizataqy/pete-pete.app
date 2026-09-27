@@ -59,7 +59,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
             </div>
             <div className="min-w-0">
               <h2 className="text-xs font-bold text-text-50">Rincian Biaya Struk</h2>
-              <p className="text-2xs text-text-400">Pajak & servis otomatis dibagi rata pas patungan</p>
+              <p className="text-2xs text-text-400">Pajak & servis otomatis dibagi rata pas splitbill</p>
             </div>
           </div>
 

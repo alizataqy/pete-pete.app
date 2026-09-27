@@ -205,7 +205,7 @@ export default function LandingView({ user }: UserSessionProp) {
                   <Zap className="w-3.5 h-3.5 text-primary-400" /> Cara Pakenya
                 </h2>
                 <p className="text-2xl md:text-3xl font-extrabold text-text [text-wrap:balance]">
-                  Cuma 3 Langkah, Patungan Beres
+                  Cuma 3 Langkah, Splitbill Beres
                 </p>
               </div>
 
@@ -347,7 +347,7 @@ export default function LandingView({ user }: UserSessionProp) {
                     </div>
 
                     <div className="bg-background-900 p-3 rounded-xl text-xs text-text-100 space-y-1 border-s-2 border-primary-500">
-                      <p className="font-bold text-primary-300">Rincian Patungan: Ramen</p>
+                      <p className="font-bold text-primary-300">Rincian Splitbill: Ramen</p>
                       <p className="text-text-300 text-xs">Budi: <strong className="text-text-50">Rp 57.000</strong></p>
                       <p className="text-text-300 text-xs">Ucup: <strong className="text-text-50">Rp 45.000</strong></p>
                       <div className="mt-2 text-center bg-primary-600 py-2 rounded-xl font-bold text-white text-xs shadow-sm shadow-primary-600/25">
@@ -403,7 +403,7 @@ export default function LandingView({ user }: UserSessionProp) {
                   <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
                 </summary>
                 <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
-                  Ceban Pertama adalah aplikasi split bill online dan kalkulator patungan otomatis gratis di Indonesia. Lo cuma perlu foto struk makanan atau belanja, AI otomatis mendeteksi nama menu, harga satuan, pajak resto, dan service charge tanpa harus repot ngetik manual.
+                  Ceban Pertama adalah aplikasi split bill online dan kalkulator splitbill otomatis gratis di Indonesia. Lo cuma perlu foto struk makanan atau belanja, AI otomatis mendeteksi nama menu, harga satuan, pajak resto, dan service charge tanpa harus repot ngetik manual.
                 </p>
               </details>
 
@@ -433,7 +433,7 @@ export default function LandingView({ user }: UserSessionProp) {
                   <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
                 </summary>
                 <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
-                  Bisa banget. Begitu penentuan menu selesai, Ceban Pertama langsung bikinin teks rincian patungan siap kirim ke WhatsApp group lengkap sama nomor rekening atau e-wallet lo.
+                  Bisa banget. Begitu penentuan menu selesai, Ceban Pertama langsung bikinin teks rincian splitbill siap kirim ke WhatsApp group lengkap sama nomor rekening atau e-wallet lo.
                 </p>
               </details>
             </div>
@@ -463,7 +463,7 @@ export default function LandingView({ user }: UserSessionProp) {
       {/* Footer */}
       <footer className="mt-12 text-center px-6 w-full max-w-5xl border-t border-text-900/60 pt-6 z-10">
         <p className="text-xs text-text-400 font-medium">
-          Ceban Pertama &mdash; Dibuat khusus biar patungan geng lo beres instan tanpa drama.
+          Ceban Pertama &mdash; Dibuat khusus biar splitbill geng lo beres instan tanpa drama.
         </p>
       </footer>
     </div>

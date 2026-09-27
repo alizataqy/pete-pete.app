@@ -147,7 +147,7 @@ export async function addVacationExpense(
 ) {
   try {
     if (data.memberIds.length === 0) {
-      return { success: false, error: "Minimal ada 1 anggota yang patungan" };
+      return { success: false, error: "Minimal ada 1 anggota yang splitbill" };
     }
 
     const shareAmount = Math.round(data.amount / data.memberIds.length);
@@ -209,7 +209,7 @@ export async function updateVacationExpense(
 ) {
   try {
     if (data.memberIds.length === 0) {
-      return { success: false, error: "Minimal ada 1 anggota yang patungan" };
+      return { success: false, error: "Minimal ada 1 anggota yang splitbill" };
     }
 
     const shareAmount = Math.round(data.amount / data.memberIds.length);

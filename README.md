@@ -1,6 +1,6 @@
 # PETE-PETE 💸
 
-PETE-PETE adalah aplikasi *split bill* (bagi tagihan) modern, asyik, dan gak kaku yang dirancang khusus untuk anak muda dan geng tongkrongan. Aplikasi ini mempermudah perhitungan patungan makan, belanja, atau liburan bersama menggunakan teknologi **AI OCR Scan Struk** dan management multi-rekening/QRIS.
+PETE-PETE adalah aplikasi *split bill* (bagi tagihan) modern, asyik, dan gak kaku yang dirancang khusus untuk anak muda dan geng tongkrongan. Aplikasi ini mempermudah perhitungan splitbill makan, belanja, atau liburan bersama menggunakan teknologi **AI OCR Scan Struk** dan management multi-rekening/QRIS.
 
 > *"Udah ga perlu ribet ngitung-ngitung tagihan manual lagi. Foto struknya, pilih siapa mesen apa, terus share ke grup. Beres!"*
 
@@ -11,8 +11,8 @@ PETE-PETE adalah aplikasi *split bill* (bagi tagihan) modern, asyik, dan gak kak
 - 📸 **Scan Foto Struk (AI OCR)**: Cukup upload foto struk makan/belanja, AI akan otomatis mendeteksi nama menu, kuantitas, dan harganya.
 - ✍️ **Input Manual ala Tongkrongan**: Form input manual super gampang, bisa tambah anggota geng, pilih siapa split menu apa, dan siapa yang bayar duluan.
 - 🏦 **Multi-Rekening / Wallet**: Satu user bisa mendaftarkan banyak nomor rekening bank, e-wallet (GoPay, OVO, Dana), hingga custom URL gambar QRIS dengan logo sharp (menggunakan aset dari [idn-finlogos](https://github.com/hafidznoor/idn-finlogos)).
-- 🔗 **Pilih Rekening Sesi**: Pilih rekening transfer spesifik dari profil saat membuat sesi patungan baru.
-- 💬 **Bagi Tagihan & Share WA**: Hitung split bill instan dan bagikan rincian patungan langsung ke grup WhatsApp teman-teman lo dengan satu klik.
+- 🔗 **Pilih Rekening Sesi**: Pilih rekening transfer spesifik dari profil saat membuat sesi splitbill baru.
+- 💬 **Bagi Tagihan & Share WA**: Hitung split bill instan dan bagikan rincian splitbill langsung ke grup WhatsApp teman-teman lo dengan satu klik.
 
 ---
 
@@ -143,4 +143,4 @@ Project ini berlisensi [MIT License](LICENSE). Lo bebas gunain, modifikasi, dan 
 
 ---
 
-*Grup chat lo nungguin patungan cair? PETE-PETE aja! 💸*
+*Grup chat lo nungguin splitbill cair? PETE-PETE aja! 💸*

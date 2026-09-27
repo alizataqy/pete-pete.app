@@ -65,7 +65,7 @@ export default async function TongkronganPage() {
           <div className="flex-col flex min-w-0 flex-1">
             <h1 className="text-sm font-extrabold text-text-50">Tongkrongan Gua</h1>
             <p className="text-2xs text-text-300 mt-0.5">
-              Wassup, <strong className="text-primary-400 font-medium">{session.user.name}</strong>! Tongkrongan lo udah beres patungannya?
+              Wassup, <strong className="text-primary-400 font-medium">{session.user.name}</strong>! Tongkrongan lo udah beres splitbill-nya?
             </p>
           </div>
         </div>
@@ -131,7 +131,7 @@ export default async function TongkronganPage() {
             {mySessions.length === 0 ? (
               <div className="p-8 text-center border border-dashed border-secondary-800 rounded-xl space-y-3 bg-secondary-950/40">
                 <p className="text-text-300 text-2xs max-w-50 mx-auto leading-relaxed">
-                  Sepi amat, belum ada patungan nih. Yuk scan struk bareng geng lo biar gak ada drama!
+                  Sepi amat, belum ada splitbill nih. Yuk scan struk bareng geng lo biar gak ada drama!
                 </p>
                 <Link
                   href="/pete-pete/new"
