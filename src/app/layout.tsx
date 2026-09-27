@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ceban-pertama.vercel.app"),
-  title: "Split Bill Online & Hitung Patungan Otomatis — Ceban Pertama",
+  title: "Split Bill Online & Hitung Splitbill Otomatis — Ceban Pertama",
   description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung kirim rincian ke WhatsApp.",
   robots: {
     index: true,
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     "split bill",
     "split bill online",
     "aplikasi split bill",
-    "hitung patungan online",
+    "hitung splitbill online",
     "kalkulator split bill",
     "bagi tagihan",
     "ocr scan struk",
-    "scan struk patungan",
+    "scan struk splitbill",
     "pete pete",
     "ceban pertama",
   ],
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Split Bill Online & Hitung Patungan Otomatis — Ceban Pertama",
+    title: "Split Bill Online & Hitung Splitbill Otomatis — Ceban Pertama",
     description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung kirim rincian ke WhatsApp.",
     url: "https://ceban-pertama.vercel.app",
     siteName: "Ceban Pertama",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Split Bill Online & Hitung Patungan Otomatis — Ceban Pertama",
+    title: "Split Bill Online & Hitung Splitbill Otomatis — Ceban Pertama",
     description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung kirim rincian ke WhatsApp.",
     images: ["/og-image.png"],
   },
@@ -68,7 +68,7 @@ export default function RootLayout({
         "@type": "WebApplication",
         "name": "Ceban Pertama",
         "url": "https://ceban-pertama.vercel.app",
-        "description": "Aplikasi split bill online gratis di Indonesia untuk bagi tagihan makan dan hitung patungan otomatis lewat foto struk.",
+        "description": "Aplikasi split bill online gratis di Indonesia untuk bagi tagihan makan dan hitung splitbill otomatis lewat foto struk.",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "All",
         "offers": {
@@ -80,7 +80,7 @@ export default function RootLayout({
       {
         "@type": "HowTo",
         "name": "Cara Split Bill Otomatis dengan Foto Struk",
-        "description": "Langkah mudah bagi tagihan makan dan patungan otomatis memakai Ceban Pertama.",
+        "description": "Langkah mudah bagi tagihan makan dan splitbill otomatis memakai Ceban Pertama.",
         "step": [
           {
             "@type": "HowToStep",
@@ -110,7 +110,7 @@ export default function RootLayout({
             "name": "Apa itu aplikasi split bill Ceban Pertama?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Ceban Pertama adalah aplikasi split bill online dan kalkulator patungan otomatis gratis di Indonesia. Lo cuma perlu foto struk makanan, sistem otomatis menghitung porsi tiap orang beserta pajak dan service charge.",
+              "text": "Ceban Pertama adalah aplikasi split bill online dan kalkulator splitbill otomatis gratis di Indonesia. Lo cuma perlu foto struk makanan, sistem otomatis menghitung porsi tiap orang beserta pajak dan service charge.",
             },
           },
           {

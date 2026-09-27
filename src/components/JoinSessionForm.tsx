@@ -22,7 +22,7 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!code.trim()) {
-      const msg = "Masukin kode patungannya dulu ya, Bos!";
+      const msg = "Masukin kode splitbill-nya dulu ya, Bos!";
       setError(msg);
       toast.error(msg);
       return;
@@ -35,16 +35,16 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
       const res = await joinSessionByCode(code.trim(), userId, userName);
       if (res.success && res.sessionId) {
         setSuccess(true);
-        toast.success("Berhasil gabung ke patungan!");
+        toast.success("Berhasil gabung ke splitbill!");
         router.push(`/pete-pete/${res.sessionId}/split`);
       } else {
-        const msg = res.error || "Kode patungannya gak ketemu nih, coba cek lagi ya!";
+        const msg = res.error || "Kode splitbill-nya gak ketemu nih, coba cek lagi ya!";
         setError(msg);
         toast.error(msg);
       }
     } catch (err) {
       console.log(err);
-      const msg = "Gagal gabung patungan nih, cek koneksi internet lo ya!";
+      const msg = "Gagal gabung splitbill nih, cek koneksi internet lo ya!";
       setError(msg);
       toast.error(msg);
     } finally {

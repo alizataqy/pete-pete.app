@@ -15,8 +15,9 @@ export default function MobileContainer({ children }: { children: React.ReactNod
   }
 
   // Halaman selain landing page dibatasi ukuran mobile (max-w-md) dan diposisikan di tengah (mx-auto)
+  // Saat cetak PDF (print), hilangkan batasan tinggi h-screen dan overflow-hidden agar seluruh isi tercetak rapi
   return (
-    <div className="w-full h-screen h-dvh overflow-hidden bg-background border-x border-background-200 shadow-2xl relative flex flex-col max-w-md mx-auto">
+    <div className="w-full h-screen h-dvh overflow-hidden bg-background border-x border-background-200 shadow-2xl relative flex flex-col max-w-md mx-auto print:h-auto print:min-h-0 print:overflow-visible print:border-none print:shadow-none print:max-w-none print:bg-white print:m-0 print:p-0">
       {children}
     </div>
   );

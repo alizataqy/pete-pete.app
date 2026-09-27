@@ -214,7 +214,11 @@ export default function SplitMemberList({
                         )}
                       </p>
                       <p className="text-2xs text-primary-400 font-medium">
+<<<<<<< HEAD
                         Patungan: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
+=======
+                        Splitbill: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
+>>>>>>> worktree-auto-db-push-deploy
                       </p>
                     </div>
                   )}

@@ -334,6 +334,33 @@
   --color-brand-qris: #3158a5;
 }
 
+@media print {
+  @page {
+    margin: 10mm;
+    size: auto;
+  }
+
+  html,
+  body {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hilangkan efek sticky, shadow, dan scroll clipping browser saat cetak PDF */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+}
+
 :root {
   --background: #fbfbfe;
   --foreground: #050315;
@@ -386,45 +413,6 @@ body {
   width: 0px;
   height: 0px;
   -webkit-appearance: none;
-}
-
-/* Print styles for digital receipt card PDF export */
-@media print {
-  @page {
-    size: auto;
-    margin: 8mm;
-  }
-
-  body {
-    background: transparent !important;
-    color: #000 !important;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  #receipt-card-print,
-  #receipt-card-print * {
-    visibility: visible;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  #receipt-card-print {
-    position: fixed;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 440px;
-    margin: 0;
-    border: 1px solid #344054 !important;
-    background-color: #0c111d !important;
-    color: #fcfcfd !important;
-    box-shadow: none !important;
-    page-break-inside: avoid;
-  }
 }
 
 @utility scrollbar-hide {

@@ -119,7 +119,7 @@ export async function createBillSession(data: CreateSessionData) {
   }
 }
 
-// Action untuk menambahkan member/anggota baru ke sesi patungan
+// Action untuk menambahkan member/anggota baru ke sesi splitbill
 export async function addSessionMember(sessionId: string, name: string) {
   try {
     const member = await prisma.billMember.create({
@@ -387,7 +387,7 @@ export async function deleteSessionItem(itemId: string, sessionId: string) {
   }
 }
 
-// Action untuk bergabung ke sesi patungan menggunakan invite code
+// Action untuk bergabung ke sesi splitbill menggunakan invite code
 export async function joinSessionByCode(inviteCode: string, userId: string, userName: string) {
   try {
     const session = await prisma.billSession.findUnique({
@@ -439,7 +439,7 @@ export async function joinSessionByCode(inviteCode: string, userId: string, user
   }
 }
 
-// Action untuk update status sesi patungan (CANCELLED, DRAFT, COMPLETED)
+// Action untuk update status sesi splitbill (CANCELLED, DRAFT, COMPLETED)
 export async function updateBillSessionStatus(
   sessionId: string,
   status: "CANCELLED" | "COMPLETED" | "DRAFT"
@@ -464,7 +464,7 @@ export async function updateBillSessionStatus(
   }
 }
 
-// Action untuk menyelesaikan sesi patungan
+// Action untuk menyelesaikan sesi splitbill
 export async function completeBillSession(sessionId: string) {
   return updateBillSessionStatus(sessionId, "COMPLETED");
 }

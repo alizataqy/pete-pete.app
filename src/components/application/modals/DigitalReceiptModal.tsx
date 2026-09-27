@@ -251,7 +251,11 @@ export default function DigitalReceiptModal({
       ctx.fillStyle = "#475467";
       ctx.font = "10px system-ui, -apple-system, sans-serif";
       ctx.textAlign = "center";
+<<<<<<< HEAD
       ctx.fillText("Patungan gampang & anti drama • cebanpertama.com", width / 2, curY);
+=======
+      ctx.fillText("Splitbill gampang & anti drama • cebanpertama.com", width / 2, curY);
+>>>>>>> worktree-auto-db-push-deploy
 
       // Download file PNG
       const link = document.createElement("a");
@@ -318,7 +322,11 @@ export default function DigitalReceiptModal({
                   <div className="flex items-center justify-between border-b border-secondary-800/80 pb-3">
                     <div>
                       <span className="text-3xs font-extrabold text-primary-400 uppercase tracking-widest block">
+<<<<<<< HEAD
                         CEBAN PERTAMA • BON PATUNGAN
+=======
+                        CEBAN PERTAMA • BON SPLITBILL
+>>>>>>> worktree-auto-db-push-deploy
                       </span>
                       <h4 className="text-base font-black text-text-50 mt-0.5">
                         {cleanTitle}
@@ -453,7 +461,11 @@ export default function DigitalReceiptModal({
 
                   <div className="text-center pt-2">
                     <p className="text-3xs text-text-400">
+<<<<<<< HEAD
                       Patungan anti ribet pakai cebanpertama.com
+=======
+                      Splitbill anti ribet pakai cebanpertama.com
+>>>>>>> worktree-auto-db-push-deploy
                     </p>
                   </div>
                 </div>

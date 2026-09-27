@@ -283,7 +283,11 @@ export default function SplitItemRow({
               )}
               {isOver && (
                 <Badge color="brand" size="sm" type="pill-color" className="inline-flex font-semibold text-3xs sm:text-2xs">
+<<<<<<< HEAD
                   {totalAllocatedCount} porsi patungan • Rp {sharePerPortion.toLocaleString("id-ID")}/porsi
+=======
+                  {totalAllocatedCount} porsi splitbill • Rp {sharePerPortion.toLocaleString("id-ID")}/porsi
+>>>>>>> worktree-auto-db-push-deploy
                 </Badge>
               )}
               {!hasAllocations && (
