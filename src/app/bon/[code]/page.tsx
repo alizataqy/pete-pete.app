@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import BonView from "./BonView";
+import { decrypt } from "@/lib/encryption";
 
 interface BonPageProps {
   params: Promise<{ code: string }>;
@@ -88,6 +89,7 @@ export default async function BonPage({ params, searchParams }: BonPageProps) {
         tipAmount: Number(session.tipAmount),
         discountAmount: Number(session.discountAmount || 0),
         bankName: session.bankName,
+        bankAccount: session.bankAccount ? decrypt(session.bankAccount) : null,
         bankOwner: session.bankOwner,
         creatorName,
         status: session.status,

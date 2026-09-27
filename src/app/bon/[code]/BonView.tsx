@@ -13,12 +13,14 @@ import {
   ChevronUp,
   ReceiptCheck,
   User01,
+  Download01,
 } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import DigitalReceiptModal from "@/components/application/modals/DigitalReceiptModal";
 
 interface BonItemAllocation {
   memberId: string;
@@ -52,6 +54,7 @@ interface BonSession {
   tipAmount: number;
   discountAmount?: number;
   bankName: string | null;
+  bankAccount?: string | null;
   bankOwner: string | null;
   creatorName?: string | null;
   status: "DRAFT" | "COMPLETED" | "CANCELLED";
@@ -86,6 +89,7 @@ export default function BonView({
   const [selectedMemberId, setSelectedMemberId] = useState<string>(initialMember);
   const [showAllItems, setShowAllItems] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
 
   // Ref & status scroll untuk efek shadow di tepi kiri & kanan carousel anggota
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -262,6 +266,15 @@ export default function BonView({
             className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center"
           >
             <Share07 className="w-3.5 h-3.5" />
+          </Button>
+          <Button
+            onPress={() => setIsReceiptModalOpen(true)}
+            color="tertiary"
+            size="sm"
+            aria-label="Unduh kartu bon digital"
+            className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-primary-400 hover:text-primary-300 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center"
+          >
+            <Download01 className="w-3.5 h-3.5" />
           </Button>
         </div>
       </header>
@@ -502,6 +515,19 @@ export default function BonView({
                   <span>Kirim Bukti Transfer ke Temen Lo</span>
                 </span>
               </Button>
+
+              {/* Tombol Unduh Kartu Bon Digital */}
+              <Button
+                onPress={() => setIsReceiptModalOpen(true)}
+                color="secondary"
+                size="lg"
+                className="w-full min-h-12 py-3.5 text-sm font-bold active:scale-[0.96] transition-transform border border-secondary-800"
+              >
+                <span className="inline-flex items-center justify-center gap-2">
+                  <ReceiptCheck className="w-4 h-4 shrink-0 text-primary-400" />
+                  <span>Unduh Kartu Bon Digital (PNG / PDF)</span>
+                </span>
+              </Button>
             </div>
           );
         })()}
@@ -609,6 +635,38 @@ export default function BonView({
           </Link>
         </p>
       </footer>
+
+      {/* Modal Kartu Bon Digital */}
+      {activeMemberDetail && (
+        <DigitalReceiptModal
+          isOpen={isReceiptModalOpen}
+          onClose={() => setIsReceiptModalOpen(false)}
+          data={{
+            title: session.title,
+            merchantName: session.merchantName,
+            date: new Date(session.createdAt).toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            }),
+            inviteCode: session.inviteCode,
+            memberName:
+              /^(saya(\s*\(owner\))?|gua|owner)$/i.test(activeMemberDetail.member.name.trim()) && session.creatorName
+                ? session.creatorName
+                : activeMemberDetail.member.name,
+            isPaid: activeMemberDetail.member.isPaid,
+            items: activeMemberDetail.items,
+            subtotal: activeMemberDetail.subtotal,
+            tax: activeMemberDetail.tax,
+            tip: activeMemberDetail.tip,
+            discount: activeMemberDetail.discount,
+            grandTotal: activeMemberDetail.grandTotal,
+            bankName: session.bankName,
+            bankAccount: session.bankAccount,
+            bankOwner: session.bankOwner,
+          }}
+        />
+      )}
     </main>
   );
 }
