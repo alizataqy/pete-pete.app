@@ -214,11 +214,7 @@ export default function SplitMemberList({
                         )}
                       </p>
                       <p className="text-2xs text-primary-400 font-medium">
-<<<<<<< HEAD
-                        Patungan: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
-=======
                         Splitbill: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
->>>>>>> worktree-auto-db-push-deploy
                       </p>
                     </div>
                   )}
@@ -265,7 +261,6 @@ export default function SplitMemberList({
                       color="secondary"
                       size="xs"
                       aria-label={`Unduh kartu bon untuk ${member.name}`}
-                      title="Unduh Kartu Bon Digital (PNG / PDF)"
                       className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
                     >
                       <Download01 className="w-3.5 h-3.5" />

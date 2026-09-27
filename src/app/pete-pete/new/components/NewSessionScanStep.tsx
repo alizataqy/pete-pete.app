@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { UploadCloud01, Plus, Trash01 } from "@untitledui/icons";
-import { ScanItem, ScanResult, formatRupiah, parseRupiah } from "../types";
+import { ScanResult, formatRupiah, parseRupiah } from "../types";
 
 interface NewSessionScanStepProps {
   scanResult: ScanResult | null;

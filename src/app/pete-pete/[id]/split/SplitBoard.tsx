@@ -182,11 +182,7 @@ export default function SplitBoard({
     };
   }, [receiptModalMember, allocations, itemList, session]);
 
-<<<<<<< HEAD
-  // Hitung patungan member secara real-time
-=======
   // Hitung splitbill member secara real-time
->>>>>>> worktree-auto-db-push-deploy
   const getMemberShareAmount = (memberId: string) => {
     const memberAllocations = allocations.filter((a) => a.memberId === memberId);
     let subtotal = 0;
@@ -275,11 +271,7 @@ export default function SplitBoard({
         nextNum++;
       }
     } else if (members.some((m) => m.name.toLowerCase() === name.toLowerCase())) {
-<<<<<<< HEAD
-      toast.error("Nama sohib ini udah ada di patungan, pake nama lain ya!");
-=======
       toast.error("Nama sohib ini udah ada di splitbill, pake nama lain ya!");
->>>>>>> worktree-auto-db-push-deploy
       return;
     }
 
@@ -768,11 +760,7 @@ export default function SplitBoard({
             setDeleteConfig({
               isOpen: true,
               title: "Hapus Teman dari Sesi?",
-<<<<<<< HEAD
-              description: `Yakin mau ngapus ${member.name} dari patungan ini, Bos? Semua porsi makanannya bakal dihapus juga.`,
-=======
               description: `Yakin mau ngapus ${member.name} dari splitbill ini, Bos? Semua porsi makanannya bakal dihapus juga.`,
->>>>>>> worktree-auto-db-push-deploy
               confirmText: "Hapus Aja",
               onConfirm: () => handleRemoveMember(member.id),
             })
@@ -942,11 +930,7 @@ export default function SplitBoard({
                   setDeleteConfig({
                     isOpen: true,
                     title: "Hapus Menu Makanan?",
-<<<<<<< HEAD
-                    description: `Yakin mau ngapus menu "${targetItem.name}" ini, Bos? Semua porsi patungannya bakal hilang.`,
-=======
                     description: `Yakin mau ngapus menu "${targetItem.name}" ini, Bos? Semua porsi splitbill-nya bakal hilang.`,
->>>>>>> worktree-auto-db-push-deploy
                     confirmText: "Hapus Aja",
                     onConfirm: () => handleDeleteItem(targetItem.id),
                   })
