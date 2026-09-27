@@ -15,6 +15,7 @@ import {
   CreditCard01,
   FileCheck02,
   Printer,
+  Download01,
 } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
@@ -354,7 +355,6 @@ export default function BonView({
             color="tertiary"
             size="sm"
             aria-label="Cetak atau simpan PDF"
-            title="Cetak / Simpan PDF"
             className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-50 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
           >
             <Printer className="w-4 h-4" />
