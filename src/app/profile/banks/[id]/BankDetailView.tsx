@@ -59,7 +59,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
         <Button
           href="/profile/banks"
           aria-label="Kembali ke semua wallet"
-          className="absolute left-4 min-w-11 min-h-11 p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all flex items-center justify-center"
+          className="absolute left-4 min-w-11 min-h-11 p-2 rounded-lg border border-secondary-800 text-text-100 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -142,7 +142,7 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
               navigator.clipboard.writeText(bank.bankAccount);
               toast.success("Nomor rekening disalin!");
             }}
-            className="flex items-center justify-center gap-2 min-h-12 py-3.5 px-4 rounded-lg border border-secondary-800 bg-text-900 text-text-100 text-xs font-bold hover:bg-text-800 active:scale-[0.96] transition-transform cursor-pointer"
+            className="flex items-center justify-center gap-2 min-h-12 py-3.5 px-4 rounded-lg border border-secondary-800 bg-secondary-900 text-text-100 text-xs font-bold hover:bg-secondary-800 active:scale-[0.96] transition-transform cursor-pointer"
           >
             <Copy01 className="w-4 h-4" /> Salin Nomor
           </button>

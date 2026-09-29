@@ -53,7 +53,7 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
   };
 
   return (
-    <div className="p-4 rounded-xl border border-secondary-800 bg-text-900 space-y-3">
+    <div className="p-4 rounded-xl border border-secondary-800 bg-secondary-900 space-y-3">
       <div>
         <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Gabung Bill</h3>
         <p className="text-2xs text-text-300 mt-0.5">

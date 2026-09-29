@@ -93,7 +93,7 @@ export default function AgendaExpensesSection({
             {expenses.map((exp) => (
               <div
                 key={exp.id}
-                className="p-3 rounded-xl bg-text-900 border border-secondary-800 flex justify-between items-start gap-3"
+                className="p-3 rounded-xl bg-secondary-900 border border-secondary-800 flex justify-between items-start gap-3"
               >
                 <div className="min-w-0 flex-1 space-y-1">
                   <div>

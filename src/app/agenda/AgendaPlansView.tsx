@@ -284,7 +284,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-text-950 border border-text-700 text-xs text-text outline-none focus:border-primary-500"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary-950 border border-secondary-800 text-xs text-text outline-none focus:border-primary-500"
                       placeholder="Keterangan tambahan..."
                       rows={2}
                     />

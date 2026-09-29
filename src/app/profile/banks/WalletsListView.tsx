@@ -47,7 +47,7 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
       {/* Body */}
       <div className="flex-1 p-4 overflow-y-auto space-y-3">
         {banks.length === 0 ? (
-          <div className="p-6 rounded-xl border border-dashed border-text-700 bg-text-950 flex flex-col items-center justify-center gap-3">
+          <div className="p-6 rounded-xl border border-dashed border-secondary-800 bg-secondary-950 flex flex-col items-center justify-center gap-3">
             <p className="text-xs text-text-400">Belum ada rekening terdaftar</p>
             <Button
               onPress={() => router.push("/profile/banks/new")}

@@ -77,7 +77,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
           href="/profile"
           color="secondary"
           aria-label="Kembali ke profil"
-          className="min-w-11 min-h-11 p-2 rounded-lg border border-text-700 text-text-100 hover:bg-secondary-800 active:scale-95 transition-all flex items-center justify-center"
+          className="min-w-11 min-h-11 p-2 rounded-lg border border-secondary-800 text-text-100 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -89,7 +89,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
 
       {/* Form Body */}
       <div className="p-4 flex-1 overflow-y-auto">
-        <form onSubmit={handleAddBank} className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
+        <form onSubmit={handleAddBank} className="p-4 rounded-xl border border-secondary-800 bg-secondary-900/60 space-y-4">
           <div className="space-y-2">
             <label className="text-xs font-semibold text-text-100">Pilih Tipe Bank / E-Wallet</label>
             <div className="grid grid-cols-4 gap-2">
@@ -101,7 +101,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
                   className={`p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-2 ${
                     selectedTemplate === t.name
                       ? "bg-primary-900/40 border-primary-500"
-                      : "bg-text-950 border-text-800 hover:bg-text-900"
+                      : "bg-secondary-950 border-secondary-800 hover:bg-secondary-900"
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

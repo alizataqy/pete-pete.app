@@ -600,7 +600,7 @@ export default function VacationPlanDetailView({
             <p className="text-2xs text-text-400 font-bold uppercase tracking-wider">Total Pengeluaran Kelompok</p>
             <p className="text-lg font-black text-text-50 mt-0.5">{formatRupiah(totalSpent)}</p>
           </div>
-          <div className="p-2 bg-text-900 border border-secondary-800 rounded-lg">
+          <div className="p-2 bg-secondary-900 border border-secondary-800 rounded-lg">
             <Coins01 className="w-5 h-5 text-text-500" />
           </div>
         </div>

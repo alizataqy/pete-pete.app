@@ -218,7 +218,7 @@ export default function DigitalReceiptModal({
                   <div className="pt-2 flex flex-col items-center gap-1.5 border-t border-dashed border-secondary-800/80">
                     <div className="h-4 flex items-center gap-0.5 opacity-50">
                       {[2, 1, 3, 1, 2, 2, 1, 3, 2, 1, 1, 3, 2, 1, 2, 3, 1, 2, 1, 3, 1, 2].map((w, i) => (
-                        <div key={i} className="h-4 bg-text-400 rounded-xs" style={{ width: `${w}px` }} />
+                        <div key={i} className="h-4 bg-secondary-400 rounded-xs" style={{ width: `${w}px` }} />
                       ))}
                     </div>
                     <span className="font-mono text-3xs text-text-400 tracking-wider">

@@ -104,7 +104,7 @@ export default function AgendaExpenseModal({
                               }`}
                             />
                             {isSelected && (
-                              <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-text-950 pointer-events-none">
+                              <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-secondary-950 pointer-events-none">
                                 <Check className="w-2.5 h-2.5 stroke-[3px]" />
                               </span>
                             )}
@@ -162,7 +162,7 @@ export default function AgendaExpenseModal({
                               }`}
                             />
                             {isParticipating && (
-                              <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-text-950 pointer-events-none">
+                              <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-secondary-950 pointer-events-none">
                                 <Check className="w-2.5 h-2.5 stroke-[3px]" />
                               </span>
                             )}

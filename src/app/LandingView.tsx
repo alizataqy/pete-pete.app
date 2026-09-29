@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Camera01,
   Users01,
@@ -87,6 +88,14 @@ export default function LandingView({ user }: UserSessionProp) {
           href="/"
           className="flex items-center gap-2.5 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-lg transition-transform duration-150 ease-out active:scale-[0.97]"
         >
+          <Image
+            src="/logo.svg"
+            alt="Ceban Pertama"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-lg shadow-sm group-hover:scale-105 transition-transform duration-150"
+            priority
+          />
           <span className="font-black text-text text-lg tracking-tight">Ceban Pertama</span>
         </Link>
         <div className="flex items-center gap-2.5">
@@ -94,7 +103,7 @@ export default function LandingView({ user }: UserSessionProp) {
             <Button
               href="/tongkrongan"
               iconTrailing={ArrowRight}
-              className="min-h-10 sm:min-h-11 py-2 px-4 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
+              className="min-h-10 sm:min-h-11 py-2 px-4 rounded-lg active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
             >
               Tongkrongan Gua
             </Button>
@@ -103,13 +112,13 @@ export default function LandingView({ user }: UserSessionProp) {
               <Button
                 href="/login"
                 color="secondary"
-                className="min-h-10 sm:min-h-11 py-2 px-3.5 rounded-lg border border-secondary-800 bg-text-950/40 hover:bg-text-900 active:scale-[0.96] text-text-200 text-xs font-semibold transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
+                className="min-h-10 sm:min-h-11 py-2 px-3.5 rounded-lg border border-secondary-800 bg-secondary-950/40 hover:bg-secondary-900 active:scale-[0.96] text-text-200 text-xs font-semibold transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
               >
                 Masuk
               </Button>
               <Button
                 href="/pete-pete/new"
-                className="min-h-10 sm:min-h-11 py-2 px-4 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
+                className="min-h-10 sm:min-h-11 py-2 px-4 rounded-lg active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
               >
                 Coba Gratis
               </Button>
@@ -150,15 +159,15 @@ export default function LandingView({ user }: UserSessionProp) {
 
             {/* Trust highlights */}
             <div className="flex flex-wrap items-center gap-3 text-xs text-text-400 py-1 justify-center">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-text-900/60 border border-secondary-800/30">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-900/60 border border-secondary-800/30">
                 <Star01 className="w-3.5 h-3.5 text-warning-500" />
                 <span className="font-semibold text-text-100">100% Gratis</span>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-text-900/60 border border-secondary-800/30">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-900/60 border border-secondary-800/30">
                 <Lock01 className="w-3.5 h-3.5 text-primary-400" />
                 <span className="font-semibold text-text-100">Tanpa Wajib Login</span>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-text-900/60 border border-secondary-800/30">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-900/60 border border-secondary-800/30">
                 <Zap className="w-3.5 h-3.5 text-warning-400" />
                 <span className="font-semibold text-text-100">Hitung Pajak Otomatis</span>
               </div>
@@ -170,7 +179,7 @@ export default function LandingView({ user }: UserSessionProp) {
                 <Button
                   href="/tongkrongan"
                   iconTrailing={ArrowRight}
-                  className="w-full py-3.5 px-6 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3.5 px-6 rounded-lg active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
                 >
                   Buka Tongkrongan Gua
                 </Button>
@@ -179,14 +188,14 @@ export default function LandingView({ user }: UserSessionProp) {
                   <Button
                     href="/pete-pete/new"
                     iconTrailing={ArrowRight}
-                    className="w-full sm:w-auto px-7 py-3.5 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full sm:w-auto px-7 py-3.5 rounded-lg active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Foto Struk Sekarang
                   </Button>
                   <Button
                     href="/register"
                     color="secondary"
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-lg border border-secondary-800 bg-text-950/40 text-text-100 hover:text-white hover:bg-text-900 active:scale-[0.97] text-sm font-bold transition-transform duration-150 ease-out cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-lg border border-secondary-800 bg-secondary-950/40 text-text-100 hover:text-white hover:bg-secondary-900 active:scale-[0.97] text-sm font-bold transition-transform duration-150 ease-out cursor-pointer"
                   >
                     Daftar Akun
                   </Button>
@@ -198,7 +207,7 @@ export default function LandingView({ user }: UserSessionProp) {
 
         {/* Cara Pakenya: 3 Langkah Mudah & Interaktif */}
         <section className="px-6 py-10 w-full max-w-5xl z-10">
-          <div className="p-6 md:p-10 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md space-y-8 shadow-xl">
+          <div className="p-6 md:p-10 rounded-3xl border border-secondary-800/40 bg-secondary-950/30 backdrop-blur-md space-y-8 shadow-xl">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-secondary-900/50 pb-6">
               <div className="text-left space-y-1.5">
                 <h2 className="text-xs font-black text-primary-400 uppercase tracking-widest flex items-center gap-1.5">
@@ -213,7 +222,7 @@ export default function LandingView({ user }: UserSessionProp) {
               <div
                 role="tablist"
                 aria-label="Langkah cara pakai"
-                className="grid grid-cols-3 gap-1 bg-text-950/90 p-1.5 rounded-2xl border border-secondary-800/20 w-full max-w-xs md:max-w-sm"
+                className="grid grid-cols-3 gap-1 bg-secondary-950/90 p-1.5 rounded-2xl border border-secondary-800/20 w-full max-w-xs md:max-w-sm"
               >
                 {steps.map((step) => {
                   const isSelected = activeStep === step.id;
@@ -245,7 +254,7 @@ export default function LandingView({ user }: UserSessionProp) {
               role="tabpanel"
               id={`panel-${currentStep.id}`}
               aria-labelledby={`tab-${currentStep.id}`}
-              className="p-6 md:p-8 rounded-2xl bg-text-950/60 border border-secondary-800/20 grid grid-cols-1 md:grid-cols-12 gap-8 items-center shadow-inner animate-in fade-in duration-150"
+              className="p-6 md:p-8 rounded-2xl bg-secondary-950/60 border border-secondary-800/20 grid grid-cols-1 md:grid-cols-12 gap-8 items-center shadow-inner animate-in fade-in duration-150"
             >
               {/* Left Content */}
               <div className="md:col-span-7 space-y-5 text-left">
@@ -276,10 +285,10 @@ export default function LandingView({ user }: UserSessionProp) {
               </div>
 
               {/* Right Mockup Preview */}
-              <div className="md:col-span-5 flex justify-center bg-text-900/40 p-5 rounded-2xl border border-secondary-800/10 min-h-50">
+              <div className="md:col-span-5 flex justify-center bg-secondary-900/40 p-5 rounded-2xl border border-secondary-800/10 min-h-50">
                 {currentStep.id === "ocr" && (
-                  <div className="w-full max-w-65 bg-text-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 relative overflow-hidden animate-in fade-in duration-200">
-                    <div className="flex items-center justify-between border-b border-text-800 pb-2">
+                  <div className="w-full max-w-65 bg-secondary-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 relative overflow-hidden animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between border-b border-secondary-800 pb-2">
                       <span className="text-xs text-text-400 uppercase tracking-wider font-bold">Struk Makan</span>
                       <Badge size="sm" color="brand" type="pill-color" className="text-xs font-semibold">
                         Terbaca AI
@@ -301,7 +310,7 @@ export default function LandingView({ user }: UserSessionProp) {
                       </div>
                     </div>
 
-                    <div className="border-t border-text-800 pt-2 flex justify-between text-xs text-primary-300 font-bold">
+                    <div className="border-t border-secondary-800 pt-2 flex justify-between text-xs text-primary-300 font-bold">
                       <span>Pajak Resto (10%)</span>
                       <span className="tabular-nums">Rp 8.500</span>
                     </div>
@@ -309,13 +318,13 @@ export default function LandingView({ user }: UserSessionProp) {
                 )}
 
                 {currentStep.id === "split" && (
-                  <div className="w-full max-w-65 bg-text-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 animate-in fade-in duration-200">
-                    <div className="border-b border-text-800 pb-2">
+                  <div className="w-full max-w-65 bg-secondary-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 animate-in fade-in duration-200">
+                    <div className="border-b border-secondary-800 pb-2">
                       <span className="text-xs text-text-400 uppercase tracking-wider font-bold">Pilih Pemilik Menu</span>
                     </div>
 
                     <div className="space-y-2.5">
-                      <div className="p-2.5 rounded-lg bg-text-900/60 border border-secondary-800/20 flex flex-col gap-1.5">
+                      <div className="p-2.5 rounded-lg bg-secondary-900/60 border border-secondary-800/20 flex flex-col gap-1.5">
                         <div className="flex justify-between text-xs font-semibold">
                           <span>Spicy Miso Ramen</span>
                           <span className="text-primary-300 tabular-nums">Rp 45.000</span>
@@ -326,7 +335,7 @@ export default function LandingView({ user }: UserSessionProp) {
                         </div>
                       </div>
 
-                      <div className="p-2.5 rounded-lg bg-text-900/60 border border-secondary-800/20 flex flex-col gap-1.5">
+                      <div className="p-2.5 rounded-lg bg-secondary-900/60 border border-secondary-800/20 flex flex-col gap-1.5">
                         <div className="flex justify-between text-xs font-semibold">
                           <span>Original Gyoza</span>
                           <span className="text-primary-300 tabular-nums">Rp 28.000</span>
@@ -350,7 +359,7 @@ export default function LandingView({ user }: UserSessionProp) {
                       <p className="font-bold text-primary-300">Rincian Splitbill: Ramen</p>
                       <p className="text-text-300 text-xs">Budi: <strong className="text-text-50">Rp 57.000</strong></p>
                       <p className="text-text-300 text-xs">Ucup: <strong className="text-text-50">Rp 45.000</strong></p>
-                      <div className="mt-2 text-center bg-primary-600 py-2 rounded-xl font-bold text-white text-xs shadow-sm shadow-primary-600/25">
+                      <div className="mt-2 text-center py-2 rounded-xl font-bold text-white text-xs shadow-sm shadow-primary-600/25">
                         Siap Kirim ke Grup WA
                       </div>
                     </div>
@@ -363,7 +372,7 @@ export default function LandingView({ user }: UserSessionProp) {
 
         {/* Kenapa Ceban Pertama (Keunggulan Utama) */}
         <section className="px-6 py-6 grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-5xl z-10">
-          <div className="p-6 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md text-left space-y-3">
+          <div className="p-6 rounded-3xl border border-secondary-800/40 bg-secondary-950/30 backdrop-blur-md text-left space-y-3">
             <div className="p-2.5 rounded-2xl bg-primary-950 border border-primary-900/40 w-fit text-primary-400">
               <Coins01 className="w-5 h-5" />
             </div>
@@ -373,7 +382,7 @@ export default function LandingView({ user }: UserSessionProp) {
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md text-left space-y-3">
+          <div className="p-6 rounded-3xl border border-secondary-800/40 bg-secondary-950/30 backdrop-blur-md text-left space-y-3">
             <div className="p-2.5 rounded-2xl bg-primary-950 border border-primary-900/40 w-fit text-primary-400">
               <Users01 className="w-5 h-5" />
             </div>
@@ -386,7 +395,7 @@ export default function LandingView({ user }: UserSessionProp) {
 
         {/* FAQ Split Bill Section (SEO & User Experience) */}
         <section className="px-6 py-6 w-full max-w-5xl z-10 text-left">
-          <div className="p-6 md:p-10 rounded-3xl border border-secondary-800/40 bg-text-950/30 backdrop-blur-md space-y-6">
+          <div className="p-6 md:p-10 rounded-3xl border border-secondary-800/40 bg-secondary-950/30 backdrop-blur-md space-y-6">
             <div className="space-y-1.5">
               <h2 className="text-xs font-black text-primary-400 uppercase tracking-widest flex items-center gap-1.5">
                 <HelpCircle className="w-3.5 h-3.5 text-primary-400" /> Tanya Jawab
@@ -397,7 +406,7 @@ export default function LandingView({ user }: UserSessionProp) {
             </div>
 
             <div className="space-y-3 pt-2">
-              <details className="group rounded-2xl border border-secondary-800/40 bg-text-950/60 p-4 transition-colors open:bg-text-900/40">
+              <details className="group rounded-2xl border border-secondary-800/40 bg-secondary-950/60 p-4 transition-colors open:bg-secondary-900/40">
                 <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
                   <span>Apa itu aplikasi split bill Ceban Pertama?</span>
                   <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
@@ -407,7 +416,7 @@ export default function LandingView({ user }: UserSessionProp) {
                 </p>
               </details>
 
-              <details className="group rounded-2xl border border-secondary-800/40 bg-text-950/60 p-4 transition-colors open:bg-text-900/40">
+              <details className="group rounded-2xl border border-secondary-800/40 bg-secondary-950/60 p-4 transition-colors open:bg-secondary-900/40">
                 <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
                   <span>Gimana cara hitung split bill dengan pajak dan diskon restoran?</span>
                   <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
@@ -417,7 +426,7 @@ export default function LandingView({ user }: UserSessionProp) {
                 </p>
               </details>
 
-              <details className="group rounded-2xl border border-secondary-800/40 bg-text-950/60 p-4 transition-colors open:bg-text-900/40">
+              <details className="group rounded-2xl border border-secondary-800/40 bg-secondary-950/60 p-4 transition-colors open:bg-secondary-900/40">
                 <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
                   <span>Apakah Ceban Pertama gratis dan harus install aplikasi?</span>
                   <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
@@ -427,7 +436,7 @@ export default function LandingView({ user }: UserSessionProp) {
                 </p>
               </details>
 
-              <details className="group rounded-2xl border border-secondary-800/40 bg-text-950/60 p-4 transition-colors open:bg-text-900/40">
+              <details className="group rounded-2xl border border-secondary-800/40 bg-secondary-950/60 p-4 transition-colors open:bg-secondary-900/40">
                 <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
                   <span>Bisa langsung bagi tagihan dan kirim ke WhatsApp?</span>
                   <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
@@ -452,7 +461,7 @@ export default function LandingView({ user }: UserSessionProp) {
             <Button
               href="/pete-pete/new"
               iconTrailing={ArrowRight}
-              className="py-3.5 px-8 rounded-lg bg-primary-600 hover:bg-primary-700 active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/30 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
+              className="py-3.5 px-8 rounded-lg active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/30 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
             >
               Mulai Scan Struk Gratis
             </Button>
@@ -461,7 +470,7 @@ export default function LandingView({ user }: UserSessionProp) {
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 text-center px-6 w-full max-w-5xl border-t border-text-900/60 pt-6 z-10">
+      <footer className="mt-12 text-center px-6 w-full max-w-5xl border-t border-secondary-800/60 pt-6 z-10">
         <p className="text-xs text-text-400 font-medium">
           Ceban Pertama &mdash; Dibuat khusus biar splitbill geng lo beres instan tanpa drama.
         </p>

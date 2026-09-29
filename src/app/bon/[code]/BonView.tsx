@@ -234,25 +234,25 @@ export default function BonView({
         <div className="flex items-start justify-between">
           <div>
             <span className="text-xl font-black tracking-tight block">CEBAN PERTAMA</span>
-            <span className="text-xs text-gray-500 uppercase tracking-widest font-semibold block mt-0.5">
+            <span className="text-xs text-black/60 uppercase tracking-widest font-semibold block mt-0.5">
               Bukti Tagihan Patungan Digital
             </span>
           </div>
           <div className="text-right">
-            <span className="text-xs text-gray-500 font-mono block">Kode Sesi: {session.inviteCode}</span>
-            <span className="text-xs text-gray-500 block">{formattedDate}</span>
+            <span className="text-xs text-black/60 font-mono block">Kode Sesi: {session.inviteCode}</span>
+            <span className="text-xs text-black/60 block">{formattedDate}</span>
           </div>
         </div>
 
-        <div className="mt-3 pt-2 border-t border-gray-200 flex items-center justify-between">
+        <div className="mt-3 pt-2 border-t border-black/15 flex items-center justify-between">
           <div>
             <span className="text-sm font-bold block">{cleanSessionTitle}</span>
             {session.merchantName && (
-              <span className="text-xs text-gray-600 block">{session.merchantName}</span>
+              <span className="text-xs text-black/70 block">{session.merchantName}</span>
             )}
           </div>
           <div className="text-right">
-            <span className="text-3xs uppercase font-bold text-gray-400 block">Status Patungan</span>
+            <span className="text-3xs uppercase font-bold text-black/50 block">Status Patungan</span>
             <span className="text-xs font-bold uppercase">
               {session.status === "COMPLETED" ? "Selesai (Kelar)" : "Draft Berjalan"}
             </span>
@@ -458,15 +458,15 @@ export default function BonView({
           const displayName = isPlaceholder && session.creatorName ? session.creatorName : activeMemberDetail.member.name;
 
           return (
-            <article className="rounded-2xl border border-secondary-800 bg-secondary-950/80 shadow-sm overflow-hidden space-y-0 print:border print:border-gray-300 print:bg-white print:rounded-xl print:shadow-none print:text-black">
+            <article className="rounded-2xl border border-secondary-800 bg-secondary-950/80 shadow-sm overflow-hidden space-y-0 print:border print:border-black/25 print:bg-white print:rounded-xl print:shadow-none print:text-black">
               {/* Header Kartu */}
-              <div className="p-3.5 sm:p-4 border-b border-secondary-800 flex items-center justify-between gap-3 print:border-b print:border-gray-200 print:bg-gray-50/50">
+              <div className="p-3.5 sm:p-4 border-b border-secondary-800 flex items-center justify-between gap-3 print:border-b print:border-black/15 print:bg-black/5">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div className="print:hidden">
                     <Avatar alt={displayName} size="md" className="border border-secondary-800 shrink-0" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-3xs font-semibold text-text-400 uppercase tracking-wider block print:text-gray-500">
+                    <span className="text-3xs font-semibold text-text-400 uppercase tracking-wider block print:text-black/60">
                       Rincian Tagihan Buat:
                     </span>
                     <h2 className="text-sm sm:text-base font-extrabold text-text-50 truncate leading-tight print:text-black print:text-lg">
@@ -487,18 +487,18 @@ export default function BonView({
 
               {/* Rincian Pesanan Menu */}
               <div className="p-3.5 sm:p-4 space-y-3 print:p-4 print:space-y-4">
-                <div className="flex items-center justify-between border-b border-secondary-800/40 pb-2 print:border-b print:border-gray-200">
-                  <span className="text-2xs font-bold text-text-400 uppercase tracking-wider print:text-gray-700">
+                <div className="flex items-center justify-between border-b border-secondary-800/40 pb-2 print:border-b print:border-black/15">
+                  <span className="text-2xs font-bold text-text-400 uppercase tracking-wider print:text-black/80">
                     Daftar Menu Yang Dipesen
                   </span>
-                  <span className="text-2xs text-text-400 font-medium print:text-gray-500">
+                  <span className="text-2xs text-text-400 font-medium print:text-black/60">
                     {activeMemberDetail.items.length} item
                   </span>
                 </div>
 
                 {activeMemberDetail.items.length === 0 ? (
-                  <div className="p-3 rounded-xl bg-secondary-900/40 border border-secondary-800/60 text-center print:bg-gray-50 print:border-gray-200">
-                    <p className="text-xs text-text-400 italic print:text-gray-500">
+                  <div className="p-3 rounded-xl bg-secondary-900/40 border border-secondary-800/60 text-center print:bg-black/5 print:border-black/15">
+                    <p className="text-xs text-text-400 italic print:text-black/60">
                       Belum ada menu yang dipilih buat nama ini.
                     </p>
                   </div>
@@ -507,13 +507,13 @@ export default function BonView({
                     {activeMemberDetail.items.map((item) => (
                       <div
                         key={item.id}
-                        className="p-2.5 rounded-xl bg-secondary-900/50 border border-secondary-800/60 flex items-center justify-between gap-2 print:bg-transparent print:border-b print:border-gray-100 print:rounded-none print:px-0 print:py-2"
+                        className="p-2.5 rounded-xl bg-secondary-900/50 border border-secondary-800/60 flex items-center justify-between gap-2 print:bg-transparent print:border-b print:border-black/10 print:rounded-none print:px-0 print:py-2"
                       >
                         <div className="min-w-0 flex-1">
                           <span className="text-xs font-bold text-text-50 block truncate print:text-black print:text-sm">
                             {item.name}
                           </span>
-                          <span className="text-3xs text-text-400 block mt-0.5 print:text-gray-600">
+                          <span className="text-3xs text-text-400 block mt-0.5 print:text-black/70">
                             {item.portionCount === item.totalPortions && item.totalPortions === 1
                               ? "1 porsi penuh"
                               : `${item.portionCount} dari ${item.totalPortions} porsi`}
@@ -528,8 +528,8 @@ export default function BonView({
                 )}
 
                 {/* Subtotal, Pajak, Diskon Breakdown */}
-                <div className="pt-2 border-t border-secondary-800 space-y-1.5 text-xs print:border-t-2 print:border-gray-200 print:pt-3">
-                  <div className="flex justify-between text-text-300 print:text-gray-700">
+                <div className="pt-2 border-t border-secondary-800 space-y-1.5 text-xs print:border-t-2 print:border-black/15 print:pt-3">
+                  <div className="flex justify-between text-text-300 print:text-black/80">
                     <span>Subtotal Menu</span>
                     <span className="font-semibold tabular-nums text-text-50 print:text-black">
                       Rp {activeMemberDetail.subtotal.toLocaleString("id-ID")}
@@ -537,7 +537,7 @@ export default function BonView({
                   </div>
 
                   {activeMemberDetail.tax > 0 && (
-                    <div className="flex justify-between text-text-300 print:text-gray-700">
+                    <div className="flex justify-between text-text-300 print:text-black/80">
                       <span>Pajak Resto</span>
                       <span className="font-semibold tabular-nums text-text-50 print:text-black">
                         Rp {activeMemberDetail.tax.toLocaleString("id-ID")}
@@ -546,7 +546,7 @@ export default function BonView({
                   )}
 
                   {activeMemberDetail.tip > 0 && (
-                    <div className="flex justify-between text-text-300 print:text-gray-700">
+                    <div className="flex justify-between text-text-300 print:text-black/80">
                       <span>Servis / Tip</span>
                       <span className="font-semibold tabular-nums text-text-50 print:text-black">
                         Rp {activeMemberDetail.tip.toLocaleString("id-ID")}
@@ -555,7 +555,7 @@ export default function BonView({
                   )}
 
                   {activeMemberDetail.discount > 0 && (
-                    <div className="flex justify-between text-emerald-600 print:text-green-700">
+                    <div className="flex justify-between text-emerald-600 print:text-emerald-700">
                       <span className="font-medium">Diskon / Promo</span>
                       <span className="font-bold tabular-nums">
                         - Rp {activeMemberDetail.discount.toLocaleString("id-ID")}
@@ -564,7 +564,7 @@ export default function BonView({
                   )}
 
                   {/* Total Tagihan Box */}
-                  <div className="p-3 rounded-xl bg-secondary-900 border border-secondary-800 flex justify-between items-center mt-2 print:bg-gray-100 print:border-2 print:border-black print:p-3 print:rounded-lg">
+                  <div className="p-3 rounded-xl bg-secondary-900 border border-secondary-800 flex justify-between items-center mt-2 print:bg-black/5 print:border-2 print:border-black print:p-3 print:rounded-lg">
                     <div>
                       <span className="text-2xs font-bold text-text-400 uppercase tracking-wider block print:text-black print:text-xs">
                         Total Yang Mesti Lo Bayar
@@ -704,7 +704,7 @@ export default function BonView({
         </section>
 
         {/* Print Only Footer */}
-        <div className="hidden print:block text-center text-xs text-gray-500 pt-6 mt-6 border-t border-gray-200">
+        <div className="hidden print:block text-center text-xs text-black/60 pt-6 mt-6 border-t border-black/15">
           <p className="font-semibold text-black">CEBAN PERTAMA</p>
           <p className="mt-0.5">Dokumen ini merupakan bukti pembagian tagihan patungan digital yang sah.</p>
         </div>

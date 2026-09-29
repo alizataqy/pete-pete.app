@@ -153,7 +153,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
       <div className="flex-1 p-4 space-y-6 overflow-y-auto">
 
         {/* Card 1: Informasi Profil */}
-        <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
+        <div className="p-4 rounded-xl border border-secondary-800 bg-secondary-900/60 space-y-4">
           <div>
             <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Info Akun</h3>
             <p className="text-2xs text-text-300 mt-0.5">Ubah nama dan alamat email login lo.</p>
@@ -219,7 +219,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 
         {/* Card 2: Wallet Summary Block with Lihat Semua button */}
         <div className="space-y-4">
-          <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-3">
+          <div className="p-4 rounded-xl border border-secondary-800 bg-secondary-900/60 space-y-3">
             <div className="flex flex-row flex-nowrap items-center justify-between gap-4 w-full">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-10 h-10 rounded-xl bg-primary-900/40 border border-primary-800 flex items-center justify-center shrink-0">
@@ -260,7 +260,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         </div>
 
         {/* Card 3: Ubah Kata Sandi */}
-        <div className="p-4 rounded-xl border border-secondary-800 bg-text-900/60 space-y-4">
+        <div className="p-4 rounded-xl border border-secondary-800 bg-secondary-900/60 space-y-4">
           <div>
             <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Ganti Password</h3>
             <p className="text-2xs text-text-300 mt-0.5">Jangan lupa ganti password secara berkala biar aman.</p>

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signUp } from "@/lib/auth-client";
 import { Input } from "@/components/base/input/input";
@@ -78,9 +79,17 @@ export default function RegisterPage() {
       </header>
 
       <div className="w-full z-10 space-y-6 max-w-sm mx-auto">
-        <div className="text-center space-y-1.5">
-          <Link href="/" className="text-2xl font-extrabold text-primary-400">
-            Ceban Pertama
+        <div className="text-center space-y-1.5 flex flex-col items-center">
+          <Link href="/" className="inline-flex items-center gap-2.5 text-2xl font-extrabold text-primary-400 group">
+            <Image
+              src="/logo.svg"
+              alt="Ceban Pertama"
+              width={36}
+              height={36}
+              className="w-9 h-9 rounded-lg shadow-sm group-hover:scale-105 transition-transform duration-150"
+              priority
+            />
+            <span>Ceban Pertama</span>
           </Link>
           <h2 className="text-lg font-bold text-text-50">Gabung yuk!</h2>
         </div>
