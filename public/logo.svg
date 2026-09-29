@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Concept 1: The Friendly Struk Smile (Mascot Icon) -->
+  <g id="background">
+    <rect width="512" height="512" rx="128" fill="#3129d6" />
+    <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="#5b54de" stroke-width="8" opacity="0.4" />
+  </g>
+  <g id="icon">
+    <!-- Receipt Body Shadow -->
+    <path d="M 146 116 L 366 116 C 382 116 394 128 394 144 L 394 404 L 358 382 L 322 404 L 286 382 L 250 404 L 214 382 L 178 404 L 142 382 L 118 404 L 118 144 C 118 128 130 116 146 116 Z" fill="#140c5a" opacity="0.3" transform="translate(4, 8)" />
+
+    <!-- Receipt Main Body -->
+    <path d="M 146 110 L 324 110 L 394 180 L 394 394 L 358 374 L 322 394 L 286 374 L 250 394 L 214 374 L 178 394 L 142 374 L 118 394 L 118 138 C 118 122 130 110 146 110 Z" fill="#FFFFFF" />
+
+    <!-- Folded Top-Right Corner -->
+    <path d="M 324 110 L 324 164 C 324 174 332 180 342 180 L 394 180 Z" fill="#EAE9FC" />
+    <path d="M 324 110 L 394 180 L 324 180 Z" fill="#D6D2F9" opacity="0.6" />
+
+    <!-- Cute Smiling Mascot Face -->
+    <!-- Left Eye (Happy open bead eye) -->
+    <circle cx="206" cy="226" r="15" fill="#0A062D" />
+    <circle cx="211" cy="221" r="5" fill="#FFFFFF" />
+
+    <!-- Right Eye (Cheerful wink) -->
+    <path d="M 284 228 C 294 216 312 216 322 228" fill="none" stroke="#0A062D" stroke-width="12" stroke-linecap="round" />
+
+    <!-- Rosy Cheek Blushes (Emerald Mint) -->
+    <circle cx="178" cy="248" r="14" fill="#10B981" opacity="0.85" />
+    <circle cx="334" cy="248" r="14" fill="#10B981" opacity="0.85" />
+
+    <!-- Big Happy Smile -->
+    <path d="M 230 248 Q 256 280 282 248" fill="none" stroke="#0A062D" stroke-width="12" stroke-linecap="round" />
+    <path d="M 242 262 Q 256 274 270 262" fill="#E02424" opacity="0.9" />
+
+    <!-- Receipt Decorative Bill Lines -->
+    <rect x="168" y="304" width="90" height="12" rx="6" fill="#D6D2F9" />
+    <rect x="290" y="304" width="54" height="12" rx="6" fill="#10B981" />
+    <rect x="168" y="328" width="176" height="12" rx="6" fill="#EAE9FC" />
+
+    <!-- Mini Emerald Coin / Badge (Chipping in badge) -->
+    <g id="coin-badge" transform="translate(350, 80)">
+      <circle cx="30" cy="30" r="38" fill="#059669" stroke="#FFFFFF" stroke-width="8" />
+      <text x="30" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="28" fill="#FFFFFF" text-anchor="middle">10k</text>
+    </g>
+  </g>
+</svg>
