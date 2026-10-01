@@ -1,23 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
   Camera01,
   Users01,
   MessageChatCircle,
-  Coins01,
+  MessageChatSquare,
   CheckCircle,
   ArrowRight,
-  Zap,
-  Star01,
-  Lock01,
   ChevronDown,
-  HelpCircle,
+  ReceiptCheck,
+  Target01,
+  Minus,
 } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
+import { Avatar } from "@/components/base/avatar/avatar";
 
 interface UserSessionProp {
   user?: {
@@ -28,452 +27,558 @@ interface UserSessionProp {
   };
 }
 
+const steps = [
+  {
+    index: "01",
+    title: "Foto Struknya.",
+    desc: "Cukup foto struk resto atau kafe. Nama menu, harga, pajak, dan service charge langsung kebaca otomatis tanpa perlu ngetik ulang.",
+    icon: Camera01,
+    details: [
+      "Nama menu dan harga kebaca otomatis",
+      "Pajak resto dan service charge dihitung proporsional",
+      "Foto struk tidak disimpan di server",
+    ],
+  },
+  {
+    index: "02",
+    title: "Pilih Siapa Pesen Apa.",
+    desc: "Klik nama temen di tiap pesanan. Kalau ada menu yang dimakan barengan, porsi dan harganya langsung dibagi rata.",
+    icon: Users01,
+    details: [
+      "Bagi pesanan per orang atau per porsi",
+      "Menu patungan otomatis dibagi rata",
+      "Pajak ngikutin porsi masing-masing",
+    ],
+  },
+  {
+    index: "03",
+    title: "Kirim Rincian ke WhatsApp.",
+    desc: "Dapet format teks siap kirim ke grup WhatsApp, lengkap dengan rincian tiap orang serta nomor rekening atau QRIS.",
+    icon: MessageChatCircle,
+    details: [
+      "Rincian per orang jelas dan transparan",
+      "Nomor rekening dan QRIS langsung tertera",
+      "Tiap orang tau persis nominal yang harus dibayar",
+    ],
+  },
+];
+
+const testimonials = [
+  {
+    quote:
+      "Biasanya ngitung bill bersepuluh butuh 20 menit lempar-lemparan kalkulator. Sekarang kelar pas kasir masih nyetak struk.",
+    author: "Dimas",
+  },
+  {
+    quote:
+      "Paling males kalo pesen dikit tapi tetep disuruh bayar rata. Pake ini pajaknya ngikut porsi yang gua makan, adil.",
+    author: "Rania",
+  },
+  {
+    quote:
+      "Begitu rinciannya dikirim ke grup, langsung ada total per orang plus nomer rekening. Gak perlu repot rekap ulang di Notes.",
+    author: "Fajar",
+  },
+];
+
+const faqs = [
+  {
+    q: "Ceban Pertama tuh apaan sih?",
+    a: "Web app buat bagi tagihan makan bareng. Cukup foto struk, menu dan harga otomatis kebaca, pajak sama service charge langsung dibagi proporsional ke tiap orang. Gratis tanpa install.",
+  },
+  {
+    q: "Foto struk gua disimpen gak?",
+    a: "Gak. Foto struk cuma diproses sekali saat pembacaan menu, setelah itu langsung dihapus. Kita gak nyimpen file foto struk di database.",
+  },
+  {
+    q: "Pajak sama service charge-nya diitung gimana?",
+    a: "Dibagi proporsional sesuai nominal pesanan masing-masing. Yang pesen es teh gak bakal nanggung beban pajak dari pesanan temen yang lebih mahal.",
+  },
+  {
+    q: "Harus download atau bikin akun dulu gak?",
+    a: "Gak perlu. Langsung buka lewat browser di hp atau laptop buat scan struk. Bikin akun cuma kalau lo pengen nyimpen riwayat tagihan.",
+  },
+];
+
 export default function LandingView({ user }: UserSessionProp) {
-  const [activeStep, setActiveStep] = useState<"ocr" | "split" | "share">("ocr");
-
-  const steps = [
-    {
-      id: "ocr" as const,
-      number: "1",
-      tabTitle: "1. Foto Struk",
-      title: "Jepret Struk Makan Lo",
-      desc: "Gak usah capek ngetik ulang menu satu per satu. AI otomatis baca nama menu, harga satuan, sampe pajak restoran dalam hitungan detik.",
-      badge: "Deteksi Otomatis",
-      icon: Camera01,
-      details: [
-        "Deteksi menu & harga secara instan",
-        "Pajak & service charge langsung terhitung",
-        "Struk lecek atau panjang tetep kebaca",
-      ],
-    },
-    {
-      id: "split" as const,
-      number: "2",
-      tabTitle: "2. Tandai Menu",
-      title: "Tentukan Siapa Makan Apa",
-      desc: "Tinggal klik nama temen lo di menu yang dia pesen. Kalau ada menu yang dimakan barengan, tinggal bagi rata tanpa pusing.",
-      badge: "Fleksibel Banget",
-      icon: Users01,
-      details: [
-        "Tandai pesanan per nama temen",
-        "Bisa bagi rata untuk menu sharing",
-        "Porsi & harga dibagi proporsional",
-      ],
-    },
-    {
-      id: "share" as const,
-      number: "3",
-      tabTitle: "3. Kirim ke WA",
-      title: "Kirim Rincian Langsung ke Grup",
-      desc: "Format pesan WhatsApp rapi langsung siap kirim. Lengkap sama nominal pas tiap orang dan nomor rekening atau QRIS lo.",
-      badge: "Sekali Tap",
-      icon: MessageChatCircle,
-      details: [
-        "Rincian transparan, no debat",
-        "Langsung ada nomor rekening / E-Wallet",
-        "Gak ada lagi drama nagih manual",
-      ],
-    },
-  ];
-
-  const currentStep = steps.find((s) => s.id === activeStep) || steps[0];
-  const StepIcon = currentStep.icon;
-
   return (
-    <div data-landing-view className="flex-1 flex flex-col bg-background text-text pb-20 overflow-y-auto overflow-x-hidden w-full items-center relative">
+    <div
+      data-landing-view
+      className="flex-1 flex flex-col bg-background text-text min-h-screen w-full relative selection:bg-primary-400 selection:text-white"
+    >
+      {/* Header */}
+      <header className="w-full border-b border-secondary-800/40 bg-background/85 backdrop-blur-md sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center gap-3 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400 rounded-xl transition-transform duration-150 active:scale-[0.98]"
+          >
+            <Image
+              src="/logo.svg"
+              alt="Ceban Pertama"
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-lg group-hover:scale-105 transition-transform duration-150"
+              priority
+            />
+            <span className="font-extrabold text-text text-lg tracking-tight leading-none">
+              Ceban Pertama
+            </span>
+          </Link>
 
-      {/* Header Navigation */}
-      <header className="w-full max-w-5xl px-6 py-5 flex items-center justify-between z-30">
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-lg transition-transform duration-150 ease-out active:scale-[0.97]"
-        >
-          <Image
-            src="/logo.svg"
-            alt="Ceban Pertama"
-            width={32}
-            height={32}
-            className="w-8 h-8 rounded-lg shadow-sm group-hover:scale-105 transition-transform duration-150"
-            priority
-          />
-          <span className="font-black text-text text-lg tracking-tight">Ceban Pertama</span>
-        </Link>
-        <div className="flex items-center gap-2.5">
-          {user ? (
-            <Button
-              href="/tongkrongan"
-              iconTrailing={ArrowRight}
-              className="min-h-10 sm:min-h-11 py-2 px-4 rounded-lg active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
-            >
-              Tongkrongan Gua
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            {user ? (
               <Button
-                href="/login"
-                color="secondary"
-                className="min-h-10 sm:min-h-11 py-2 px-3.5 rounded-lg border border-secondary-800 bg-secondary-950/40 hover:bg-secondary-900 active:scale-[0.96] text-text-200 text-xs font-semibold transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
+                href="/tongkrongan"
+                size="sm"
+                color="primary"
+                iconTrailing={ArrowRight}
               >
-                Masuk
+                Tongkrongan Gua
               </Button>
-              <Button
-                href="/pete-pete/new"
-                className="min-h-10 sm:min-h-11 py-2 px-4 rounded-lg active:scale-[0.96] text-white font-bold text-xs shadow-md shadow-primary/20 transition-transform duration-150 ease-out cursor-pointer flex items-center justify-center"
-              >
-                Coba Gratis
-              </Button>
-            </div>
-          )}
+            ) : (
+              <>
+                <Button
+                  href="/login"
+                  size="sm"
+                  color="secondary"
+                >
+                  Masuk
+                </Button>
+                <Button
+                  href="/pete-pete/new"
+                  size="sm"
+                  color="primary"
+                >
+                  Coba Gratis
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
-      {/* Main Content Landmark */}
       <main id="main-content" className="w-full flex flex-col items-center">
+        {/* Hero */}
+        <section className="w-full border-b border-secondary-800/40">
+          <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-32">
+            <div className="max-w-4xl space-y-8">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-text leading-[1.05] sm:leading-[1.02]">
+                <span className="block">Abis Nongkrong Ramean?</span>
+                <span className="text-primary-400 block mt-1 sm:mt-2">Foto Struknya Aja.</span>
+              </h1>
 
-        {/* Hero Section */}
-        <section className="relative px-6 pt-12 pb-16 text-center overflow-hidden w-full max-w-4xl flex flex-col items-center z-10">
-
-          {/* Badge */}
-          <Badge
-            color="brand"
-            size="md"
-            type="pill-color"
-            className="mb-6 font-semibold tracking-wide inline-flex items-center gap-2"
-          >
-            <Camera01 className="w-3.5 h-3.5 text-primary-400" />
-            <span>Cara Paling Simpel Bagi Tagihan Makan</span>
-          </Badge>
-
-          {/* Hero Content */}
-          <div className="space-y-6 text-center flex flex-col items-center max-w-2xl">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-text leading-[1.15] [text-wrap:balance]">
-              Aplikasi Split Bill <br />
-              <span className="text-primary-400">
-                Tinggal Foto Struk Aja!
-              </span>
-            </h1>
-
-            <p className="text-xs sm:text-sm md:text-base text-text-300 leading-relaxed max-w-lg [text-wrap:pretty]">
-              Aplikasi split bill online tercepat buat tongkrongan lo. Gak perlu lagi capek ngitung manual pake kalkulator. Foto struknya, pilih siapa makan apa, langsung kirim rinciannya ke WhatsApp temen lo. Beres seketika!
-            </p>
-
-            {/* Trust highlights */}
-            <div className="flex flex-wrap items-center gap-3 text-xs text-text-400 py-1 justify-center">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-900/60 border border-secondary-800/30">
-                <Star01 className="w-3.5 h-3.5 text-warning-500" />
-                <span className="font-semibold text-text-100">100% Gratis</span>
-              </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-900/60 border border-secondary-800/30">
-                <Lock01 className="w-3.5 h-3.5 text-primary-400" />
-                <span className="font-semibold text-text-100">Tanpa Wajib Login</span>
-              </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-900/60 border border-secondary-800/30">
-                <Zap className="w-3.5 h-3.5 text-warning-400" />
-                <span className="font-semibold text-text-100">Hitung Pajak Otomatis</span>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md pt-2 justify-center">
-              {user ? (
-                <Button
-                  href="/tongkrongan"
-                  iconTrailing={ArrowRight}
-                  className="w-full py-3.5 px-6 rounded-lg active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  Buka Tongkrongan Gua
-                </Button>
-              ) : (
-                <>
-                  <Button
-                    href="/pete-pete/new"
-                    iconTrailing={ArrowRight}
-                    className="w-full sm:w-auto px-7 py-3.5 rounded-lg active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/25 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    Foto Struk Sekarang
-                  </Button>
-                  <Button
-                    href="/register"
-                    color="secondary"
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-lg border border-secondary-800 bg-secondary-950/40 text-text-100 hover:text-white hover:bg-secondary-900 active:scale-[0.97] text-sm font-bold transition-transform duration-150 ease-out cursor-pointer"
-                  >
-                    Daftar Akun
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* Cara Pakenya: 3 Langkah Mudah & Interaktif */}
-        <section className="px-6 py-10 w-full max-w-5xl z-10">
-          <div className="p-6 md:p-10 rounded-3xl border border-secondary-800/40 bg-secondary-950/30 backdrop-blur-md space-y-8 shadow-xl">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-secondary-900/50 pb-6">
-              <div className="text-left space-y-1.5">
-                <h2 className="text-xs font-black text-primary-400 uppercase tracking-widest flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-primary-400" /> Cara Pakenya
-                </h2>
-                <p className="text-2xl md:text-3xl font-extrabold text-text [text-wrap:balance]">
-                  Cuma 3 Langkah, Splitbill Beres
-                </p>
-              </div>
-
-              {/* Steps Tabs Selector */}
-              <div
-                role="tablist"
-                aria-label="Langkah cara pakai"
-                className="grid grid-cols-3 gap-1 bg-secondary-950/90 p-1.5 rounded-2xl border border-secondary-800/20 w-full max-w-xs md:max-w-sm"
-              >
-                {steps.map((step) => {
-                  const isSelected = activeStep === step.id;
-                  return (
-                    <button
-                      key={step.id}
-                      id={`tab-${step.id}`}
-                      role="tab"
-                      aria-selected={isSelected}
-                      aria-controls={`panel-${step.id}`}
-                      tabIndex={isSelected ? 0 : -1}
-                      type="button"
-                      onClick={() => setActiveStep(step.id)}
-                      className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-transform duration-150 ease-out active:scale-[0.97] text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400 ${
-                        isSelected
-                          ? "bg-primary-400 text-white shadow-sm shadow-primary-400/30"
-                          : "text-text-300 hover:text-text-50 bg-transparent"
-                      }`}
-                    >
-                      {step.tabTitle}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Active Step Panel */}
-            <div
-              role="tabpanel"
-              id={`panel-${currentStep.id}`}
-              aria-labelledby={`tab-${currentStep.id}`}
-              className="p-6 md:p-8 rounded-2xl bg-secondary-950/60 border border-secondary-800/20 grid grid-cols-1 md:grid-cols-12 gap-8 items-center shadow-inner animate-in fade-in duration-150"
-            >
-              {/* Left Content */}
-              <div className="md:col-span-7 space-y-5 text-left">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-primary-950 border border-primary-900/60 flex items-center justify-center text-primary-400">
-                    <StepIcon className="w-5 h-5" />
-                  </div>
-                  <Badge size="sm" color="brand" type="pill-color" className="font-semibold text-xs">
-                    {currentStep.badge}
-                  </Badge>
-                </div>
-
-                <div className="space-y-2">
-                  <h3 className="text-xl sm:text-2xl font-bold text-text">{currentStep.title}</h3>
-                  <p className="text-xs sm:text-sm text-text-300 leading-relaxed [text-wrap:pretty]">
-                    {currentStep.desc}
-                  </p>
-                </div>
-
-                <div className="border-t border-secondary-900/60 pt-4 space-y-2.5">
-                  {currentStep.details.map((detail, idx) => (
-                    <div key={idx} className="flex items-center gap-2.5">
-                      <CheckCircle className="w-4 h-4 text-primary-400 shrink-0" />
-                      <span className="text-xs text-text-100 font-medium">{detail}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right Mockup Preview */}
-              <div className="md:col-span-5 flex justify-center bg-secondary-900/40 p-5 rounded-2xl border border-secondary-800/10 min-h-50">
-                {currentStep.id === "ocr" && (
-                  <div className="w-full max-w-65 bg-secondary-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 relative overflow-hidden animate-in fade-in duration-200">
-                    <div className="flex items-center justify-between border-b border-secondary-800 pb-2">
-                      <span className="text-xs text-text-400 uppercase tracking-wider font-bold">Struk Makan</span>
-                      <Badge size="sm" color="brand" type="pill-color" className="text-xs font-semibold">
-                        Terbaca AI
-                      </Badge>
-                    </div>
-
-                    <div className="space-y-2 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-text-100">Spicy Miso Ramen</span>
-                        <span className="text-text-50 font-bold tabular-nums">Rp 45.000</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-text-100">Original Gyoza</span>
-                        <span className="text-text-50 font-bold tabular-nums">Rp 28.000</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-text-100">Ocha Dingin</span>
-                        <span className="text-text-50 font-bold tabular-nums">Rp 12.000</span>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-secondary-800 pt-2 flex justify-between text-xs text-primary-300 font-bold">
-                      <span>Pajak Resto (10%)</span>
-                      <span className="tabular-nums">Rp 8.500</span>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep.id === "split" && (
-                  <div className="w-full max-w-65 bg-secondary-950 p-4 rounded-xl border border-secondary-800/20 shadow-lg space-y-3 animate-in fade-in duration-200">
-                    <div className="border-b border-secondary-800 pb-2">
-                      <span className="text-xs text-text-400 uppercase tracking-wider font-bold">Pilih Pemilik Menu</span>
-                    </div>
-
-                    <div className="space-y-2.5">
-                      <div className="p-2.5 rounded-lg bg-secondary-900/60 border border-secondary-800/20 flex flex-col gap-1.5">
-                        <div className="flex justify-between text-xs font-semibold">
-                          <span>Spicy Miso Ramen</span>
-                          <span className="text-primary-300 tabular-nums">Rp 45.000</span>
-                        </div>
-                        <div className="flex gap-1.5">
-                          <span className="text-xs bg-primary-900/60 border border-primary-800/40 text-primary-200 px-2 py-0.5 rounded-full font-medium">Budi</span>
-                          <span className="text-xs bg-primary-950/60 border border-primary-900/40 text-primary-300 px-2 py-0.5 rounded-full font-medium">Ucup</span>
-                        </div>
-                      </div>
-
-                      <div className="p-2.5 rounded-lg bg-secondary-900/60 border border-secondary-800/20 flex flex-col gap-1.5">
-                        <div className="flex justify-between text-xs font-semibold">
-                          <span>Original Gyoza</span>
-                          <span className="text-primary-300 tabular-nums">Rp 28.000</span>
-                        </div>
-                        <div className="flex gap-1.5">
-                          <span className="text-xs bg-primary-900/60 border border-primary-800/40 text-primary-200 px-2 py-0.5 rounded-full font-medium">Siti</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep.id === "share" && (
-                  <div className="w-full max-w-65 bg-background-950 p-4 rounded-xl border border-secondary-800/40 shadow-lg space-y-2.5 animate-in fade-in duration-200">
-                    <div className="flex items-center gap-2 border-b border-secondary-800/40 pb-2">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span className="text-xs text-text-50 font-bold">Preview Pesan WA</span>
-                    </div>
-
-                    <div className="bg-background-900 p-3 rounded-xl text-xs text-text-100 space-y-1 border-s-2 border-primary-400">
-                      <p className="font-bold text-primary-300">Rincian Splitbill: Ramen</p>
-                      <p className="text-text-300 text-xs">Budi: <strong className="text-text-50">Rp 57.000</strong></p>
-                      <p className="text-text-300 text-xs">Ucup: <strong className="text-text-50">Rp 45.000</strong></p>
-                      <div className="mt-2 text-center bg-primary-400 py-2 rounded-xl font-bold text-white text-xs shadow-sm shadow-primary-400/25">
-                        Siap Kirim ke Grup WA
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Kenapa Ceban Pertama (Keunggulan Utama) */}
-        <section className="px-6 py-6 grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-5xl z-10">
-          <div className="p-6 rounded-3xl border border-secondary-800/40 bg-secondary-950/30 backdrop-blur-md text-left space-y-3">
-            <div className="p-2.5 rounded-2xl bg-primary-950 border border-primary-900/40 w-fit text-primary-400">
-              <Coins01 className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-text">Pajak &amp; Diskon Dihitung Rata</h3>
-            <p className="text-xs text-text-300 leading-relaxed [text-wrap:pretty]">
-              Gak usah pusing ngitung PPN 10% atau service charge secara manual. Semuanya dibagi secara proporsional sesuai pesanan masing-masing.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl border border-secondary-800/40 bg-secondary-950/30 backdrop-blur-md text-left space-y-3">
-            <div className="p-2.5 rounded-2xl bg-primary-950 border border-primary-900/40 w-fit text-primary-400">
-              <Users01 className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-text">Hubungan Tongkrongan Aman</h3>
-            <p className="text-xs text-text-300 leading-relaxed [text-wrap:pretty]">
-              Rinciannya jelas dan transparan. Gak ada lagi yang ngerasa nombok atau bayar kemahalan. Selesai nongkrong, langsung beres!
-            </p>
-          </div>
-        </section>
-
-        {/* FAQ Split Bill Section (SEO & User Experience) */}
-        <section className="px-6 py-6 w-full max-w-5xl z-10 text-left">
-          <div className="p-6 md:p-10 rounded-3xl border border-secondary-800/40 bg-secondary-950/30 backdrop-blur-md space-y-6">
-            <div className="space-y-1.5">
-              <h2 className="text-xs font-black text-primary-400 uppercase tracking-widest flex items-center gap-1.5">
-                <HelpCircle className="w-3.5 h-3.5 text-primary-400" /> Tanya Jawab
-              </h2>
-              <p className="text-xl md:text-2xl font-extrabold text-text">
-                Seputar Split Bill di Ceban Pertama
+              <p className="text-lg sm:text-xl md:text-2xl text-text-100 leading-relaxed max-w-2xl text-pretty font-normal">
+                Foto struk, tentuin siapa pesen apa, langsung kirim rincian ke
+                grup WhatsApp. Pajak dan service charge kebagi otomatis.
               </p>
-            </div>
 
-            <div className="space-y-3 pt-2">
-              <details className="group rounded-2xl border border-secondary-800/40 bg-secondary-950/60 p-4 transition-colors open:bg-secondary-900/40">
-                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
-                  <span>Apa itu aplikasi split bill Ceban Pertama?</span>
-                  <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
-                </summary>
-                <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
-                  Ceban Pertama adalah aplikasi split bill online dan kalkulator splitbill otomatis gratis di Indonesia. Lo cuma perlu foto struk makanan atau belanja, AI otomatis mendeteksi nama menu, harga satuan, pajak resto, dan service charge tanpa harus repot ngetik manual.
-                </p>
-              </details>
-
-              <details className="group rounded-2xl border border-secondary-800/40 bg-secondary-950/60 p-4 transition-colors open:bg-secondary-900/40">
-                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
-                  <span>Gimana cara hitung split bill dengan pajak dan diskon restoran?</span>
-                  <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
-                </summary>
-                <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
-                  Ceban Pertama menghitung pajak (PPN 10-11%) dan service charge secara proporsional sesuai nominal menu yang dipesan tiap orang. Jadi yang pesannya sedikit gak bakal nombokin pajak pesanan teman yang lebih mahal.
-                </p>
-              </details>
-
-              <details className="group rounded-2xl border border-secondary-800/40 bg-secondary-950/60 p-4 transition-colors open:bg-secondary-900/40">
-                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
-                  <span>Apakah Ceban Pertama gratis dan harus install aplikasi?</span>
-                  <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
-                </summary>
-                <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
-                  100% gratis! Ceban Pertama berbasis website (PWA-ready), jadi bisa langsung lo akses lewat browser HP atau laptop tanpa wajib download dari Play Store/App Store dan tanpa perlu daftar akun terlebih dahulu.
-                </p>
-              </details>
-
-              <details className="group rounded-2xl border border-secondary-800/40 bg-secondary-950/60 p-4 transition-colors open:bg-secondary-900/40">
-                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text-50 select-none list-none [&::-webkit-details-marker]:hidden">
-                  <span>Bisa langsung bagi tagihan dan kirim ke WhatsApp?</span>
-                  <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180" />
-                </summary>
-                <p className="mt-3 text-xs sm:text-sm text-text-300 leading-relaxed">
-                  Bisa banget. Begitu penentuan menu selesai, Ceban Pertama langsung bikinin teks rincian splitbill siap kirim ke WhatsApp group lengkap sama nomor rekening atau e-wallet lo.
-                </p>
-              </details>
+              <div className="flex flex-wrap gap-3 pt-2">
+                {user ? (
+                  <Button
+                    href="/tongkrongan"
+                    size="xl"
+                    color="primary"
+                    iconTrailing={ArrowRight}
+                    className="font-bold tracking-tight"
+                  >
+                    Buka Tongkrongan Gua
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      href="/pete-pete/new"
+                      size="xl"
+                      color="primary"
+                      iconTrailing={ArrowRight}
+                      className="font-bold tracking-tight"
+                    >
+                      Scan Struk Sekarang
+                    </Button>
+                    <Button
+                      href="/register"
+                      size="xl"
+                      color="secondary"
+                      className="font-semibold tracking-tight"
+                    >
+                      Bikin Akun
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Bottom CTA Banner */}
-        <section className="px-6 py-8 w-full max-w-5xl z-10">
-          <div className="p-8 sm:p-10 rounded-3xl border border-primary-800/40 bg-primary-950/30 backdrop-blur-md text-center flex flex-col items-center space-y-5 shadow-lg">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-text [text-wrap:balance]">
-              Udah Kelar Nongkrong? Yuk Hitung Sekarang!
+        {/* Cara Kerja */}
+        <section className="w-full border-b border-secondary-800/40 py-16 sm:py-24">
+          <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">
+                  Gimana Caranya.
+                </h2>
+                <p className="text-sm text-text-300 mt-1 max-w-md text-pretty">
+                  Tiga langkah ringkas, gak perlu pusing mikirin rumus kalkulator lagi.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {steps.map((step) => {
+                const IconComponent = step.icon;
+                return (
+                  <div
+                    key={step.index}
+                    className="group relative p-6 sm:p-7 rounded-2xl border border-secondary-800/70 bg-secondary-950/35 hover:bg-secondary-950/60 hover:border-primary-400/50 hover:-translate-y-0.5 transition-all duration-150 ease-out active:scale-[0.99] flex flex-col justify-between"
+                  >
+                    <div>
+                      {/* Top Bar: Icon on Left, Step Pill on Right */}
+                      <div className="flex items-center justify-between pb-5">
+                        <div className="w-11 h-11 rounded-xl bg-primary-400/10 border border-primary-400/20 text-primary-400 flex items-center justify-center group-hover:scale-105 group-hover:bg-primary-400/15 group-hover:border-primary-400/40 transition-all duration-150 ease-out shadow-xs">
+                          <IconComponent className="w-5 h-5" />
+                        </div>
+                        <Badge
+                          color="brand"
+                          size="sm"
+                          type="pill-color"
+                          className="font-mono font-bold tracking-wider"
+                        >
+                          {step.index}
+                        </Badge>
+                      </div>
+
+                      {/* Title & Description */}
+                      <div className="space-y-2">
+                        <h3 className="text-lg sm:text-xl font-extrabold text-text tracking-tight group-hover:text-primary-400 transition-colors duration-150">
+                          {step.title}
+                        </h3>
+                        <p className="text-sm text-text-300 leading-relaxed text-pretty">
+                          {step.desc}
+                        </p>
+                      </div>
+
+                      {/* Interactive Visual Micro-Preview */}
+                      {step.index === "01" && (
+                        <div className="my-5 rounded-xl border border-secondary-800/80 bg-background overflow-hidden shadow-xs">
+                          {/* Scanner Top Bar */}
+                          <div className="bg-primary-950 px-3.5 py-2 flex items-center justify-between border-b border-primary-900/40">
+                            <div className="flex items-center gap-2">
+                              <ReceiptCheck className="w-4 h-4 text-primary-400 shrink-0" />
+                              <span className="font-bold text-xs text-text-50">OCR Scanner AI</span>
+                            </div>
+                          </div>
+
+                          {/* Digital Receipt Slip */}
+                          <div className="p-3 bg-secondary-950/40 space-y-2">
+                            <div className="p-3 rounded-lg bg-background border border-secondary-800/70 shadow-xs font-mono text-xs space-y-2 text-text-100">
+                              <div className="flex items-center justify-between border-b border-dashed border-secondary-800/60 pb-1.5 font-sans">
+                                <div>
+                                  <span className="font-bold text-xs text-text-50 block">Kopi Kenangan Senopati</span>
+                                  <span className="text-3xs text-text-400 font-mono">Struk #CP-8849</span>
+                                </div>
+                                <Badge color="brand" size="sm" type="pill-color" className="text-3xs font-bold">
+                                  Auto Deteksi
+                                </Badge>
+                              </div>
+
+                              <div className="space-y-1.5 pt-0.5">
+                                <div className="flex justify-between items-center">
+                                  <span>1x Kopi Kenangan Mantan</span>
+                                  <span className="font-semibold text-text">Rp 22.000</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                  <span>1x Toast Coklat Klasik</span>
+                                  <span className="font-semibold text-text">Rp 28.000</span>
+                                </div>
+                              </div>
+
+                              <div className="pt-1.5 border-t border-dashed border-secondary-800/60 flex justify-between items-center text-3xs font-sans text-text-300">
+                                <span>Pajak Resto (10%) + Servis (5%)</span>
+                                <span className="font-bold text-primary-400 font-mono">+Rp 7.500</span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between px-1 text-3xs text-text-400 font-sans">
+                              <span>3 Item terdeteksi otomatis</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {step.index === "02" && (
+                        <div className="my-5 rounded-xl border border-secondary-800/80 bg-background overflow-hidden shadow-xs">
+                          {/* Board Header */}
+                          <div className="bg-primary-950 px-3.5 py-2 flex items-center justify-between border-b border-primary-900/40">
+                            <div className="flex items-center gap-2">
+                              <Target01 className="w-4 h-4 text-primary-400 shrink-0" />
+                              <span className="font-bold text-xs text-text-50">Siapa Pesen Apa Nih?</span>
+                            </div>
+                            <span className="text-3xs font-mono text-text-400">Tap Avatar Sohib</span>
+                          </div>
+
+                          {/* Split Item Card (Authentic SplitItemRow from App) */}
+                          <div className="p-3 bg-secondary-950/40 space-y-2">
+                            <div className="p-3.5 rounded-xl bg-secondary-950/60 border border-secondary-800 space-y-3 shadow-xs">
+                              {/* Header Item */}
+                              <div className="flex items-start justify-between gap-2.5">
+                                <div className="min-w-0 flex-1">
+                                  <h4 className="font-bold text-text text-sm leading-snug wrap-break-word">
+                                    Pizza Quattro Formaggi
+                                  </h4>
+                                  <p className="text-2xs text-text-400 mt-0.5 font-medium">
+                                    1 porsi (Rp 120.000/porsi)
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <span className="text-sm font-extrabold text-primary-400 whitespace-nowrap">
+                                    Rp 120.000
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Status Alokasi & Tombol Aksi Cepat */}
+                              <div className="flex items-center justify-between gap-2 flex-wrap pt-0.5">
+                                <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                                  <Badge color="brand" size="sm" type="pill-color" className="inline-flex font-semibold text-3xs sm:text-2xs">
+                                    3 porsi patungan • Rp 40.000/porsi
+                                  </Badge>
+                                </div>
+                                <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+                                  <Button
+                                    color="secondary"
+                                    size="xs"
+                                    iconLeading={Users01}
+                                    className="px-2 py-1 text-3xs font-semibold rounded-lg pointer-events-none"
+                                  >
+                                    Bagi ke Semua
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/* Avatar Pemilihan Anggota (Exact real app style from SplitItemRow) */}
+                              <div className="flex flex-wrap gap-x-2.5 sm:gap-x-3 gap-y-2.5 items-start pt-1.5 justify-around">
+                                {/* Dimas (selected) */}
+                                <div className="flex flex-col items-center w-12 sm:w-13 shrink-0 relative">
+                                  <div className="relative">
+                                    <div className="rounded-full min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center p-0.5">
+                                      <Avatar
+                                        alt="Dimas"
+                                        size="md"
+                                        src="https://api.dicebear.com/9.x/dylan/svg?seed=Dimas"
+                                        className="shadow-md ring-2 ring-primary-400/40 border-primary-400/60 scale-105"
+                                      />
+                                    </div>
+                                    <span className="absolute -top-1 -left-1 z-10 bg-danger-600 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md border border-secondary-950">
+                                      <Minus className="w-3 h-3 stroke-[3px]" />
+                                    </span>
+                                    <span className="absolute -top-1 -right-1 z-10 bg-primary-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-3xs font-bold shadow-md border border-secondary-950 pointer-events-none">
+                                      1
+                                    </span>
+                                  </div>
+                                  <p className="text-3xs sm:text-2xs truncate w-full text-center leading-tight font-bold text-text mt-1">
+                                    Dimas
+                                  </p>
+                                </div>
+
+                                {/* Rania (selected) */}
+                                <div className="flex flex-col items-center w-12 sm:w-13 shrink-0 relative">
+                                  <div className="relative">
+                                    <div className="rounded-full min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center p-0.5">
+                                      <Avatar
+                                        alt="Rania"
+                                        size="md"
+                                        src="https://api.dicebear.com/9.x/dylan/svg?seed=Rania"
+                                        className="shadow-md ring-2 ring-primary-400/40 border-primary-400/60 scale-105"
+                                      />
+                                    </div>
+                                    <span className="absolute -top-1 -left-1 z-10 bg-danger-600 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md border border-secondary-950">
+                                      <Minus className="w-3 h-3 stroke-[3px]" />
+                                    </span>
+                                    <span className="absolute -top-1 -right-1 z-10 bg-primary-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-3xs font-bold shadow-md border border-secondary-950 pointer-events-none">
+                                      1
+                                    </span>
+                                  </div>
+                                  <p className="text-3xs sm:text-2xs truncate w-full text-center leading-tight font-bold text-text mt-1">
+                                    Rania
+                                  </p>
+                                </div>
+
+                                {/* Fajar (selected) */}
+                                <div className="flex flex-col items-center w-12 sm:w-13 shrink-0 relative">
+                                  <div className="relative">
+                                    <div className="rounded-full min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center p-0.5">
+                                      <Avatar
+                                        alt="Fajar"
+                                        size="md"
+                                        src="https://api.dicebear.com/9.x/dylan/svg?seed=Fajar"
+                                        className="shadow-md ring-2 ring-primary-400/40 border-primary-400/60 scale-105"
+                                      />
+                                    </div>
+                                    <span className="absolute -top-1 -left-1 z-10 bg-danger-600 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md border border-secondary-950">
+                                      <Minus className="w-3 h-3 stroke-[3px]" />
+                                    </span>
+                                    <span className="absolute -top-1 -right-1 z-10 bg-primary-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-3xs font-bold shadow-md border border-secondary-950 pointer-events-none">
+                                      1
+                                    </span>
+                                  </div>
+                                  <p className="text-3xs sm:text-2xs truncate w-full text-center leading-tight font-bold text-text mt-1">
+                                    Fajar
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between px-1 text-3xs text-text-400">
+                              <span>Pajak & service charge auto ikut porsi</span>
+                              <span className="text-primary-400 font-bold">Fair & Rapi</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {step.index === "03" && (
+                        <div className="my-5 rounded-xl border border-secondary-800/80 bg-background overflow-hidden shadow-xs">
+                          {/* WhatsApp Chat Bar Header */}
+                          <div className="bg-emerald-600 px-3.5 py-2 flex items-center justify-between text-white">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <MessageChatSquare className="w-4 h-4 shrink-0" />
+                              <span className="font-bold text-xs truncate">WhatsApp • Grup Tongkrongan</span>
+                            </div>
+                            <span className="text-3xs font-medium text-emerald-100 shrink-0">Hari ini</span>
+                          </div>
+
+                          {/* WhatsApp Chat Bubble Body */}
+                          <div className="p-3 bg-secondary-950/40 space-y-2.5">
+                            <div className="p-3 rounded-lg bg-background border border-secondary-800/70 shadow-xs text-xs font-mono space-y-2 leading-relaxed text-text-100">
+                              <div className="flex items-center justify-between border-b border-dashed border-secondary-800/60 pb-1.5 font-sans">
+                                <span className="font-bold text-xs text-text-50">REKAP TAGIHAN</span>
+                                <Badge color="brand" size="sm" type="pill-color" className="text-3xs font-bold font-mono">
+                                  LUNAS 2/3
+                                </Badge>
+                              </div>
+
+                              <div className="space-y-1.5 pt-0.5">
+                                <div>
+                                  <div className="flex justify-between">
+                                    <span className="font-bold text-text-50">Dimas</span>
+                                    <span className="font-bold text-primary-400">Rp 64.400</span>
+                                  </div>
+                                  <p className="text-3xs text-text-400 font-sans">
+                                    ↳ 1x Nasi Goreng Gila + Pajak
+                                  </p>
+                                </div>
+
+                                <div>
+                                  <div className="flex justify-between">
+                                    <span className="font-bold text-text-50">Rania</span>
+                                    <span className="font-bold text-primary-400">Rp 35.000</span>
+                                  </div>
+                                  <p className="text-3xs text-text-400 font-sans">
+                                    ↳ 1x Kopi Susu Aren + Pajak
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="pt-2 border-t border-dashed border-secondary-800/60 text-3xs font-sans text-text-300 space-y-0.5">
+                                <p className="font-semibold text-text-200">
+                                  Transfer: BCA 8045xxxx (a/n Taqy)
+                                </p>
+                                <p className="text-primary-400 font-mono text-2xs font-bold">
+                                  ceban-pertama.vercel.app/bon/VSED3
+                                </p>
+                              </div>
+
+                              <div className="flex justify-end items-center gap-1 text-3xs text-text-400 pt-0.5 font-sans">
+                                <span>21:42</span>
+                                <span className="text-primary-400 font-bold">✓✓</span>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Feature Details / Checklist */}
+                    <div className="border-t border-secondary-800/60 pt-4 mt-2 space-y-2.5">
+                      {step.details.map((detail, idx) => (
+                        <div key={idx} className="flex items-center gap-2.5 text-xs text-text-200 font-medium">
+                          <CheckCircle className="w-4 h-4 text-primary-400 shrink-0 stroke-[2.25px]" />
+                          <span>
+                            {detail}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimoni */}
+        <section className="w-full border-b border-secondary-800/40 py-16 sm:py-24 bg-secondary-950/15">
+          <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">
+              Kata Mereka Yang Udah Pake.
             </h2>
-            <p className="text-xs sm:text-sm text-text-300 max-w-md leading-relaxed [text-wrap:pretty]">
-              Cukup upload foto struk makan lo, sistem langsung beresin hitungannya dalam hitungan detik.
-            </p>
-            <Button
-              href="/pete-pete/new"
-              iconTrailing={ArrowRight}
-              className="py-3.5 px-8 rounded-lg active:scale-[0.97] text-white font-extrabold text-sm shadow-lg shadow-primary/30 transition-transform duration-150 ease-out flex items-center justify-center gap-2 cursor-pointer"
-            >
-              Mulai Scan Struk Gratis
-            </Button>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {testimonials.map((t, idx) => (
+                <div
+                  key={idx}
+                  className="p-6 sm:p-7 rounded-2xl border border-secondary-800/70 bg-secondary-950/35 hover:bg-secondary-950/50 hover:border-secondary-800 transition-all duration-150 ease-out flex flex-col justify-between space-y-6"
+                >
+                  <p className="text-sm text-text-100 leading-relaxed text-pretty">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <div className="border-t border-secondary-800/60 pt-4">
+                    <span className="font-bold text-sm text-text block">
+                      {t.author}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="w-full border-b border-secondary-800/40 py-16 sm:py-24">
+          <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">
+              Yang Sering Ditanyain.
+            </h2>
+
+            <div className="space-y-3">
+              {faqs.map((faq, idx) => (
+                <details
+                  key={idx}
+                  className="group rounded-2xl border border-secondary-800/70 bg-secondary-950/35 p-5 sm:p-6 transition-all duration-150 ease-out hover:border-secondary-800 open:bg-secondary-950/60"
+                >
+                  <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-text select-none list-none [&::-webkit-details-marker]:hidden">
+                    <span>{faq.q}</span>
+                    <ChevronDown className="w-4 h-4 text-text-400 transition-transform duration-200 group-open:rotate-180 shrink-0 ml-4" />
+                  </summary>
+                  <p className="mt-3 text-sm text-text-300 leading-relaxed max-w-3xl text-pretty">
+                    {faq.a}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 text-center px-6 w-full max-w-5xl border-t border-secondary-800/60 pt-6 z-10">
-        <p className="text-xs text-text-400 font-medium">
-          Ceban Pertama &mdash; Dibuat khusus biar splitbill geng lo beres instan tanpa drama.
-        </p>
+      <footer className="w-full bg-background border-t border-secondary-800/40 overflow-hidden select-none">
+        <div className="w-full py-12 sm:py-16 text-center overflow-hidden">
+          <h2 className="text-[10.5vw] font-extrabold uppercase tracking-tighter text-text leading-none whitespace-nowrap text-center">
+            CEBAN PERTAMA
+          </h2>
+        </div>
       </footer>
     </div>
   );

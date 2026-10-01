@@ -171,7 +171,7 @@ function ScanLoadingOverlay() {
           <div className="flex items-center justify-between gap-2">
             <span className="text-3xs text-text-400 font-semibold">Pete-Pete AI</span>
           </div>
-          <div className="min-h-[68px] sm:min-h-[76px] flex items-center justify-center text-center px-1">
+          <div className="min-h-17 sm:min-h-19 flex items-center justify-center text-center px-1">
             <p
               key={quoteIndex}
               className="text-xs sm:text-sm font-semibold text-text-50 leading-relaxed italic transition-all duration-300 animate-in fade-in slide-in-from-bottom-1"
@@ -244,7 +244,7 @@ export default function NewSessionScanStep({
   handleSaveManualRename,
   detailsForm,
 }: NewSessionScanStepProps) {
-  const [showReceiptPreview, setShowReceiptPreview] = useState(false);
+  // const [showReceiptPreview, setShowReceiptPreview] = useState(false);
 
   const scanItems = scanResult?.items || [];
 
@@ -298,12 +298,12 @@ export default function NewSessionScanStep({
                   </span>
                 </div>
               ) : (
-                <div className="relative w-full rounded-2xl overflow-hidden bg-secondary-950/60 border border-secondary-800 p-2 flex items-center justify-center max-h-[28rem] sm:max-h-[34rem]">
+                <div className="relative w-full rounded-2xl overflow-hidden bg-secondary-950/60 border border-secondary-800 p-2 flex items-center justify-center max-h-122 sm:max-h-136">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={filePreview}
                     alt="Struk"
-                    className="max-h-[26rem] sm:max-h-[32rem] w-auto max-w-full object-contain rounded-xl"
+                    className="max-h-104 sm:max-h-128 w-auto max-w-full object-contain rounded-xl"
                   />
                   {/* Loading Overlay khusus di dalam frame foto struk */}
                   {loading && <ScanLoadingOverlay />}
