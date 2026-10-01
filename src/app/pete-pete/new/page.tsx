@@ -16,12 +16,72 @@ import {
 import { getUserBanks, UserBankData } from "@/app/actions/profile";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
-import LoadingScreen from "@/components/application/LoadingScreen";
 
 import { ScanItem, ScanResult, InputMode } from "./types";
 import NewSessionBankForm from "./components/NewSessionBankForm";
 import NewSessionScanStep from "./components/NewSessionScanStep";
 import NewSessionManualSteps from "./components/NewSessionManualSteps";
+
+// Kompres foto struk di client sebelum upload (pangkas 4-15MB jadi ~250KB, hemat data & loading 5-10x lebih cepat)
+async function compressReceiptImage(file: File, maxDimension = 1600, quality = 0.8): Promise<File | Blob> {
+  if (typeof window === "undefined" || !file.type.startsWith("image/")) return file;
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      let { width, height } = img;
+
+      // Jika resolusi dan ukuran sudah kecil, kirim langsung
+      if (width <= maxDimension && height <= maxDimension && file.size < 500 * 1024) {
+        resolve(file);
+        return;
+      }
+
+      if (width > maxDimension || height > maxDimension) {
+        if (width > height) {
+          height = Math.round((height * maxDimension) / width);
+          width = maxDimension;
+        } else {
+          width = Math.round((width * maxDimension) / height);
+          height = maxDimension;
+        }
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        resolve(file);
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => {
+          if (blob && blob.size < file.size) {
+            resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" }));
+          } else {
+            resolve(file);
+          }
+        },
+        "image/jpeg",
+        quality
+      );
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(file);
+    };
+
+    img.src = objectUrl;
+  });
+}
 
 export default function NewSessionPage() {
   const router = useRouter();
@@ -305,8 +365,9 @@ export default function NewSessionPage() {
     }
     setLoading(true);
     try {
+      const uploadFile = await compressReceiptImage(file);
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", uploadFile);
       const res = await fetch("/api/ocr/scan", { method: "POST", body: formData });
       const result = await res.json();
       if (!res.ok) {
@@ -418,69 +479,49 @@ export default function NewSessionPage() {
         finalBankName = selectedTemplate;
       }
 
-      if (isManual) {
-        const itemsPayload = manualItems.map((item, idx) => {
-          const allocationsMap = manualItemAllocations[idx] || {};
-          const allocationsList = Object.entries(allocationsMap)
-            .filter(([, qty]) => qty > 0)
-            .map(([memberName, qty]) => ({ memberName, quantity: qty }));
+      const currentItems = isManual ? manualItems : scanResult!.items;
+      const currentTotal = isManual ? manualTotal : scanResult!.totalAmount;
 
-          return {
-            name: item.name,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            totalPrice: item.totalPrice,
-            allocations: allocationsList,
-          };
-        });
+      const itemsPayload = currentItems.map((item, idx) => {
+        const allocationsMap = manualItemAllocations[idx] || {};
+        const allocationsList = Object.entries(allocationsMap)
+          .filter(([, qty]) => qty > 0)
+          .map(([memberName, qty]) => ({ memberName, quantity: qty }));
 
-        const res = await createManualBillSession({
-          title: title || merchantName || "Bill Splitbill",
-          description,
-          merchantName,
-          totalAmount: manualTotal,
-          taxAmount,
-          tipAmount,
-          discountAmount,
-          userId: authSession?.user?.id,
-          members: allPeople,
-          items: itemsPayload,
-          bankName: finalBankName,
-          bankAccount: finalBankAccount,
-          bankOwner: finalBankOwner,
-        });
+        return {
+          name: item.name,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          totalPrice: item.totalPrice,
+          allocations: allocationsList,
+        };
+      });
 
-        if (!res.success) {
-          toast.error(res.error || "Gagal nyimpen sesi manual nih, coba periksa data menu lo ya!");
-        } else {
-          clearSessionStorage();
-          router.push(`/pete-pete/${res.session?.id}/split`);
-        }
+      const res = await createManualBillSession({
+        title:
+          title ||
+          merchantName ||
+          (isScan ? scanResult?.merchantName : undefined) ||
+          "Bill Splitbill",
+        description,
+        merchantName: merchantName || (isScan ? scanResult?.merchantName : undefined),
+        totalAmount: currentTotal,
+        taxAmount,
+        tipAmount,
+        discountAmount,
+        userId: authSession?.user?.id,
+        members: allPeople,
+        items: itemsPayload,
+        bankName: finalBankName,
+        bankAccount: finalBankAccount,
+        bankOwner: finalBankOwner,
+      });
+
+      if (!res.success) {
+        toast.error(res.error || "Gagal nyimpen sesi splitbill nih, coba periksa data menu lo ya!");
       } else {
-        const items = scanResult!.items;
-        const totalAmount = scanResult!.totalAmount;
-
-        const res = await createBillSession({
-          title: title || merchantName || scanResult!.merchantName || "Bill Splitbill",
-          description,
-          merchantName: merchantName || scanResult!.merchantName,
-          totalAmount,
-          taxAmount,
-          tipAmount,
-          discountAmount,
-          userId: authSession?.user?.id,
-          items,
-          bankName: finalBankName,
-          bankAccount: finalBankAccount,
-          bankOwner: finalBankOwner,
-        });
-
-        if (!res.success) {
-          toast.error(res.error || "Gagal nyimpen sesi splitbill nih, coba beberapa saat lagi ya!");
-        } else {
-          clearSessionStorage();
-          router.push(`/pete-pete/${res.session?.id}/split`);
-        }
+        clearSessionStorage();
+        router.push(`/pete-pete/${res.session?.id}/split`);
       }
     } catch (err) {
       console.error(err);
@@ -491,7 +532,60 @@ export default function NewSessionPage() {
   };
 
   if (isPending) {
-    return <LoadingScreen title="Sabar ya, ngab!" description="Lagi memproses data lu" />;
+    return (
+      <main className="flex-1 flex flex-col bg-background text-text h-full min-h-0 overflow-hidden select-none">
+        {/* Header Skeleton */}
+        <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center gap-3">
+          <div className="min-w-11 min-h-11 rounded-lg bg-secondary-900 border border-secondary-800 shrink-0 animate-pulse" />
+          <div className="space-y-1.5 flex-1 min-w-0">
+            <div className="h-4 bg-secondary-900 rounded-md w-36 animate-pulse" />
+            <div className="h-2.5 bg-secondary-900/70 rounded-md w-40 animate-pulse" />
+          </div>
+        </header>
+
+        {/* Body Skeleton */}
+        <div className="flex-1 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto">
+          <div className="space-y-1.5 pt-1">
+            <div className="h-5 bg-secondary-900 rounded-lg w-56 animate-pulse" />
+            <div className="h-3.5 bg-secondary-900/70 rounded-md w-full max-w-sm animate-pulse" />
+          </div>
+
+          <div className="space-y-3 pt-1">
+            {/* Scan Mode Skeleton Card */}
+            <div className="w-full p-4 sm:p-5 rounded-2xl border-2 border-primary-400/25 bg-secondary-950/40 flex items-start justify-between gap-3">
+              <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                <div className="w-12 h-12 shrink-0 rounded-xl bg-primary-400/15 border border-primary-400/25 animate-pulse mt-0.5" />
+                <div className="space-y-2 min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 bg-secondary-800 rounded-md w-36 animate-pulse" />
+                    <div className="w-20 h-5 rounded-full bg-primary-400/15 animate-pulse" />
+                  </div>
+                  <div className="h-3 bg-secondary-800/70 rounded-md w-4/5 animate-pulse" />
+                  <div className="h-2.5 bg-secondary-800/50 rounded-md w-3/5 animate-pulse" />
+                </div>
+              </div>
+              <div className="w-5 h-5 rounded bg-secondary-800 shrink-0 animate-pulse mt-1" />
+            </div>
+
+            {/* Manual Mode Skeleton Card */}
+            <div className="w-full p-4 sm:p-5 rounded-2xl border border-secondary-800/80 bg-secondary-950/30 flex items-start justify-between gap-3">
+              <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary-900/80 border border-secondary-800 animate-pulse mt-0.5" />
+                <div className="space-y-2 min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 bg-secondary-800 rounded-md w-32 animate-pulse" />
+                    <div className="w-16 h-5 rounded-full bg-secondary-800/60 animate-pulse" />
+                  </div>
+                  <div className="h-3 bg-secondary-800/70 rounded-md w-4/5 animate-pulse" />
+                  <div className="h-2.5 bg-secondary-800/50 rounded-md w-2/3 animate-pulse" />
+                </div>
+              </div>
+              <div className="w-5 h-5 rounded bg-secondary-800 shrink-0 animate-pulse mt-1" />
+            </div>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   // Step 0: Choose Mode
@@ -632,7 +726,9 @@ export default function NewSessionPage() {
       <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
         <Button
           onPress={() => {
-            if (inputMode === "scan" && scanResult) {
+            if (wizardStep > 1) {
+              setWizardStep((prev) => prev - 1);
+            } else if (inputMode === "scan" && scanResult) {
               setScanResult(null);
             } else {
               setInputMode(null);
@@ -650,11 +746,13 @@ export default function NewSessionPage() {
             {inputMode === "scan" ? "Scan Struk" : "Input Manual"}
           </h1>
           <p className="text-2xs text-text-300">
-            {inputMode === "scan"
-              ? scanResult
-                ? "Langkah 2: Detail Bill"
-                : "Langkah 1: Upload Foto"
-              : "Masukkan item & detail Bill"}
+            {wizardStep === 1
+              ? inputMode === "scan" && !scanResult
+                ? "Langkah 1: Upload Foto Struk"
+                : "Langkah 1: Verifikasi Menu"
+              : wizardStep === 2
+              ? "Langkah 2: Tambah Teman Patungan"
+              : "Langkah 3: Info Rekening & Bayar"}
           </p>
         </div>
       </header>
@@ -662,37 +760,49 @@ export default function NewSessionPage() {
       {/* Form Body Scrollable */}
       <div className="flex-1 min-h-0 p-4 space-y-5 overflow-y-auto">
         {inputMode === "scan" && (
-          <>
-            <NewSessionScanStep
-              scanResult={scanResult}
-              file={file}
-              filePreview={filePreview}
-              isDragOver={isDragOver}
-              handleDragOver={handleDragOver}
-              handleDragLeave={handleDragLeave}
-              handleDrop={handleDrop}
-              handleFileChange={handleFileChange}
-              onClearFile={() => {
-                setFile(null);
-                setFilePreview(null);
-              }}
-              handleRemoveScanItem={handleRemoveScanItem}
-              showScanItemForm={showScanItemForm}
-              setShowScanItemForm={setShowScanItemForm}
-              draftItemName={draftItemName}
-              setDraftItemName={setDraftItemName}
-              draftItemAmount={draftItemAmount}
-              setDraftItemAmount={setDraftItemAmount}
-              draftItemPrice={draftItemPrice}
-              setDraftItemPrice={setDraftItemPrice}
-              draftItemQty={draftItemQty}
-              setDraftItemQty={setDraftItemQty}
-              draftPriceMode={draftPriceMode}
-              setDraftPriceMode={setDraftPriceMode}
-              handleAddScanDraftItem={handleAddScanDraftItem}
-            />
-            {scanResult && detailsForm}
-          </>
+          <NewSessionScanStep
+            wizardStep={wizardStep}
+            scanResult={scanResult}
+            file={file}
+            filePreview={filePreview}
+            loading={loading}
+            isDragOver={isDragOver}
+            handleDragOver={handleDragOver}
+            handleDragLeave={handleDragLeave}
+            handleDrop={handleDrop}
+            handleFileChange={handleFileChange}
+            onClearFile={() => {
+              setFile(null);
+              setFilePreview(null);
+            }}
+            handleRemoveScanItem={handleRemoveScanItem}
+            showScanItemForm={showScanItemForm}
+            setShowScanItemForm={setShowScanItemForm}
+            draftItemName={draftItemName}
+            setDraftItemName={setDraftItemName}
+            draftItemAmount={draftItemAmount}
+            setDraftItemAmount={setDraftItemAmount}
+            draftItemPrice={draftItemPrice}
+            setDraftItemPrice={setDraftItemPrice}
+            draftItemQty={draftItemQty}
+            setDraftItemQty={setDraftItemQty}
+            draftPriceMode={draftPriceMode}
+            setDraftPriceMode={setDraftPriceMode}
+            handleAddScanDraftItem={handleAddScanDraftItem}
+            updateScanResultCalculations={updateScanResultCalculations}
+            newMemberInput={newMemberInput}
+            setNewMemberInput={setNewMemberInput}
+            handleAddMember={handleAddMember}
+            manualMembers={manualMembers}
+            setManualMembers={setManualMembers}
+            currentUserName={currentUserName}
+            editingManualIndex={editingManualIndex}
+            setEditingManualIndex={setEditingManualIndex}
+            editingManualName={editingManualName}
+            setEditingManualName={setEditingManualName}
+            handleSaveManualRename={handleSaveManualRename}
+            detailsForm={detailsForm}
+          />
         )}
 
         {inputMode === "manual" && (
@@ -729,9 +839,6 @@ export default function NewSessionPage() {
             editingManualName={editingManualName}
             setEditingManualName={setEditingManualName}
             handleSaveManualRename={handleSaveManualRename}
-            manualItemAllocations={manualItemAllocations}
-            setManualItemAllocations={setManualItemAllocations}
-            allPeople={allPeople}
             detailsForm={detailsForm}
           />
         )}
@@ -749,48 +856,59 @@ export default function NewSessionPage() {
             className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
             iconLeading={<Camera01 className="w-4 h-4" />}
           >
-            {loading ? "Lagi Baca Struk..." : "Mulai Scan Struk"}
+            {loading ? "Lagi Baca Struk" : "Mulai Scan Struk"}
           </Button>
-        ) : inputMode === "scan" && scanResult ? (
-          <Button
-            type="button"
-            onPress={() => handleCreate()}
-            isDisabled={loading}
-            isLoading={loading}
-            color="primary"
-            className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
-            iconLeading={<CheckCircle className="w-4 h-4" />}
-          >
-            Gas, Bikin Bill &amp; Bagi Tagihan!
-          </Button>
-        ) : inputMode === "manual" && wizardStep < 3 ? (
-          <Button
-            type="button"
-            onPress={() => {
-              if (wizardStep === 1 && manualItems.length === 0) {
-                toast.error("Masukin minimal satu menu makanan atau minuman dulu ya, Bos!");
-                return;
-              }
-              setWizardStep((prev) => prev + 1);
-            }}
-            color="primary"
-            className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
-            iconLeading={<ChevronRight className="w-4 h-4" />}
-          >
-            Lanjut ke Langkah {wizardStep + 1}
-          </Button>
-        ) : inputMode === "manual" && wizardStep === 3 ? (
-          <Button
-            type="button"
-            onPress={() => handleCreate()}
-            isDisabled={loading}
-            isLoading={loading}
-            color="primary"
-            className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
-          >
-            Buat Bill &amp; Mulai Pembagian
-          </Button>
-        ) : null}
+        ) : (
+          <div className="flex items-center gap-3">
+            {wizardStep > 1 && (
+              <Button
+                type="button"
+                onPress={() => setWizardStep((prev) => Math.max(1, prev - 1))}
+                color="secondary"
+                size="md"
+                className="min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform shrink-0"
+                iconLeading={<ArrowLeft className="w-4 h-4" />}
+              >
+                Kembali
+              </Button>
+            )}
+
+            {wizardStep < 3 ? (
+              <Button
+                type="button"
+                onPress={() => {
+                  if (inputMode === "manual" && manualItems.length === 0) {
+                    toast.error("Masukin minimal satu menu makanan atau minuman dulu ya, Bos!");
+                    return;
+                  }
+                  if (inputMode === "scan" && (!scanResult || scanResult.items.length === 0)) {
+                    toast.error("Minimal harus ada satu menu di struk ya, Bos!");
+                    return;
+                  }
+                  setWizardStep((prev) => prev + 1);
+                }}
+                color="primary"
+                className="flex-1 min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
+                iconTrailing={<ChevronRight className="w-4 h-4" />}
+                
+              >
+                Lanjut ke Langkah {wizardStep + 1}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                onPress={() => handleCreate()}
+                isDisabled={loading}
+                isLoading={loading}
+                color="primary"
+                className="flex-1 min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
+                iconLeading={<CheckCircle className="w-4 h-4" />}
+              >
+                Gas, Bikin Bill &amp; Bagi Tagihan!
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </main>
   );

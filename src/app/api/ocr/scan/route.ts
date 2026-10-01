@@ -15,6 +15,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Bypass limit dan langsung return fake OCR di local development (tanpa panggil AI)
+    if (process.env.NODE_ENV === "development") {
+      // Delay 4 detik agar animasi scan & celoteh tongkrongan sempat terbaca tanpa menunggu terlalu lama
+      await new Promise((r) => setTimeout(r, 4000));
+
+      const mockItems = [
+        { name: "Nasi Goreng Special", quantity: 2, unitPrice: 35000, totalPrice: 70000 },
+        { name: "Es Teh Manis", quantity: 3, unitPrice: 8000, totalPrice: 24000 },
+        { name: "Sate Ayam Madura", quantity: 1, unitPrice: 45000, totalPrice: 45000 },
+        { name: "Pizza Meat Lovers (Large)", quantity: 1, unitPrice: 120000, totalPrice: 120000 },
+        { name: "Extra Sambal Terasi", quantity: 2, unitPrice: 3000, totalPrice: 6000 },
+      ];
+
+      const subtotal = mockItems.reduce((acc, item) => acc + item.totalPrice, 0);
+      const tax = Math.round(subtotal * 0.1);
+      const service = Math.round(subtotal * 0.05);
+      const discount = 15000;
+      const grandTotal = subtotal + tax + service - discount;
+
+      return NextResponse.json({
+        success: true,
+        isMock: true,
+        merchantName: "Restoran Selera Nusantara (Mock Dev)",
+        items: mockItems,
+        taxAmount: tax,
+        tipAmount: service,
+        discountAmount: discount,
+        totalAmount: grandTotal,
+        currency: "IDR",
+      });
+    }
+
     // Get Session and IP Address for checking limit
     const session = await auth.api.getSession({
       headers: await headers(),

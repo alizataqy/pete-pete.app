@@ -140,7 +140,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
             type="text"
             value={newBankOwner}
             onChange={setNewBankOwner}
-            placeholder="Contoh: Muhammad Ucup"
+            placeholder="Contoh: Usop"
             size="sm"
           />
 

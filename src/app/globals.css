@@ -460,3 +460,51 @@ input[type="search"]::-webkit-search-cancel-button {
 .recharts-surface path {
     outline: none;
 }
+
+@keyframes scan-beam {
+  0% {
+    top: 4%;
+    opacity: 0.3;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    top: 94%;
+    opacity: 0.3;
+  }
+}
+
+@keyframes quote-progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-quote-progress {
+  animation: quote-progress 4s linear infinite;
+}
+
+@keyframes quote-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-scan-beam {
+  animation: scan-beam 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+
+.animate-quote-progress {
+  animation: quote-progress 4s linear forwards;
+}
+
