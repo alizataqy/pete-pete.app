@@ -12,6 +12,13 @@ export const auth = betterAuth({
       strategy: "jwt",
     },
   },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      enabled: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+    },
+  },
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
@@ -19,14 +26,26 @@ export const auth = betterAuth({
 
       if (resendApiKey) {
         try {
-          await fetch("https://api.resend.com/emails", {
+          const rawFrom = process.env.EMAIL_FROM?.replace(/^["']|["']$/g, "").trim();
+          let from = "Ceban Pertama <onboarding@resend.dev>";
+
+          if (rawFrom) {
+            if (rawFrom.includes("@")) {
+              from = rawFrom;
+            } else {
+              // Jika di .env hanya diisi nama (misal: "Ceban Pertama"), kombinasikan dengan email default
+              from = `${rawFrom} <onboarding@resend.dev>`;
+            }
+          }
+
+          const response = await fetch("https://api.resend.com/emails", {
             method: "POST",
             headers: {
               Authorization: `Bearer ${resendApiKey}`,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: process.env.EMAIL_FROM || "Ceban Pertama <onboarding@resend.dev>",
+              from,
               to: user.email,
               subject: "Reset Password Akun Ceban Pertama Lo",
               html: `
@@ -46,6 +65,11 @@ export const auth = betterAuth({
               `,
             }),
           });
+
+          if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            console.error("[Auth] Resend API Error:", errData);
+          }
         } catch (error) {
           console.error("[Auth] Gagal kirim email reset password:", error);
         }

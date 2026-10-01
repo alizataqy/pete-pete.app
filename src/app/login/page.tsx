@@ -8,6 +8,7 @@ import { signIn } from "@/lib/auth-client";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/base/input/label";
 import { Button } from "@/components/base/buttons/button";
+import { GoogleIcon } from "@/components/foundations/social-icons/google-icon";
 import { ArrowLeft, ArrowRight, Mail01, Lock01, AlertCircle } from "@untitledui/icons";
 
 export default function LoginPage() {
@@ -15,7 +16,24 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setGoogleLoading(true);
+
+    try {
+      await signIn.social({
+        provider: "google",
+        callbackURL: "/tongkrongan",
+      });
+    } catch (err) {
+      console.error(err);
+      setError("Gagal masuk pake Google nih. Cek koneksi internet lo ya, Bos!");
+      setGoogleLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -106,7 +124,30 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
+            <Button
+              type="button"
+              color="secondary"
+              size="lg"
+              isDisabled={googleLoading || loading}
+              isLoading={googleLoading}
+              iconLeading={GoogleIcon}
+              onPress={handleGoogleSignIn}
+              className="w-full min-h-12 rounded-lg font-bold text-sm text-text border border-secondary-800 bg-secondary-950/60 hover:bg-secondary-900 active:scale-[0.97] transition-all"
+            >
+              Lanjut pake Google
+            </Button>
+
+            <div className="relative flex items-center justify-center my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-secondary-800/80" />
+              </div>
+              <span className="relative px-3 bg-background text-2xs font-medium uppercase tracking-wider text-text-400 select-none">
+                atau
+              </span>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <Input
                 id="email"
@@ -162,6 +203,7 @@ export default function LoginPage() {
               </Button>
             </div>
           </form>
+          </div>
 
           <div className="pt-6 border-t border-secondary-800/70">
             <p className="text-xs text-text-400">
