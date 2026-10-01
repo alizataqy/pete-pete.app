@@ -33,7 +33,10 @@ export default function MemberManagerStep({
   handleSaveManualRename,
 }: MemberManagerStepProps) {
   return (
-    <div className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xs">
+    <div
+      id="tour-members-manager"
+      className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xs"
+    >
       <div className="flex items-center gap-2.5">
         <div className="p-1.5 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400 shrink-0">
           <Users01 className="w-4 h-4" />

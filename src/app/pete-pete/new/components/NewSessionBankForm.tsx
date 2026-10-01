@@ -50,7 +50,7 @@ export default function NewSessionBankForm({
   return (
     <div className="space-y-4">
       {/* Detail Sesi Pete-Pete */}
-      <div className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-4">
+      <div id="tour-session-details" className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-4">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400 shrink-0">
             <Edit02 className="w-4 h-4" />
@@ -84,7 +84,7 @@ export default function NewSessionBankForm({
       </div>
 
       {/* Info Rekening Pembayaran */}
-      <div className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-4">
+      <div id="tour-bank-account" className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-4">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400 shrink-0">
             <CreditCard01 className="w-4 h-4" />

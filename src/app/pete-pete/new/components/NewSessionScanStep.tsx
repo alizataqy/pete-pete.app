@@ -12,6 +12,7 @@ import {
   Image01,
   ArrowUpRight,
   MessageChatCircle,
+  CheckCircle,
 } from "@untitledui/icons";
 import { ScanResult, ScanItem, formatRupiah, parseRupiah } from "../types";
 import WizardStepHeader from "./WizardStepHeader";
@@ -261,7 +262,10 @@ export default function NewSessionScanStep({
         <div className="space-y-4">
           {/* Step 1: Upload File (sebelum scan) */}
           {!scanResult && (
-            <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+            <div
+              id="tour-receipt-upload"
+              className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4"
+            >
               <div className="flex justify-between items-center">
                 <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
                   <span className="w-5 h-5 rounded-md bg-primary-400/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
@@ -309,6 +313,28 @@ export default function NewSessionScanStep({
                   {loading && <ScanLoadingOverlay />}
                 </div>
               )}
+
+              {/* Tips Foto Struk Biar Akurat */}
+              <div className="p-3.5 rounded-xl bg-secondary-900/40 border border-secondary-800/70 space-y-2 text-xs">
+                <div className="flex items-center gap-2 text-text-200 font-bold">
+                  <CheckCircle className="w-4 h-4 text-primary-400 shrink-0" />
+                  <span>Tips Foto Struk Biar Akurat:</span>
+                </div>
+                <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-2xs text-text-400">
+                  <li className="flex items-start gap-1.5 bg-secondary-950/40 p-2.5 rounded-lg border border-secondary-800/40">
+                    <span className="text-primary-400 font-bold">•</span>
+                    <span>Foto tegak lurus dan sejajar sama kertas struk</span>
+                  </li>
+                  <li className="flex items-start gap-1.5 bg-secondary-950/40 p-2.5 rounded-lg border border-secondary-800/40">
+                    <span className="text-primary-400 font-bold">•</span>
+                    <span>Pencahayaan terang &amp; gak kena bayangan gelap</span>
+                  </li>
+                  <li className="flex items-start gap-1.5 bg-secondary-950/40 p-2.5 rounded-lg border border-secondary-800/40">
+                    <span className="text-primary-400 font-bold">•</span>
+                    <span>Pastiin nama menu &amp; total nominal kebaca jelas</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           )}
 
@@ -316,7 +342,10 @@ export default function NewSessionScanStep({
           {/* Hasil Scan & List Item */}
           {scanResult && (
             <div className="space-y-4 animate-in fade-in duration-300">
-              <div className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xs">
+              <div
+                id="tour-scan-items"
+                className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xs"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="p-1.5 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400">
@@ -529,35 +558,37 @@ export default function NewSessionScanStep({
                 )}
 
                 {/* Pajak, Service Charge, & Diskon */}
-                <FeeAdjustmentsFields
-                  tax={scanResult.taxAmount || 0}
-                  onTaxChange={(val) =>
-                    updateScanResultCalculations(
-                      scanItems,
-                      val,
-                      scanResult.tipAmount,
-                      scanResult.discountAmount
-                    )
-                  }
-                  tip={scanResult.tipAmount || 0}
-                  onTipChange={(val) =>
-                    updateScanResultCalculations(
-                      scanItems,
-                      scanResult.taxAmount,
-                      val,
-                      scanResult.discountAmount
-                    )
-                  }
-                  discount={scanResult.discountAmount || 0}
-                  onDiscountChange={(val) =>
-                    updateScanResultCalculations(
-                      scanItems,
-                      scanResult.taxAmount,
-                      scanResult.tipAmount,
-                      val
-                    )
-                  }
-                />
+                <div id="tour-scan-fees">
+                  <FeeAdjustmentsFields
+                    tax={scanResult.taxAmount || 0}
+                    onTaxChange={(val) =>
+                      updateScanResultCalculations(
+                        scanItems,
+                        val,
+                        scanResult.tipAmount,
+                        scanResult.discountAmount
+                      )
+                    }
+                    tip={scanResult.tipAmount || 0}
+                    onTipChange={(val) =>
+                      updateScanResultCalculations(
+                        scanItems,
+                        scanResult.taxAmount,
+                        val,
+                        scanResult.discountAmount
+                      )
+                    }
+                    discount={scanResult.discountAmount || 0}
+                    onDiscountChange={(val) =>
+                      updateScanResultCalculations(
+                        scanItems,
+                        scanResult.taxAmount,
+                        scanResult.tipAmount,
+                        val
+                      )
+                    }
+                  />
+                </div>
 
                 {/* Total Sementara */}
                 <div className="flex justify-between items-center pt-3 border-t border-secondary-800/80">

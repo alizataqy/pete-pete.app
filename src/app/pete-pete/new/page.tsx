@@ -12,7 +12,9 @@ import {
   ArrowLeft,
   ChevronRight,
   CheckCircle,
+  HelpCircle,
 } from "@untitledui/icons";
+import { SpotlightTour } from "@/components/features/onboarding/spotlight-tour";
 import { getUserBanks, UserBankData } from "@/app/actions/profile";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
@@ -98,6 +100,37 @@ export default function NewSessionPage() {
   const [description, setDescription] = useSessionStorageState("pete-pete-new-description", "");
   const [merchantName, setMerchantName] = useSessionStorageState("pete-pete-new-merchant-name", "");
   const [loading, setLoading] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  const chooseModeTourSteps = [
+    {
+      targetId: "tour-scan-mode",
+      badge: "Langkah 1 dari 2",
+      title: "Scan Struk AI (Rekomendasi)",
+      description: "Foto struk kasir lo, sistem otomatis deteksi nama menu, jumlah, harga, pajak, dan diskon dalam hitungan detik!",
+    },
+    {
+      targetId: "tour-manual-mode",
+      badge: "Langkah 2 dari 2",
+      title: "Input Menu Manual",
+      description: "Kalo struknya ilang atau ga kebagian struk fisik, lo bisa ketik daftar menu dan harga patungan satu-satu.",
+    },
+  ];
+
+  const detailsTourSteps = [
+    {
+      targetId: "tour-session-details",
+      badge: "Langkah 1 dari 2",
+      title: "Kasih Nama Tongkrongan",
+      description: "Tulis nama acaranya (misal: 'Kopi Nako Tebet') biar sohib lo gak bingung pas nerima link rincian tagihan.",
+    },
+    {
+      targetId: "tour-bank-account",
+      badge: "Langkah 2 dari 2",
+      title: "Rekening Buat Temen Transfer",
+      description: "Tentukan ke mana temen-temen lo harus transfer patungannya (BCA, Mandiri, GoPay, atau QRIS).",
+    },
+  ];
 
   // Bank details selection & inputs
   const [profileBanks, setProfileBanks] = useState<UserBankData[]>([]);
@@ -321,6 +354,102 @@ export default function NewSessionPage() {
 
   const currentUserName = authSession?.user?.name ?? "Gua";
   const allPeople = [currentUserName, ...manualMembers];
+
+  const getActiveTourStage = (): string => {
+    if (!inputMode) return "mode_select";
+    if (inputMode === "scan" && !scanResult) return "scan_upload";
+    if (inputMode === "scan" && scanResult && wizardStep === 1) return "scan_verify";
+    if (inputMode === "manual" && wizardStep === 1) return "manual_items";
+    if (wizardStep === 2) return "members";
+    if (wizardStep === 3) return "details";
+    return "default";
+  };
+
+  const getActiveTourSteps = () => {
+    if (!inputMode) {
+      return chooseModeTourSteps;
+    }
+
+    if (inputMode === "scan" && !scanResult) {
+      return [
+        {
+          targetId: "tour-receipt-upload",
+          badge: "Tips Foto Struk",
+          title: "Pilih / Ambil Foto Struk",
+          description:
+            "Pastiin foto struk tegak lurus, pencahayaan terang, dan nominal total keliatan jelas biar AI gampang deteksi daftar menu dan harganya!",
+        },
+        {
+          targetId: "tour-scan-action-btn",
+          badge: "Mulai Scan AI",
+          title: "Mulai Scan Otomatis",
+          description:
+            "Klik tombol ini setelah foto struk dipilih. AI bakal langsung ekstrak daftar menu, porsi, harga, dan pajaknya dalam sekejap!",
+        },
+      ];
+    }
+
+    if (inputMode === "scan" && scanResult && wizardStep === 1) {
+      return [
+        {
+          targetId: "tour-scan-items",
+          badge: "Verifikasi Menu",
+          title: "Cek Menu Hasil Scan",
+          description:
+            "Periksa hasil pembacaan AI. Lo bisa edit harga, hapus menu, atau nambah menu baru kalo ada yang kelewatan.",
+        },
+        {
+          targetId: "tour-scan-fees",
+          badge: "Pajak & Diskon",
+          title: "Sesuaikan Biaya Tambahan",
+          description:
+            "Cek pajak resto, service charge, atau diskon promosi dari struk biar perhitungannya akurat.",
+        },
+      ];
+    }
+
+    if (inputMode === "manual" && wizardStep === 1) {
+      return [
+        {
+          targetId: "tour-manual-items",
+          badge: "Input Menu",
+          title: "Masukin Menu & Harga",
+          description:
+            "Tulis menu yang dipesen bareng-bareng beserta porsi dan harganya. Lo bisa tambah menu sebanyak mungkin!",
+        },
+      ];
+    }
+
+    if (wizardStep === 2) {
+      return [
+        {
+          targetId: "tour-members-manager",
+          badge: "Temen Patungan",
+          title: "Tambah Sohib Nongkrong",
+          description:
+            "Masukin nama-nama temen lo yang ikut patungan buat dibagi tagihan per porsi menunya.",
+        },
+      ];
+    }
+
+    return detailsTourSteps;
+  };
+
+  const currentStage = getActiveTourStage();
+
+  useEffect(() => {
+    setIsTourOpen(false);
+    try {
+      const storageKey = `has_seen_tour_${currentStage}`;
+      const hasSeen = localStorage.getItem(storageKey);
+      if (!hasSeen) {
+        const timer = setTimeout(() => setIsTourOpen(true), 500);
+        return () => clearTimeout(timer);
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [currentStage]);
 
   useEffect(() => {
     return () => {
@@ -593,20 +722,30 @@ export default function NewSessionPage() {
     return (
       <main className="flex-1 flex flex-col bg-background text-text h-full min-h-0 overflow-hidden">
         {/* Header */}
-        <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center gap-3">
-          <Button
-            href={authSession ? "/tongkrongan" : "/"}
-            color="primary"
-            size="sm"
-            aria-label="Kembali"
-            className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="min-w-0 flex-1">
-            <h1 className="text-sm font-extrabold text-text-50">Bikin Bill PETE-PETE</h1>
-            <p className="text-2xs text-text-300">Pilih cara input menu splitbill</p>
+        <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <Button
+              href={authSession ? "/tongkrongan" : "/"}
+              color="primary"
+              size="sm"
+              aria-label="Kembali"
+              className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-sm font-extrabold text-text-50">Bikin Bill PETE-PETE</h1>
+              <p className="text-2xs text-text-300">Pilih cara input menu splitbill</p>
+            </div>
           </div>
+          <Button
+            size="sm"
+            color="secondary"
+            aria-label="Panduan bikin pete-petean"
+            onPress={() => setIsTourOpen(true)}
+            iconLeading={HelpCircle}
+            className="min-w-10 min-h-10 w-10 h-10 p-0 rounded-lg bg-secondary-900 border border-secondary-800 text-primary-400 hover:text-primary-300 flex items-center justify-center active:scale-95 transition-all shrink-0 cursor-pointer"
+          />
         </header>
 
         {/* Body Content */}
@@ -623,6 +762,7 @@ export default function NewSessionPage() {
           <div className="space-y-3">
             {/* Scan Mode Card */}
             <button
+              id="tour-scan-mode"
               type="button"
               onClick={() => setInputMode("scan")}
               className="w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-primary-400/40 bg-linear-to-br from-primary-950/40 via-secondary-950/60 to-secondary-950/30 hover:border-primary-400/80 hover:bg-secondary-950/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative overflow-hidden"
@@ -659,6 +799,7 @@ export default function NewSessionPage() {
 
             {/* Manual Mode Card */}
             <button
+              id="tour-manual-mode"
               type="button"
               onClick={() => setInputMode("manual")}
               className="w-full text-left p-4 sm:p-5 rounded-2xl border border-secondary-800 bg-secondary-950/40 hover:border-secondary-700 hover:bg-secondary-950/70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative"
@@ -694,6 +835,13 @@ export default function NewSessionPage() {
             </button>
           </div>
         </div>
+
+        <SpotlightTour
+          steps={chooseModeTourSteps}
+          isOpen={isTourOpen}
+          onClose={() => setIsTourOpen(false)}
+          storageKey={`has_seen_tour_${currentStage}`}
+        />
       </main>
     );
   }
@@ -723,38 +871,48 @@ export default function NewSessionPage() {
   return (
     <main className="flex-1 flex flex-col bg-background text-text h-full min-h-0 overflow-hidden">
       {/* Mobile Header */}
-      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
-        <Button
-          onPress={() => {
-            if (wizardStep > 1) {
-              setWizardStep((prev) => prev - 1);
-            } else if (inputMode === "scan" && scanResult) {
-              setScanResult(null);
-            } else {
-              setInputMode(null);
-            }
-          }}
-          color="primary"
-          size="sm"
-          aria-label="Kembali"
-          className="min-w-11 min-h-11 p-2 rounded-lg active:scale-95 transition-all flex items-center justify-center"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-base font-semibold text-text-50">
-            {inputMode === "scan" ? "Scan Struk" : "Input Manual"}
-          </h1>
-          <p className="text-2xs text-text-300">
-            {wizardStep === 1
-              ? inputMode === "scan" && !scanResult
-                ? "Langkah 1: Upload Foto Struk"
-                : "Langkah 1: Verifikasi Menu"
-              : wizardStep === 2
-              ? "Langkah 2: Tambah Teman Patungan"
-              : "Langkah 3: Info Rekening & Bayar"}
-          </p>
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <Button
+            onPress={() => {
+              if (wizardStep > 1) {
+                setWizardStep((prev) => prev - 1);
+              } else if (inputMode === "scan" && scanResult) {
+                setScanResult(null);
+              } else {
+                setInputMode(null);
+              }
+            }}
+            color="primary"
+            size="sm"
+            aria-label="Kembali"
+            className="min-w-11 min-h-11 p-2 rounded-lg active:scale-95 transition-all flex items-center justify-center"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-base font-semibold text-text-50">
+              {inputMode === "scan" ? "Scan Struk" : "Input Manual"}
+            </h1>
+            <p className="text-2xs text-text-300">
+              {wizardStep === 1
+                ? inputMode === "scan" && !scanResult
+                  ? "Langkah 1: Upload Foto Struk"
+                  : "Langkah 1: Verifikasi Menu"
+                : wizardStep === 2
+                ? "Langkah 2: Tambah Teman Patungan"
+                : "Langkah 3: Info Rekening & Bayar"}
+            </p>
+          </div>
         </div>
+        <Button
+          size="sm"
+          color="secondary"
+          aria-label="Panduan bikin pete-petean"
+          onPress={() => setIsTourOpen(true)}
+          iconLeading={HelpCircle}
+          className="min-w-10 min-h-10 w-10 h-10 p-0 rounded-lg bg-secondary-900 border border-secondary-800 text-primary-400 hover:text-primary-300 flex items-center justify-center active:scale-95 transition-all shrink-0 cursor-pointer"
+        />
       </header>
 
       {/* Form Body Scrollable */}
@@ -847,17 +1005,19 @@ export default function NewSessionPage() {
       {/* Floating Bottom Action */}
       <div className="shrink-0 p-4 border-t border-secondary-800 bg-secondary-950/95 backdrop-blur-md z-30">
         {inputMode === "scan" && !scanResult ? (
-          <Button
-            type="button"
-            onPress={handleScanReceipt}
-            isDisabled={!file || loading}
-            isLoading={loading}
-            color="primary"
-            className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
-            iconLeading={<Camera01 className="w-4 h-4" />}
-          >
-            {loading ? "Lagi Baca Struk" : "Mulai Scan Struk"}
-          </Button>
+          <div id="tour-scan-action-btn" className="w-full">
+            <Button
+              type="button"
+              onPress={handleScanReceipt}
+              isDisabled={!file || loading}
+              isLoading={loading}
+              color="primary"
+              className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
+              iconLeading={<Camera01 className="w-4 h-4" />}
+            >
+              {loading ? "Lagi Baca Struk" : "Mulai Scan Struk"}
+            </Button>
+          </div>
         ) : (
           <div className="flex items-center gap-3">
             {wizardStep > 1 && (
@@ -890,7 +1050,7 @@ export default function NewSessionPage() {
                 color="primary"
                 className="flex-1 min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
                 iconTrailing={<ChevronRight className="w-4 h-4" />}
-                
+
               >
                 Lanjut ke Langkah {wizardStep + 1}
               </Button>
@@ -910,6 +1070,13 @@ export default function NewSessionPage() {
           </div>
         )}
       </div>
+
+      <SpotlightTour
+        steps={getActiveTourSteps()}
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        storageKey={`has_seen_tour_${currentStage}`}
+      />
     </main>
   );
 }
