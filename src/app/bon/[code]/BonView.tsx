@@ -261,7 +261,7 @@ export default function BonView({
       </div>
 
       {/* Screen Header Bar (Disembunyikan saat dicetak) */}
-      <header className="sticky top-0 z-20 h-16 shrink-0 bg-background/95 backdrop-blur-md border-b border-secondary-800 px-3.5 sm:px-4 flex items-center justify-between gap-2.5 print:hidden">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center justify-between gap-3 print:hidden">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <Button
             onPress={() => router.back()}
@@ -598,7 +598,7 @@ export default function BonView({
                     color="secondary"
                     size="md"
                     iconLeading={ReceiptCheck}
-                    className="w-full min-h-9 py-2 text-xs font-semibold active:scale-95 transition-all border border-secondary-800 bg-secondary-900/60 hover:bg-secondary-900 text-text-50 cursor-pointer"
+                    className="w-full min-h-9 py-2 text-xs cursor-pointer"
                   >
                     Cetak / Simpan Bon Digital (PDF)
                   </Button>

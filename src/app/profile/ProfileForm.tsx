@@ -133,7 +133,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
   return (
     <div className="flex flex-col flex-1 min-h-0 h-full">
       {/* Header */}
-      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center gap-3">
         <Button
           onPress={() => router.push("/tongkrongan")}
           color="primary"

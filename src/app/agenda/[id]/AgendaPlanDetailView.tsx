@@ -563,7 +563,7 @@ export default function VacationPlanDetailView({
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-background text-text overflow-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button
             onPress={() => router.push("/agenda")}

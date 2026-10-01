@@ -136,7 +136,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-background text-text overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-secondary-800 bg-secondary-950/40 flex items-center justify-between gap-3 shrink-0">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center justify-between gap-3">
         <Button
           href="/tongkrongan"
           color="primary"
@@ -146,11 +146,11 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <h1 className="text-sm font-semibold text-text text-center flex-1">
+        <h1 className="text-sm font-extrabold text-text-50 text-center flex-1">
           Make a Plan
         </h1>
-        <div className="w-10 h-10" /> {/* Spacer */}
-      </div>
+        <div className="w-11 h-11" /> {/* Spacer */}
+      </header>
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-24 scrollbar-hide">

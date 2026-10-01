@@ -17,7 +17,7 @@ export default function WalletsListView({ initialBanks }: WalletsListViewProps) 
   return (
     <div className="flex flex-col flex-1 pb-16">
       {/* Header */}
-      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button
             onPress={() => router.push("/profile")}

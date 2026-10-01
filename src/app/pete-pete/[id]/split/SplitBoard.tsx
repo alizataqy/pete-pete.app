@@ -628,7 +628,7 @@ export default function SplitBoard({
   return (
     <div className="flex flex-col flex-1 overflow-hidden min-h-0 relative">
       {/* Header */}
-      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-3.5 sm:px-4 flex items-center justify-between gap-2">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <Button
             onPress={() => router.push("/tongkrongan")}

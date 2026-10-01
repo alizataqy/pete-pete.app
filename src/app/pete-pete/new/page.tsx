@@ -499,7 +499,7 @@ export default function NewSessionPage() {
     return (
       <main className="flex-1 flex flex-col bg-background text-text h-full min-h-0 overflow-hidden">
         {/* Header */}
-        <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
+        <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center gap-3">
           <Button
             href={authSession ? "/tongkrongan" : "/"}
             color="primary"

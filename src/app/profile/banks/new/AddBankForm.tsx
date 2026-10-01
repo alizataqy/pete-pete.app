@@ -72,7 +72,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
   return (
     <div className="flex flex-col flex-1 pb-16">
       {/* Header */}
-      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center gap-3">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center gap-3">
         <Button
           href="/profile"
           color="secondary"
