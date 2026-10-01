@@ -163,12 +163,12 @@ export default function LandingView({ user }: UserSessionProp) {
         <section className="w-full border-b border-secondary-800/40">
           <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-32">
             <div className="max-w-4xl space-y-8">
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-text leading-[1.05] sm:leading-[1.02]">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-[-0.035em] text-text leading-[0.92] sm:leading-[0.90]">
                 <span className="block">Abis Nongkrong Ramean?</span>
-                <span className="text-primary-400 block mt-1 sm:mt-2">Foto Struknya Aja.</span>
+                <span className="text-primary-400 block">Foto Struknya Aja.</span>
               </h1>
 
-              <p className="text-lg sm:text-xl md:text-2xl text-text-100 leading-relaxed max-w-2xl text-pretty font-normal">
+              <p className="text-lg/8 sm:text-xl/8 md:text-2xl/8 text-text-100 leading-relaxed max-w-2xl text-pretty font-normal">
                 Foto struk, tentuin siapa pesen apa, langsung kirim rincian ke
                 grup WhatsApp. Pajak dan service charge kebagi otomatis.
               </p>
@@ -272,10 +272,10 @@ export default function LandingView({ user }: UserSessionProp) {
                           {/* Digital Receipt Slip */}
                           <div className="p-3 bg-secondary-950/40 space-y-2">
                             <div className="p-3 rounded-lg bg-background border border-secondary-800/70 shadow-xs font-mono text-xs space-y-2 text-text-100">
-                              <div className="flex items-center justify-between border-b border-dashed border-secondary-800/60 pb-1.5 font-sans">
+                              <div className="flex items-center justify-between border-b border-dashed border-secondary-800/60 pb-1.5 text-pretty font-sans">
                                 <div>
                                   <span className="font-bold text-xs text-text-50 block">Kopi Kenangan Senopati</span>
-                                  <span className="text-3xs text-text-400 font-mono">Struk #CP-8849</span>
+                                  <span className="text-3xs text-text-400">Struk #CP-8849</span>
                                 </div>
                                 <Badge color="brand" size="sm" type="pill-color" className="text-3xs font-bold">
                                   Auto Deteksi
@@ -293,13 +293,13 @@ export default function LandingView({ user }: UserSessionProp) {
                                 </div>
                               </div>
 
-                              <div className="pt-1.5 border-t border-dashed border-secondary-800/60 flex justify-between items-center text-3xs font-sans text-text-300">
+                              <div className="pt-1.5 border-t border-dashed border-secondary-800/60 flex justify-between items-center text-3xs text-pretty font-sans text-text-300">
                                 <span>Pajak Resto (10%) + Servis (5%)</span>
                                 <span className="font-bold text-primary-400 font-mono">+Rp 7.500</span>
                               </div>
                             </div>
 
-                            <div className="flex items-center justify-between px-1 text-3xs text-text-400 font-sans">
+                            <div className="flex items-center justify-between px-1 text-3xs text-text-400 text-pretty font-sans">
                               <span>3 Item terdeteksi otomatis</span>
                             </div>
                           </div>
@@ -451,7 +451,7 @@ export default function LandingView({ user }: UserSessionProp) {
                           {/* WhatsApp Chat Bubble Body */}
                           <div className="p-3 bg-secondary-950/40 space-y-2.5">
                             <div className="p-3 rounded-lg bg-background border border-secondary-800/70 shadow-xs text-xs font-mono space-y-2 leading-relaxed text-text-100">
-                              <div className="flex items-center justify-between border-b border-dashed border-secondary-800/60 pb-1.5 font-sans">
+                              <div className="flex items-center justify-between border-b border-dashed border-secondary-800/60 pb-1.5 text-pretty font-sans">
                                 <span className="font-bold text-xs text-text-50">REKAP TAGIHAN</span>
                                 <Badge color="brand" size="sm" type="pill-color" className="text-3xs font-bold font-mono">
                                   LUNAS 2/3
@@ -464,7 +464,7 @@ export default function LandingView({ user }: UserSessionProp) {
                                     <span className="font-bold text-text-50">Dimas</span>
                                     <span className="font-bold text-primary-400">Rp 64.400</span>
                                   </div>
-                                  <p className="text-3xs text-text-400 font-sans">
+                                  <p className="text-3xs text-text-400 text-pretty font-sans">
                                     ↳ 1x Nasi Goreng Gila + Pajak
                                   </p>
                                 </div>
@@ -474,13 +474,13 @@ export default function LandingView({ user }: UserSessionProp) {
                                     <span className="font-bold text-text-50">Rania</span>
                                     <span className="font-bold text-primary-400">Rp 35.000</span>
                                   </div>
-                                  <p className="text-3xs text-text-400 font-sans">
+                                  <p className="text-3xs text-text-400 text-pretty font-sans">
                                     ↳ 1x Kopi Susu Aren + Pajak
                                   </p>
                                 </div>
                               </div>
 
-                              <div className="pt-2 border-t border-dashed border-secondary-800/60 text-3xs font-sans text-text-300 space-y-0.5">
+                              <div className="pt-2 border-t border-dashed border-secondary-800/60 text-3xs text-pretty font-sans text-text-300 space-y-0.5">
                                 <p className="font-semibold text-text-200">
                                   Transfer: BCA 8045xxxx (a/n Taqy)
                                 </p>
@@ -489,7 +489,7 @@ export default function LandingView({ user }: UserSessionProp) {
                                 </p>
                               </div>
 
-                              <div className="flex justify-end items-center gap-1 text-3xs text-text-400 pt-0.5 font-sans">
+                              <div className="flex justify-end items-center gap-1 text-3xs text-text-400 pt-0.5 text-pretty font-sans">
                                 <span>21:42</span>
                                 <span className="text-primary-400 font-bold">✓✓</span>
                               </div>

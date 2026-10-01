@@ -6,8 +6,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import { Input } from "@/components/base/input/input";
+import { Label } from "@/components/base/input/label";
 import { Button } from "@/components/base/buttons/button";
-import { ArrowLeft } from "@untitledui/icons";
+import { ArrowLeft, ArrowRight, Mail01, Lock01, AlertCircle } from "@untitledui/icons";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -26,7 +27,7 @@ export default function LoginPage() {
     }
 
     if (!password) {
-      setError("Kata sandi lo jangan dikosongin ya!");
+      setError("Password lo jangan dikosongin ya, Bos!");
       return;
     }
 
@@ -43,7 +44,7 @@ export default function LoginPage() {
         const raw = response.error.message || "";
         const friendlyMessage =
           /invalid|credential|password|user|not\s*found/i.test(raw)
-            ? "Email atau kata sandi lo gak cocok nih, coba cek lagi ya!"
+            ? "Email atau password lo gak cocok nih, coba cek lagi ya!"
             : "Gagal masuk nih, coba cek lagi akun lo ya!";
         setError(friendlyMessage);
       } else {
@@ -58,91 +59,123 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex-1 flex flex-col justify-center p-6 relative overflow-hidden bg-transparent">
-      <header className="absolute top-0 left-0 right-0 z-10 p-6">
+    <main className="flex-1 flex flex-col min-h-screen bg-background relative overflow-y-auto scrollbar-hide">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-background/90 backdrop-blur-md border-b border-secondary-800/80 px-4 sm:px-6 flex items-center justify-between">
         <Button
           href="/"
           color="secondary"
           size="sm"
           aria-label="Kembali ke beranda"
-          className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+          className="min-w-10 min-h-10 w-10 h-10 p-0 rounded-lg flex items-center justify-center active:scale-95 transition-transform"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-text" />
         </Button>
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-extrabold text-primary-400 group">
+          <Image
+            src="/logo.svg"
+            alt="Ceban Pertama"
+            width={22}
+            height={22}
+            className="w-5.5 h-5.5 rounded-sm"
+            priority
+          />
+          <span>Ceban Pertama</span>
+        </Link>
+        <div className="w-10 h-10 shrink-0" aria-hidden="true" />
       </header>
 
-      <div className="w-full z-10 space-y-6 max-w-sm mx-auto">
-        <div className="text-center space-y-1.5 flex flex-col items-center">
-          <Link href="/" className="inline-flex items-center gap-2.5 text-2xl font-extrabold text-primary-400 group">
-            <Image
-              src="/logo.svg"
-              alt="Ceban Pertama"
-              width={36}
-              height={36}
-              className="w-9 h-9 rounded-lg shadow-sm group-hover:scale-105 transition-transform duration-150"
-              priority
-            />
-            <span>Ceban Pertama</span>
-          </Link>
-          <h2 className="text-lg font-bold text-text-50">Balik lagi!</h2>
-          <p className="text-xs text-text-300">Masuk dulu yuk</p>
-        </div>
-
-        {error && (
-          <div className="p-3 text-xs text-danger-300 bg-danger-950/60 border border-danger-800 rounded-xl">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
-            <Input
-              id="email"
-              type="email"
-              isRequired
-              label="Email lo"
-              value={email}
-              onChange={setEmail}
-              placeholder="nama@email.com"
-              size="md"
-            />
+      <div className="flex-1 flex flex-col justify-center px-6 py-10 max-w-sm w-full mx-auto">
+        <div className="space-y-8">
+          {/* Swiss Typography Header */}
+          <div className="space-y-2">
+            <h1 className="text-3xl font-extrabold tracking-tight text-text leading-tight text-balance">
+              Masuk Akun.
+            </h1>
+            <p className="text-sm text-text-400 leading-normal font-normal text-pretty">
+              Masuk buat lanjutin dan pantau semua pete-petean lo.
+            </p>
           </div>
 
-          <div className="space-y-1.5">
-            <Input
-              id="password"
-              type="password"
-              isRequired
-              label="Password lo"
-              value={password}
-              onChange={setPassword}
-              placeholder="••••••••"
-              size="md"
-            />
+          {error && (
+            <div
+              className="p-3 text-xs text-danger-300 bg-danger-950/40 border border-danger-800/80 rounded-lg flex items-start gap-2.5"
+              role="alert"
+            >
+              <AlertCircle className="w-4 h-4 text-danger-400 shrink-0 mt-0.5" />
+              <span className="leading-snug">{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Input
+                id="email"
+                type="email"
+                isRequired
+                label="Email lo"
+                icon={Mail01}
+                value={email}
+                onChange={setEmail}
+                placeholder="nama@email.com"
+                size="md"
+                autoComplete="email"
+                autoFocus
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center">
+                <Label isRequired>Password lo</Label>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                isRequired
+                icon={Lock01}
+                value={password}
+                onChange={setPassword}
+                placeholder="••••••••"
+                size="md"
+                autoComplete="current-password"
+              />
+              <div className="flex justify-end pt-0.5">
+                <Link
+                  href="/forgot-password"
+                  className="text-xs font-semibold text-primary-400 hover:text-primary-300 transition-colors"
+                >
+                  Lupa password?
+                </Link>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Button
+                type="submit"
+                isDisabled={loading}
+                isLoading={loading}
+                color="primary"
+                size="lg"
+                iconTrailing={ArrowRight}
+                className="w-full min-h-12 rounded-lg font-bold text-sm active:scale-[0.97] transition-transform"
+              >
+                Masuk Sekarang
+              </Button>
+            </div>
+          </form>
+
+          <div className="pt-6 border-t border-secondary-800/70">
+            <p className="text-xs text-text-400">
+              Belum punya akun?{" "}
+              <Link
+                href="/register"
+                className="font-bold text-primary-400 hover:underline"
+              >
+                Bikin akun baru
+              </Link>
+            </p>
           </div>
-
-          <Button
-            type="submit"
-            isDisabled={loading}
-            isLoading={loading}
-            color="primary"
-            size="lg"
-            className="w-full min-h-12 py-3.5 rounded-lg font-bold text-sm active:scale-[0.96] transition-transform"
-          >
-            Masuk
-          </Button>
-        </form>
-
-        <div className="text-center pt-1">
-          <p className="text-xs text-text-50">
-            Belum punya akun?{" "}
-            <Link href="/register" className="text-primary-400 hover:underline">
-              Daftar sini dong
-            </Link>
-          </p>
         </div>
       </div>
     </main>
   );
 }
-
