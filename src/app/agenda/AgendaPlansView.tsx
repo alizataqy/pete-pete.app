@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createVacationPlan } from "@/app/actions/vacation";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
-import { Plus, ArrowLeft, CreditCard01, Users01, Compass, Calendar } from "@untitledui/icons";
+import { Plus, ArrowLeft, Compass, Calendar, ChevronRight } from "@untitledui/icons";
 import { ModalOverlay, Modal, Dialog } from "@/components/application/modals/modal";
 import { Heading } from "react-aria-components";
 import { toast } from "sonner";
@@ -202,43 +202,47 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
               <Link
                 key={plan.id}
                 href={`/agenda/${plan.id}`}
-                className="p-4 rounded-xl border border-secondary-800 bg-secondary-950/20 hover:bg-secondary-950/40 hover:border-primary-400 transition-all flex flex-col gap-3 group"
+                className="relative p-4 rounded-xl border border-secondary-800 bg-secondary-950/20 hover:bg-secondary-950/40 hover:border-primary-400/40 transition-all flex flex-col gap-3 group cursor-pointer"
               >
-                <div className="flex justify-between items-start gap-3">
-                  <div>
-                    <h3 className="text-xs font-bold text-text-50 group-hover:text-primary-400 transition-colors">
-                      {plan.title}
-                    </h3>
-                    <p className="text-2xs text-text-400 mt-0.5 wrap-break-word">
-                      {plan.description || "Gak ada deskripsi plan."}
-                    </p>
-                    {plan.date && (
-                      <p className="text-3xs text-primary-400 font-bold mt-1 flex items-center gap-1.5">
-                        <Calendar className="w-3 h-3 text-primary-400 shrink-0" />
-                        <span>{formatDateString(plan.date)}</span>
+                {/* Header: Icon, Judul, Deskripsi & Badge Anggota */}
+                <div className="flex items-start justify-between gap-2.5">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <div className="p-2 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400 shrink-0 group-hover:scale-105 transition-transform">
+                      <Compass className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-bold text-sm text-text-50 group-hover:text-primary-400 transition-colors truncate">
+                        {plan.title}
+                      </h3>
+                      <p className="text-2xs text-text-400 truncate mt-0.5">
+                        {plan.description || "Pete-pete liburan & kumpul bareng"}
                       </p>
-                    )}
+                    </div>
                   </div>
-                  <Badge color="brand" size="sm" type="pill-color" className="font-bold">
+                  <Badge color="gray" size="sm" type="pill-color" className="font-semibold text-2xs shrink-0">
                     {plan.membersCount} Sohib
                   </Badge>
                 </div>
 
-                <div className="pt-2 border-t border-secondary-900/60 flex items-center justify-between text-2xs text-text-400">
-                  <div className="flex items-center gap-1.5">
-                    <Users01 className="w-3.5 h-3.5 text-primary-400" />
-                    <div>
-                      <p className="text-4xs text-text-500 uppercase font-semibold">Sohib Group</p>
-                      <p className="font-bold text-text-50">{plan.membersCount} Sohib</p>
-                    </div>
+                {/* Info Tagihan, Tanggal & Detail */}
+                <div className="pt-2.5 pb-0.5 border-t border-secondary-800/80 flex items-center justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <span className="text-3xs uppercase tracking-wider text-text-400 font-bold block">
+                      Total Pete-Petean
+                    </span>
+                    <span className="text-sm sm:text-base font-extrabold text-primary-400 whitespace-nowrap block mt-0.5">
+                      {formatRupiah(plan.totalExpenses) || "Rp 0"}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <CreditCard01 className="w-3.5 h-3.5 text-text-50" />
-                    <div>
-                      <p className="text-4xs text-text-500 uppercase font-semibold">Total Pete-Petean</p>
-                      <p className="font-bold text-text-50">
-                        {formatRupiah(plan.totalExpenses)}
-                      </p>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {plan.date && (
+                      <span className="inline-flex items-center gap-1 text-3xs font-semibold text-text-300 bg-secondary-900 border border-secondary-800 px-2 py-1 rounded-md">
+                        <Calendar className="w-3 h-3 text-primary-400 shrink-0" />
+                        <span>{formatDateString(plan.date)}</span>
+                      </span>
+                    )}
+                    <div className="w-6 h-6 rounded-md bg-secondary-900/60 border border-secondary-800/60 flex items-center justify-center text-text-400 group-hover:text-primary-400 group-hover:border-primary-400/40 group-hover:translate-x-0.5 transition-all">
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </div>
                   </div>
                 </div>
@@ -250,7 +254,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
 
       {/* Modal Bikin Plan Baru */}
       <ModalOverlay isOpen={isOpen} onOpenChange={setIsOpen}>
-        <Modal className="w-full max-w-sm overflow-hidden bg-active text-text p-5">
+        <Modal className="w-full max-w-sm max-h-[calc(100dvh-2rem)] overflow-y-auto bg-active text-text p-4 sm:p-5">
           <Dialog className="outline-hidden">
             {({ close }) => (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">

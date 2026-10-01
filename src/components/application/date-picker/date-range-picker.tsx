@@ -88,7 +88,8 @@ export const DateRangePicker = ({ value: valueProp, defaultValue, onChange, onAp
                 offset={8}
                 className={({ isEntering, isExiting }) =>
                     cx(
-                        "origin-(--trigger-anchor-point) will-change-transform",
+                        "origin-(--trigger-anchor-point) will-change-transform z-50",
+                        "max-h-[min(calc(100dvh-1.5rem),38rem)] max-w-[calc(100vw-1.5rem)]",
                         isEntering &&
                             "duration-150 ease-out animate-in fade-in placement-right:slide-in-from-left-0.5 placement-top:slide-in-from-bottom-0.5 placement-bottom:slide-in-from-top-0.5",
                         isExiting &&
@@ -96,7 +97,7 @@ export const DateRangePicker = ({ value: valueProp, defaultValue, onChange, onAp
                     )
                 }
             >
-                <AriaDialog aria-label="Date range picker" className="flex rounded-2xl bg-primary shadow-xl ring ring-secondary_alt focus:outline-hidden">
+                <AriaDialog aria-label="Date range picker" className="flex rounded-2xl bg-primary shadow-xl ring ring-secondary_alt focus:outline-hidden max-h-[min(calc(100dvh-1.5rem),38rem)] overflow-y-auto">
                     {({ close }) => (
                         <>
                             <div className="hidden w-38 flex-col gap-0.5 border-r border-solid border-secondary p-3 lg:flex">

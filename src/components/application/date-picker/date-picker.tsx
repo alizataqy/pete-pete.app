@@ -18,10 +18,10 @@ interface DatePickerProps extends AriaDatePickerProps<DateValue> {
     /** The function to call when the cancel button is clicked. */
     onCancel?: () => void;
     size?: ButtonProps["size"];
-    placement?: "top" | "top left" | "top right" | "bottom" | "bottom left" | "bottom right";
+    placement?: "top" | "top left" | "top right" | "bottom" | "bottom left" | "bottom right" | "bottom start" | "bottom end" | "top start" | "top end";
 }
 
-export const DatePicker = ({ value: valueProp, defaultValue, onChange, onApply, onCancel, size = "sm", placement = "top right", ...props }: DatePickerProps) => {
+export const DatePicker = ({ value: valueProp, defaultValue, onChange, onApply, onCancel, size = "sm", placement = "bottom start", ...props }: DatePickerProps) => {
     const formatter = useDateFormatter({
         month: "short",
         day: "numeric",
@@ -43,7 +43,8 @@ export const DatePicker = ({ value: valueProp, defaultValue, onChange, onApply, 
                 placement={placement}
                 className={({ isEntering, isExiting }) =>
                     cx(
-                        "origin-(--trigger-anchor-point) will-change-transform",
+                        "origin-(--trigger-anchor-point) will-change-transform z-50",
+                        "max-h-[min(calc(100dvh-1.5rem),34rem)] max-w-[calc(100vw-1.5rem)]",
                         isEntering &&
                             "duration-150 ease-out animate-in fade-in placement-right:slide-in-from-left-0.5 placement-top:slide-in-from-bottom-0.5 placement-bottom:slide-in-from-top-0.5",
                         isExiting &&
@@ -51,15 +52,15 @@ export const DatePicker = ({ value: valueProp, defaultValue, onChange, onApply, 
                     )
                 }
             >
-                <AriaDialog aria-label="Date picker" className="rounded-2xl bg-primary shadow-xl ring ring-secondary_alt">
+                <AriaDialog aria-label="Date picker" className="rounded-2xl bg-primary shadow-xl ring ring-secondary_alt flex flex-col max-h-[min(calc(100dvh-1.5rem),34rem)] overflow-hidden">
                     {({ close }) => (
                         <>
-                            <div className="flex px-4 py-3 justify-center">
+                            <div className="flex px-3 py-2.5 sm:px-4 sm:py-3 justify-center overflow-y-auto flex-1">
                                 <Calendar highlightedDates={highlightedDates} />
                             </div>
-                            <div className="grid grid-cols-2 gap-3 border-t border-secondary p-3">
+                            <div className="grid grid-cols-2 gap-2 border-t border-secondary p-2.5 sm:p-3 shrink-0 bg-primary sticky bottom-0 z-10">
                                 <Button
-                                    size="md"
+                                    size="sm"
                                     color="secondary"
                                     onClick={() => {
                                         onCancel?.();
@@ -69,7 +70,7 @@ export const DatePicker = ({ value: valueProp, defaultValue, onChange, onApply, 
                                     Cancel
                                 </Button>
                                 <Button
-                                    size="md"
+                                    size="sm"
                                     color="primary"
                                     onClick={() => {
                                         onApply?.();
