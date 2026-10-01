@@ -10,6 +10,7 @@ export default async function SessionSplitPage({ params }: { params: Promise<{ i
     include: {
       items: true,
       members: {
+        orderBy: { id: "asc" },
         include: {
           allocations: true,
         },

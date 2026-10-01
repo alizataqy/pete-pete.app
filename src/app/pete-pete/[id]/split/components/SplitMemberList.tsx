@@ -166,131 +166,141 @@ export default function SplitMemberList({
           )}
 
           <div className="space-y-2 max-h-30 overflow-y-auto pr-1 scrollbar-hide">
-            {members.map((member) => (
-              <div
-                key={member.id}
-                className="flex items-center justify-between p-2 px-3 rounded-xl bg-secondary-950/40 border border-secondary-800/80 hover:bg-secondary-950/60 transition-all"
-              >
-                <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                  <Avatar
-                    alt={member.name}
-                    size="sm"
-                    className="shadow-md border border-secondary-800"
-                  />
-                  {editingMemberId === member.id ? (
-                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                      <input
-                        type="text"
-                        aria-label="Ubah nama sohib"
-                        value={editingMemberName}
-                        onChange={(e) => setEditingMemberName(e.target.value)}
-                        className="px-2 py-1 rounded bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none flex-1 min-w-0"
-                      />
-                      <Button
-                        onPress={() => setEditingMemberId(null)}
-                        color="secondary"
-                        size="xs"
-                        className="text-xs"
-                      >
-                        Gak Jadi
-                      </Button>
-                      <Button
-                        onPress={() => handleRenameSubmit(member.id)}
-                        isDisabled={loading}
-                        color="primary"
-                        size="xs"
-                        className="text-xs"
-                      >
-                        Simpan
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col min-w-0">
-                      <p className="font-semibold text-text text-xs wrap-break-word">
-                        {member.name}{" "}
-                        {member.userId === session.userId && (
-                          <span className="text-3xs font-normal text-text-400">(Gua)</span>
-                        )}
-                      </p>
-                      <p className="text-2xs text-primary-400 font-medium">
-                        Splitbill: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
-                      </p>
-                    </div>
-                  )}
-                </div>
+            {members.map((member, index) => {
+              const isCreator = session.userId
+                ? Boolean(member.userId && member.userId === session.userId)
+                : index === 0;
+              const isNameGua = member.name.trim().toLowerCase() === "gua";
+              const showGuaBadge = isCreator && !isNameGua;
 
-                {editingMemberId !== member.id && (
-                  <div className="flex items-center gap-1.5">
-                    <Button
-                      onPress={() => onTogglePaid(member.id, !!member.isPaid)}
-                      color={!member.isPaid ? "primary" : "secondary"}
-                      size="xs"
-                      iconLeading={!member.isPaid ? Check : X}
-                      className={`text-2xs font-bold tracking-wide transition-all duration-300 ${!member.isPaid
-                          ? "shadow-sm shadow-emerald-950/20"
-                          : "opacity-80 hover:opacity-100"
-                        }`}
-                    >
-                      {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
-                    </Button>
-                    <Button
-                      onPress={() => {
-                        if (sessionStatus !== "COMPLETED") {
-                          toast.warning("Kelarin dulu bill-nya sebelum bagi rincian ya, Bos!");
-                          return;
-                        }
-                        onOpenMemberSummaryShare(member);
-                      }}
-                      color="secondary"
-                      size="xs"
-                      aria-label={`Bagi rincian tagihan untuk ${member.name}`}
-                      className={`p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center ${sessionStatus !== "COMPLETED" ? "opacity-60" : ""
-                        }`}
-                    >
-                      {copiedId === member.id ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      ) : (
-                        <Share07 className="w-3.5 h-3.5 text-primary-400" />
-                      )}
-                    </Button>
-                    <Button
-                      onPress={() => onOpenReceiptModal(member)}
-                      color="secondary"
-                      size="xs"
-                      aria-label={`Download kartu bon untuk ${member.name}`}
-                      className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
-                    >
-                      <Download01 className="w-3.5 h-3.5" />
-                    </Button>
-                    {member.userId !== session.userId && session.status !== "COMPLETED" && (
-                      <>
+              return (
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between p-2 px-3 rounded-xl bg-secondary-950/40 border border-secondary-800/80 hover:bg-secondary-950/60 transition-all"
+                >
+                  <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                    <Avatar
+                      alt={member.name}
+                      size="sm"
+                      className="shadow-md border border-secondary-800"
+                    />
+                    {editingMemberId === member.id ? (
+                      <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                        <input
+                          type="text"
+                          aria-label="Ubah nama sohib"
+                          value={editingMemberName}
+                          onChange={(e) => setEditingMemberName(e.target.value)}
+                          className="px-2 py-1 rounded bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none flex-1 min-w-0"
+                        />
                         <Button
-                          onPress={() => {
-                            setEditingMemberId(member.id);
-                            setEditingMemberName(member.name);
-                          }}
-                          color="tertiary"
+                          onPress={() => setEditingMemberId(null)}
+                          color="secondary"
                           size="xs"
-                          aria-label={`Ubah nama ${member.name}`}
-                          className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
+                          className="text-xs"
                         >
-                          <Edit02 className="w-3.5 h-3.5" />
+                          Gak Jadi
                         </Button>
                         <Button
-                          onPress={() => onDeleteMemberPrompt(member)}
-                          color="tertiary"
+                          onPress={() => handleRenameSubmit(member.id)}
+                          isDisabled={loading}
+                          color="primary"
                           size="xs"
-                          aria-label={`Hapus ${member.name}`}
-                          className="p-1.5 rounded-lg active:scale-95 transition-all text-danger-400 hover:text-danger-300 flex items-center justify-center"
+                          className="text-xs"
                         >
-                          <Trash01 className="w-3.5 h-3.5" />
+                          Simpan
                         </Button>
-                      </>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col min-w-0">
+                        <p className="font-semibold text-text text-xs wrap-break-word">
+                          {member.name}
+                          {showGuaBadge && (
+                            <span className="text-3xs font-normal text-text-400"> (Gua)</span>
+                          )}
+                        </p>
+                        <p className="text-2xs text-primary-400 font-medium">
+                          Splitbill: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
+                        </p>
+                      </div>
                     )}
                   </div>
-                )}
+
+                  {editingMemberId !== member.id && (
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        onPress={() => onTogglePaid(member.id, !!member.isPaid)}
+                        color={!member.isPaid ? "primary" : "secondary"}
+                        size="xs"
+                        iconLeading={!member.isPaid ? Check : X}
+                        className={`text-2xs font-bold tracking-wide transition-all duration-300 ${
+                          !member.isPaid
+                            ? "shadow-sm shadow-emerald-950/20"
+                            : "opacity-80 hover:opacity-100"
+                        }`}
+                      >
+                        {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
+                      </Button>
+                      <Button
+                        onPress={() => {
+                          if (sessionStatus !== "COMPLETED") {
+                            toast.warning("Kelarin dulu bill-nya sebelum bagi rincian ya, Bos!");
+                            return;
+                          }
+                          onOpenMemberSummaryShare(member);
+                        }}
+                        color="secondary"
+                        size="xs"
+                        aria-label={`Bagi rincian tagihan untuk ${member.name}`}
+                        className={`p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center ${
+                          sessionStatus !== "COMPLETED" ? "opacity-60" : ""
+                        }`}
+                      >
+                        {copiedId === member.id ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Share07 className="w-3.5 h-3.5 text-primary-400" />
+                        )}
+                      </Button>
+                      <Button
+                        onPress={() => onOpenReceiptModal(member)}
+                        color="secondary"
+                        size="xs"
+                        aria-label={`Download kartu bon untuk ${member.name}`}
+                        className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
+                      >
+                        <Download01 className="w-3.5 h-3.5" />
+                      </Button>
+                      {member.userId !== session.userId && session.status !== "COMPLETED" && (
+                        <>
+                          <Button
+                            onPress={() => {
+                              setEditingMemberId(member.id);
+                              setEditingMemberName(member.name);
+                            }}
+                            color="tertiary"
+                            size="xs"
+                            aria-label={`Ubah nama ${member.name}`}
+                            className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
+                          >
+                            <Edit02 className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button
+                            onPress={() => onDeleteMemberPrompt(member)}
+                            color="tertiary"
+                            size="xs"
+                            aria-label={`Hapus ${member.name}`}
+                            className="p-1.5 rounded-lg active:scale-95 transition-all text-danger-400 hover:text-danger-300 flex items-center justify-center"
+                          >
+                            <Trash01 className="w-3.5 h-3.5" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  )}
               </div>
-            ))}
+            );
+          })}
           </div>
         </div>
       )}

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createBillSession, createManualBillSession } from "@/app/actions/session";
+import { createManualBillSession } from "@/app/actions/session";
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
@@ -150,6 +150,7 @@ export default function NewSessionPage() {
   const [bankAccount, setBankAccount] = useSessionStorageState("pete-pete-new-bank-account", "");
   const [bankOwner, setBankOwner] = useSessionStorageState("pete-pete-new-bank-owner", "");
   const [qrisUrl, setQrisUrl] = useSessionStorageState("pete-pete-new-qris-url", "");
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Fetch profile bank details
   useEffect(() => {
@@ -438,17 +439,20 @@ export default function NewSessionPage() {
   const currentStage = getActiveTourStage();
 
   useEffect(() => {
-    setIsTourOpen(false);
+    let timer: NodeJS.Timeout | undefined;
     try {
       const storageKey = `has_seen_tour_${currentStage}`;
       const hasSeen = localStorage.getItem(storageKey);
       if (!hasSeen) {
-        const timer = setTimeout(() => setIsTourOpen(true), 500);
-        return () => clearTimeout(timer);
+        timer = setTimeout(() => setIsTourOpen(true), 500);
       }
     } catch {
       // Ignore localStorage errors
     }
+    return () => {
+      setIsTourOpen(false);
+      if (timer) clearTimeout(timer);
+    };
   }, [currentStage]);
 
   useEffect(() => {
@@ -582,6 +586,28 @@ export default function NewSessionPage() {
       return;
     }
 
+    const isCustomBank = !useProfileBank || selectedBankId === "custom";
+    if (selectedTemplate !== "none" && isCustomBank) {
+      if (selectedTemplate === "QRIS") {
+        if (!qrisUrl.trim()) {
+          setFormSubmitted(true);
+          toast.error("URL gambar QRIS wajib diisi ya, Bos!");
+          return;
+        }
+      } else {
+        if (!bankAccount.trim()) {
+          setFormSubmitted(true);
+          toast.error("Nomor rekening atau nomor HP wajib diisi ya, Bos!");
+          return;
+        }
+      }
+      if (!bankOwner.trim()) {
+        setFormSubmitted(true);
+        toast.error("Nama pemilik rekening wajib diisi ya, Bos!");
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       const taxAmount = isScan ? scanResult!.taxAmount : Number(manualTax);
@@ -601,6 +627,10 @@ export default function NewSessionPage() {
           finalBankAccount = found.bankAccount;
           finalBankOwner = found.bankOwner;
         }
+      } else if (selectedTemplate === "none") {
+        finalBankName = "";
+        finalBankAccount = "";
+        finalBankOwner = "";
       } else if (selectedTemplate === "QRIS") {
         finalBankName = "QRIS";
         finalBankAccount = qrisUrl;
@@ -865,6 +895,8 @@ export default function NewSessionPage() {
       setBankOwner={setBankOwner}
       qrisUrl={qrisUrl}
       setQrisUrl={setQrisUrl}
+      isLoggedIn={!!authSession?.user}
+      formSubmitted={formSubmitted}
     />
   );
 

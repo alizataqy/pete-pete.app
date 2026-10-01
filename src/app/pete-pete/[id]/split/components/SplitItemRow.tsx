@@ -371,7 +371,7 @@ export default function SplitItemRow({
                       }`}
                       title={member.name}
                     >
-                      {member.userId === sessionUserId ? "Gua" : member.name}
+                      {sessionUserId && member.userId === sessionUserId ? "Gua" : member.name}
                     </p>
                   </div>
                 );

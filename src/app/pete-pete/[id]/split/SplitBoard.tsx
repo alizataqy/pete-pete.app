@@ -158,8 +158,12 @@ export default function SplitBoard({
     const discount = totalSubtotal > 0 ? Math.round(subtotal * (discountAmount / totalSubtotal)) : 0;
     const grandTotal = Math.max(0, subtotal + tax + tip - discount);
 
+    const isOwner = session.userId
+      ? Boolean(receiptModalMember.userId && receiptModalMember.userId === session.userId)
+      : members[0]?.id === receiptModalMember.id;
+
     const displayName =
-      receiptModalMember.userId === session.userId
+      isOwner && receiptModalMember.name.toLowerCase() === "gua"
         ? session.bankOwner || "Gua"
         : receiptModalMember.name;
 

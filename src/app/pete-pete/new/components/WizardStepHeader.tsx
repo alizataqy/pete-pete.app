@@ -15,9 +15,6 @@ export default function WizardStepHeader({
     <div className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-3.5 sm:p-4 space-y-2.5">
       <div className="flex items-center justify-between gap-2">
         <span className="text-xs font-extrabold text-primary-400 uppercase tracking-wider flex items-center gap-2 min-w-0">
-          <span className="w-5 h-5 rounded-md bg-primary-400/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold shrink-0">
-            {wizardStep}
-          </span>
           <span className="truncate">
             {wizardStep === 1 && step1Title}
             {wizardStep === 2 && "Langkah 2: Tambah Teman Patungan"}

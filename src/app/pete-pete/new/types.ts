@@ -20,7 +20,7 @@ export type InputMode = "scan" | "manual";
 
 export const BANK_TEMPLATES = [
   { name: "BCA", logo: "/bank-logos/bca.svg", placeholder: "Contoh: 1234567890" },
-  { name: "Bank Mandiri", logo: "/bank-logos/mandiri.svg", placeholder: "Contoh: 1370012345678" },
+  { name: "Mandiri", logo: "/bank-logos/mandiri.svg", placeholder: "Contoh: 1370012345678" },
   { name: "BRI", logo: "/bank-logos/bri.svg", placeholder: "Contoh: 001201000123456" },
   { name: "BNI", logo: "/bank-logos/bni.svg", placeholder: "Contoh: 0123456789" },
   { name: "GoPay", logo: "/bank-logos/gopay.svg", placeholder: "Contoh: 081234567890" },
