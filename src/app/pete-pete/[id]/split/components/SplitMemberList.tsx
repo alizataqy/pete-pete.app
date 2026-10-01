@@ -228,19 +228,21 @@ export default function SplitMemberList({
 
                   {editingMemberId !== member.id && (
                     <div className="flex items-center gap-1.5">
-                      <Button
-                        onPress={() => onTogglePaid(member.id, !!member.isPaid)}
-                        color={!member.isPaid ? "primary" : "secondary"}
-                        size="xs"
-                        iconLeading={!member.isPaid ? Check : X}
-                        className={`text-2xs font-bold tracking-wide transition-all duration-300 ${
-                          !member.isPaid
-                            ? "shadow-sm shadow-emerald-950/20"
-                            : "opacity-80 hover:opacity-100"
-                        }`}
-                      >
-                        {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
-                      </Button>
+                      {!isCreator && (
+                        <Button
+                          onPress={() => onTogglePaid(member.id, !!member.isPaid)}
+                          color={!member.isPaid ? "primary" : "secondary"}
+                          size="xs"
+                          iconLeading={!member.isPaid ? Check : X}
+                          className={`text-2xs font-bold tracking-wide transition-all duration-300 ${
+                            !member.isPaid
+                              ? "shadow-sm shadow-emerald-950/20"
+                              : "opacity-80 hover:opacity-100"
+                          }`}
+                        >
+                          {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
+                        </Button>
+                      )}
                       <Button
                         onPress={() => {
                           if (sessionStatus !== "COMPLETED") {
@@ -271,7 +273,7 @@ export default function SplitMemberList({
                       >
                         <Download01 className="w-3.5 h-3.5" />
                       </Button>
-                      {member.userId !== session.userId && session.status !== "COMPLETED" && (
+                      {!isCreator && session.status !== "COMPLETED" && (
                         <>
                           <Button
                             onPress={() => {
