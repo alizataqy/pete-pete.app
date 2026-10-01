@@ -85,7 +85,7 @@ export default function SplitMemberList({
             setShowMembers(!showMembers);
           }
         }}
-        className="flex items-center justify-between cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-lg p-1 -m-1"
+        className="flex items-center justify-between cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-lg p-1 -m-1"
       >
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <Users01 className="w-4 h-4 text-text-300 shrink-0" />
@@ -156,7 +156,7 @@ export default function SplitMemberList({
                 aria-label="Nama sohib baru"
                 value={newMemberName}
                 onChange={(e) => setNewMemberName(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-text placeholder-text-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-xs outline-none transition-all"
+                className="flex-1 px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-text placeholder-text-400 focus:border-primary-400 focus:ring-1 focus:ring-primary-400 text-xs outline-none transition-all"
                 placeholder="Ketik nama sohib lo..."
               />
               <Button type="submit" isDisabled={loading} isLoading={loading} size="sm">

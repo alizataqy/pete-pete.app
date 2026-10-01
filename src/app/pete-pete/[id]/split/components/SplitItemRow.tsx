@@ -140,7 +140,7 @@ export default function SplitItemRow({
               aria-label="Nama menu makanan"
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
             />
             <div className="grid grid-cols-3 gap-2">
               <div className="space-y-1">
@@ -151,7 +151,7 @@ export default function SplitItemRow({
                   aria-label="Ubah jumlah porsi menu"
                   value={editQty}
                   onChange={(e) => handleQtyChange(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                  className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                   placeholder="Qty"
                 />
               </div>
@@ -188,7 +188,7 @@ export default function SplitItemRow({
                     aria-label="Ubah harga satuan menu"
                     value={formatRupiah(editPrice)}
                     onChange={(e) => handlePriceChange(parseRupiah(e.target.value))}
-                    className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                    className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                     placeholder="Rp Satuan"
                   />
                 ) : (
@@ -197,7 +197,7 @@ export default function SplitItemRow({
                     aria-label="Ubah harga total menu"
                     value={formatRupiah(editTotal)}
                     onChange={(e) => handleTotalChange(parseRupiah(e.target.value))}
-                    className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                    className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                     placeholder="Rp Total"
                   />
                 )}
@@ -335,13 +335,13 @@ export default function SplitItemRow({
                         onClick={() => onIncreaseAllocation(item.id, member.id)}
                         disabled={sessionStatus === "COMPLETED"}
                         aria-label={`Tambah porsi untuk ${member.name}`}
-                        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-full transition-transform active:scale-95 cursor-pointer min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center p-0.5"
+                        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-full transition-transform active:scale-95 cursor-pointer min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center p-0.5"
                       >
                         <Avatar
                           alt={member.name}
                           size="md"
                           className={`shadow-md transition-all duration-200 ${
-                            qty > 0 ? "ring-2 ring-primary border-primary scale-105" : "opacity-45 hover:opacity-80"
+                            qty > 0 ? "ring-2 ring-primary-400/40 border-primary-400/60 scale-105" : "opacity-45 hover:opacity-80"
                           }`}
                         />
                       </button>
@@ -359,7 +359,7 @@ export default function SplitItemRow({
                           >
                             <Minus className="w-3 h-3 stroke-[3px]" />
                           </button>
-                          <span className="absolute -top-1 -right-1 z-10 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-3xs font-bold shadow-md border border-secondary-950 pointer-events-none">
+                          <span className="absolute -top-1 -right-1 z-10 bg-primary-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-3xs font-bold shadow-md border border-secondary-950 pointer-events-none">
                             {qty}
                           </span>
                         </>

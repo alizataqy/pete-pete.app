@@ -8,9 +8,10 @@ import { LogOut01 } from "@untitledui/icons";
 
 interface LogoutButtonProps {
   className?: string;
+  size?: "xs" | "sm" | "md";
 }
 
-export default function LogoutButton({ className }: LogoutButtonProps) {
+export default function LogoutButton({ className, size = "xs" }: LogoutButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -38,10 +39,15 @@ export default function LogoutButton({ className }: LogoutButtonProps) {
       isDisabled={loading}
       isLoading={loading}
       color="secondary"
-      size="sm"
-      className={className}
-      iconLeading={<LogOut01 />}
-    > Logout
+      size={size}
+      aria-label="Cabut / Logout"
+      iconLeading={LogOut01}
+      className={
+        className ??
+        "px-2.5 py-1.5 min-h-9 rounded-lg border border-secondary-800/80 bg-secondary-950/40 hover:bg-danger-950/20 hover:border-danger-800/40 hover:text-danger-400 text-text-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+      }
+    >
+      Cabut
     </Button>
   );
 }

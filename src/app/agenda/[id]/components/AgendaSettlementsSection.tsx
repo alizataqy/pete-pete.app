@@ -182,7 +182,7 @@ export default function AgendaSettlementsSection({
                         size="sm"
                         className={`shadow-md border shrink-0 ${
                           isToMe
-                            ? "border-primary-500/70 ring-1 ring-primary-500/50"
+                            ? "border-primary-400/70 ring-1 ring-primary-400/50"
                             : "border-secondary-800"
                         }`}
                       />

@@ -52,7 +52,7 @@ export default function ConfirmationModal({
                         ? "bg-warning-950 text-warning-500 border border-warning-800"
                         : color === "error"
                         ? "bg-danger-950 text-danger-500 border border-danger-800"
-                        : "bg-primary-950 text-primary-500 border border-primary-800"
+                        : "bg-primary-950 text-primary-400 border border-primary-800"
                     }
                   />
                 )}

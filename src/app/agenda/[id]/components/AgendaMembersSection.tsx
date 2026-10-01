@@ -146,7 +146,7 @@ export default function AgendaMembersSection({
                             type="text"
                             value={editingMemberName}
                             onChange={(e) => setEditingMemberName(e.target.value)}
-                            className="flex-1 px-2.5 py-1 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                            className="flex-1 px-2.5 py-1 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                             autoFocus
                           />
                           <Button

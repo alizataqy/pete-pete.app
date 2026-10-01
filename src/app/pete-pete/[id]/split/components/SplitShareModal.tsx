@@ -52,7 +52,7 @@ export default function SplitShareModal({
                   color="brand"
                   theme="modern"
                   size="md"
-                  className="bg-primary-950 text-primary-500 border border-primary-800"
+                  className="bg-primary-950 text-primary-400 border border-primary-800"
                 />
                 <div className="grid grid-cols-1">
                   <Heading slot="title" className="text-sm font-bold text-text">

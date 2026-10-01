@@ -816,7 +816,7 @@ export default function SplitBoard({
                   aria-label="Nama menu baru"
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                  className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                   placeholder="Nama Menu (misal: Nasi Goreng)"
                 />
 
@@ -837,7 +837,7 @@ export default function SplitBoard({
                           setNewItemPrice(String(Math.round(Number(newItemTotal) / q)));
                         }
                       }}
-                      className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                     />
                   </div>
                   <div className="space-y-1">
@@ -878,7 +878,7 @@ export default function SplitBoard({
                           const q = parseFloat(newItemQty) || 0;
                           setNewItemTotal(p && q > 0 ? String(q * Number(p)) : "");
                         }}
-                        className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                        className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                         placeholder="Rp Satuan"
                       />
                     ) : (
@@ -892,7 +892,7 @@ export default function SplitBoard({
                           const q = parseFloat(newItemQty) || 0;
                           setNewItemPrice(t && q > 0 ? String(Math.round(Number(t) / q)) : "");
                         }}
-                        className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                        className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                         placeholder="Rp Total"
                       />
                     )}
@@ -969,8 +969,8 @@ export default function SplitBoard({
             <Button
               onPress={() => setShowCancelConfirm(true)}
               isDisabled={loading}
-              color="secondary"
-              className="min-h-12 py-3.5 px-4 rounded-lg text-xs font-semibold text-danger-300 hover:text-danger-400 hover:bg-danger-950/40 border-danger-800/60 active:scale-[0.96] transition-transform"
+              color="primary-destructive"
+              className="min-h-12 py-3.5 px-4"
               iconLeading={XClose}
             >
               Batalin
@@ -979,7 +979,7 @@ export default function SplitBoard({
               onPress={() => setShowCompleteConfirm(true)}
               isDisabled={loading}
               isLoading={loading}
-              className="flex-1 min-h-12 py-3.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold active:scale-[0.96] transition-transform"
+              className="flex-1 min-h-12 py-3.5"
               iconLeading={Check}
             >
               Selesai

@@ -393,7 +393,7 @@ export default function BonView({
                     aria-pressed={isSelected}
                     aria-label={`Pilih ${displayName}, total bagian Rp ${grandTotal.toLocaleString("id-ID")}`}
                     className={`group relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all duration-100 cursor-pointer min-w-22 sm:min-w-24 shrink-0 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 ${isSelected
-                        ? "bg-brand-solid text-white border-brand-solid shadow-sm"
+                        ? "bg-brand-solid text-white border-white/20 shadow-sm"
                         : "bg-secondary-950/70 border-secondary-800 hover:border-secondary-700 text-text-50"
                       }`}
                   >
@@ -588,7 +588,7 @@ export default function BonView({
                     color="primary"
                     size="lg"
                     iconLeading={Share07}
-                    className="w-full min-h-11 py-3 text-xs sm:text-sm font-bold active:scale-95 transition-all shadow-sm cursor-pointer rounded-xl"
+                    className="w-full min-h-11 py-3 text-xs sm:text-sm font-bold active:scale-95 transition-all shadow-sm cursor-pointer"
                   >
                     Kirim Bukti Transfer ke Temen Lo
                   </Button>
@@ -598,7 +598,7 @@ export default function BonView({
                     color="secondary"
                     size="md"
                     iconLeading={ReceiptCheck}
-                    className="w-full min-h-9 py-2 text-xs font-semibold active:scale-95 transition-all border border-secondary-800 bg-secondary-900/60 hover:bg-secondary-900 text-text-50 cursor-pointer rounded-xl"
+                    className="w-full min-h-9 py-2 text-xs font-semibold active:scale-95 transition-all border border-secondary-800 bg-secondary-900/60 hover:bg-secondary-900 text-text-50 cursor-pointer"
                   >
                     Cetak / Simpan Bon Digital (PDF)
                   </Button>

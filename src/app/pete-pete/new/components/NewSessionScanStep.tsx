@@ -70,7 +70,7 @@ export default function NewSessionScanStep({
         <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-              <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
+              <span className="w-5 h-5 rounded-md bg-primary-400/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
                 1
               </span>
               Pilih Foto Struk
@@ -90,12 +90,12 @@ export default function NewSessionScanStep({
               onClick={() => document.getElementById("file-input")?.click()}
               className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-[0.99] group ${
                 isDragOver
-                  ? "border-primary-500 bg-primary-950/40"
-                  : "border-secondary-700/80 bg-secondary-900/30 hover:border-primary-500/60 hover:bg-secondary-900/60"
+                  ? "border-primary-400 bg-primary-950/40"
+                  : "border-secondary-700/80 bg-secondary-900/30 hover:border-primary-400/60 hover:bg-secondary-900/60"
               }`}
             >
               <input id="file-input" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-              <div className="w-14 h-14 rounded-xl bg-primary-500/10 border border-primary-500/20 text-primary-400 flex items-center justify-center mb-3 group-hover:scale-105 group-hover:bg-primary-500/20 transition-all shadow-xs">
+              <div className="w-14 h-14 rounded-xl bg-primary-400/10 border border-primary-400/20 text-primary-400 flex items-center justify-center mb-3 group-hover:scale-105 group-hover:bg-primary-400/20 transition-all shadow-xs">
                 <UploadCloud01 className="w-7 h-7" />
               </div>
               <p className="text-sm font-bold text-text-50 mb-1">Upload foto struk lo</p>
@@ -168,12 +168,12 @@ export default function NewSessionScanStep({
               onPress={() => setShowScanItemForm(true)}
               iconLeading={<Plus className="w-4 h-4" />}
               color="secondary"
-              className="w-full min-h-11 py-2.5 rounded-xl border border-dashed border-secondary-700 hover:border-primary-500/60 text-xs font-bold transition-all text-text-200"
+              className="w-full min-h-11 py-2.5 rounded-xl border border-dashed border-secondary-700 hover:border-primary-400/60 text-xs font-bold transition-all text-text-200"
             >
               Tambah Menu Lain / Struk Kedua
             </Button>
           ) : (
-            <div className="p-4 sm:p-5 rounded-2xl border border-primary-500/30 bg-primary-950/20 space-y-4 shadow-sm">
+            <div className="p-4 sm:p-5 rounded-2xl border border-primary-400/30 bg-primary-950/20 space-y-4 shadow-sm">
               <h4 className="text-2xs font-bold text-text uppercase tracking-wider">
                 Tambah Menu Tambahan
               </h4>
@@ -188,7 +188,7 @@ export default function NewSessionScanStep({
                   aria-label="Nama menu tambahan"
                   value={draftItemName}
                   onChange={(e) => setDraftItemName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                  className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                 />
               </div>
 
@@ -213,7 +213,7 @@ export default function NewSessionScanStep({
                         setDraftItemPrice(String(Math.round(Number(draftItemAmount) / qtyNum)));
                       }
                     }}
-                    className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                    className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                   />
                 </div>
 
@@ -259,7 +259,7 @@ export default function NewSessionScanStep({
                         const q = parseFloat(draftItemQty) || 1;
                         setDraftItemAmount(p ? String(q * Number(p)) : "");
                       }}
-                      className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                       placeholder="Rp Satuan"
                     />
                   ) : (
@@ -274,7 +274,7 @@ export default function NewSessionScanStep({
                         const q = parseFloat(draftItemQty) || 1;
                         setDraftItemPrice(a && q > 0 ? String(Math.round(Number(a) / q)) : "");
                       }}
-                      className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-500"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
                       placeholder="Rp Total"
                     />
                   )}

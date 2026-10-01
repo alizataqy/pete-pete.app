@@ -100,7 +100,7 @@ export default function AddBankForm({ userId }: AddBankFormProps) {
                   onClick={() => setSelectedTemplate(t.name)}
                   className={`p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-2 ${
                     selectedTemplate === t.name
-                      ? "bg-primary-900/40 border-primary-500"
+                      ? "bg-primary-950/60 border-primary-400 ring-2 ring-primary-400/30"
                       : "bg-secondary-950 border-secondary-800 hover:bg-secondary-900"
                   }`}
                 >

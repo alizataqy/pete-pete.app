@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createVacationPlan } from "@/app/actions/vacation";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
-import { Plus, ArrowLeft, CreditCard01, Users01, Compass } from "@untitledui/icons";
+import { Plus, ArrowLeft, CreditCard01, Users01, Compass, Calendar } from "@untitledui/icons";
 import { ModalOverlay, Modal, Dialog } from "@/components/application/modals/modal";
 import { Heading } from "react-aria-components";
 import { toast } from "sonner";
@@ -202,7 +202,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
               <Link
                 key={plan.id}
                 href={`/agenda/${plan.id}`}
-                className="p-4 rounded-xl border border-secondary-800 bg-secondary-950/20 hover:bg-secondary-950/40 hover:border-primary-600 transition-all flex flex-col gap-3 group"
+                className="p-4 rounded-xl border border-secondary-800 bg-secondary-950/20 hover:bg-secondary-950/40 hover:border-primary-400 transition-all flex flex-col gap-3 group"
               >
                 <div className="flex justify-between items-start gap-3">
                   <div>
@@ -213,8 +213,9 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                       {plan.description || "Gak ada deskripsi plan."}
                     </p>
                     {plan.date && (
-                      <p className="text-3xs text-primary-400 font-bold mt-1 flex items-center gap-1">
-                        📅 {formatDateString(plan.date)}
+                      <p className="text-3xs text-primary-400 font-bold mt-1 flex items-center gap-1.5">
+                        <Calendar className="w-3 h-3 text-primary-400 shrink-0" />
+                        <span>{formatDateString(plan.date)}</span>
                       </p>
                     )}
                   </div>
@@ -284,7 +285,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-secondary-950 border border-secondary-800 text-xs text-text outline-none focus:border-primary-500"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary-950 border border-secondary-800 text-xs text-text outline-none focus:border-primary-400"
                       placeholder="Keterangan tambahan..."
                       rows={2}
                     />

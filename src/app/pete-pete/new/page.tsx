@@ -531,11 +531,11 @@ export default function NewSessionPage() {
             <button
               type="button"
               onClick={() => setInputMode("scan")}
-              className="w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-primary-500/40 bg-linear-to-br from-primary-950/40 via-secondary-950/60 to-secondary-950/30 hover:border-primary-500/80 hover:bg-secondary-950/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative overflow-hidden"
+              className="w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-primary-400/40 bg-linear-to-br from-primary-950/40 via-secondary-950/60 to-secondary-950/30 hover:border-primary-400/80 hover:bg-secondary-950/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative overflow-hidden"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3.5 min-w-0 flex-1">
-                  <div className="w-12 h-12 shrink-0 rounded-xl bg-primary-500/20 border border-primary-500/35 text-primary-400 flex items-center justify-center group-hover:scale-105 group-hover:bg-primary-500/30 transition-all shadow-xs mt-0.5">
+                  <div className="w-12 h-12 shrink-0 rounded-xl bg-primary-400/20 border border-primary-400/35 text-primary-400 flex items-center justify-center group-hover:scale-105 group-hover:bg-primary-400/30 transition-all shadow-xs mt-0.5">
                     <Camera01 className="w-6 h-6" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -557,7 +557,7 @@ export default function NewSessionPage() {
                     </p>
                   </div>
                 </div>
-                <div className="w-8 h-8 rounded-lg bg-primary-500/10 border border-primary-500/20 text-primary-400 flex items-center justify-center shrink-0 group-hover:bg-primary-500/25 group-hover:translate-x-0.5 transition-all mt-1">
+                <div className="w-8 h-8 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400 flex items-center justify-center shrink-0 group-hover:bg-primary-400/25 group-hover:translate-x-0.5 transition-all mt-1">
                   <ChevronRight className="w-4 h-4" />
                 </div>
               </div>
@@ -567,7 +567,7 @@ export default function NewSessionPage() {
             <button
               type="button"
               onClick={() => setInputMode("manual")}
-              className="w-full text-left p-4 sm:p-5 rounded-2xl border border-secondary-800 bg-secondary-950/40 hover:border-secondary-700 hover:bg-secondary-950/70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative"
+              className="w-full text-left p-4 sm:p-5 rounded-2xl border border-secondary-800 bg-secondary-950/40 hover:border-secondary-700 hover:bg-secondary-950/70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-all shadow-xs group cursor-pointer relative"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3.5 min-w-0 flex-1">
@@ -745,7 +745,8 @@ export default function NewSessionPage() {
             onPress={handleScanReceipt}
             isDisabled={!file || loading}
             isLoading={loading}
-            className="w-full min-h-12 py-3.5 px-4 rounded-lg bg-primary hover:bg-primary-700 text-text-50 text-sm font-bold active:scale-[0.96] transition-transform"
+            color="primary"
+            className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
             iconLeading={<Camera01 className="w-4 h-4" />}
           >
             {loading ? "Lagi Baca Struk..." : "Mulai Scan Struk"}
@@ -756,7 +757,8 @@ export default function NewSessionPage() {
             onPress={() => handleCreate()}
             isDisabled={loading}
             isLoading={loading}
-            className="w-full min-h-12 py-3.5 px-4 rounded-lg bg-primary hover:bg-primary-700 text-text-50 text-sm font-bold active:scale-[0.96] transition-transform"
+            color="primary"
+            className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
             iconLeading={<CheckCircle className="w-4 h-4" />}
           >
             Gas, Bikin Bill &amp; Bagi Tagihan!
@@ -771,7 +773,8 @@ export default function NewSessionPage() {
               }
               setWizardStep((prev) => prev + 1);
             }}
-            className="w-full min-h-12 py-3.5 px-4 rounded-lg bg-primary hover:bg-primary-700 text-text-50 text-sm font-bold active:scale-[0.96] transition-transform"
+            color="primary"
+            className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
             iconLeading={<ChevronRight className="w-4 h-4" />}
           >
             Lanjut ke Langkah {wizardStep + 1}
@@ -782,7 +785,8 @@ export default function NewSessionPage() {
             onPress={() => handleCreate()}
             isDisabled={loading}
             isLoading={loading}
-            className="w-full min-h-12 py-3.5 px-4 rounded-lg bg-primary hover:bg-primary-700 text-text-50 text-sm font-bold active:scale-[0.96] transition-transform"
+            color="primary"
+            className="w-full min-h-12 py-3.5 px-4 rounded-lg text-sm font-bold active:scale-[0.96] transition-transform"
           >
             Buat Bill &amp; Mulai Pembagian
           </Button>

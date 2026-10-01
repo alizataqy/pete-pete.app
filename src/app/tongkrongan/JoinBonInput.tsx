@@ -32,7 +32,7 @@ export default function JoinBonInput() {
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           placeholder="Masukan Kode Bon"
           maxLength={6}
-          className="w-full bg-transparent text-xs font-semibold text-text placeholder:text-text-500 outline-none uppercase tracking-wider"
+          className="w-full mb-1.5 bg-transparent text-xs font-semibold text-text placeholder:text-text-500 outline-none uppercase tracking-wider"
           aria-label="Masukkan kode bon splitbill"
         />
       </div>

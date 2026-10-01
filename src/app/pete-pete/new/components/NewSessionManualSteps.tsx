@@ -92,7 +92,7 @@ export default function NewSessionManualSteps({
       <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-3.5 space-y-2.5">
         <div className="flex items-center justify-between">
           <span className="text-xs font-extrabold text-primary-400 uppercase tracking-wider flex items-center gap-1.5">
-            <span className="w-5 h-5 rounded-full bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
+            <span className="w-5 h-5 rounded-full bg-primary-400/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
               {wizardStep}
             </span>
             {wizardStep === 1 && "Langkah 1: Input Daftar Menu"}
@@ -104,17 +104,17 @@ export default function NewSessionManualSteps({
         <div className="grid grid-cols-3 gap-1.5">
           <div
             className={`h-1.5 rounded-full transition-all ${
-              wizardStep >= 1 ? "bg-primary-500" : "bg-secondary-800"
+              wizardStep >= 1 ? "bg-primary-400" : "bg-secondary-800"
             }`}
           />
           <div
             className={`h-1.5 rounded-full transition-all ${
-              wizardStep >= 2 ? "bg-primary-500" : "bg-secondary-800"
+              wizardStep >= 2 ? "bg-primary-400" : "bg-secondary-800"
             }`}
           />
           <div
             className={`h-1.5 rounded-full transition-all ${
-              wizardStep >= 3 ? "bg-primary-500" : "bg-secondary-800"
+              wizardStep >= 3 ? "bg-primary-400" : "bg-secondary-800"
             }`}
           />
         </div>
@@ -126,7 +126,7 @@ export default function NewSessionManualSteps({
           <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-                <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
+                <span className="w-5 h-5 rounded-md bg-primary-400/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
                   1
                 </span>
                 Masukin Semua Menu Dulu
@@ -141,7 +141,7 @@ export default function NewSessionManualSteps({
                   aria-label="Nama Menu / Item"
                   value={draftItemName}
                   onChange={(e) => setDraftItemName(e.target.value)}
-                  className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                  className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all"
                   placeholder="Nasi Goreng, Es Teh, Tiket Bioskop..."
                 />
               </div>
@@ -156,7 +156,7 @@ export default function NewSessionManualSteps({
                     inputMode="numeric"
                     value={draftItemQty}
                     onChange={(e) => handleDraftItemQtyChange(e.target.value)}
-                    className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                    className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -167,7 +167,7 @@ export default function NewSessionManualSteps({
                       onClick={() => setAddPriceMode("unit")}
                       className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
                         addPriceMode === "unit"
-                          ? "bg-primary-500 text-white shadow-xs"
+                          ? "bg-primary-400 text-white shadow-xs"
                           : "text-text-400 hover:text-text-200"
                       }`}
                     >
@@ -178,7 +178,7 @@ export default function NewSessionManualSteps({
                       onClick={() => setAddPriceMode("total")}
                       className={`h-full py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
                         addPriceMode === "total"
-                          ? "bg-primary-500 text-white shadow-xs"
+                          ? "bg-primary-400 text-white shadow-xs"
                           : "text-text-400 hover:text-text-200"
                       }`}
                     >
@@ -197,7 +197,7 @@ export default function NewSessionManualSteps({
                       aria-label="Harga Satuan"
                       value={formatRupiah(draftItemPrice)}
                       onChange={(e) => handleDraftItemPriceChange(parseRupiah(e.target.value))}
-                      className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                      className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all"
                       placeholder="Rp Satuan"
                     />
                   ) : (
@@ -207,7 +207,7 @@ export default function NewSessionManualSteps({
                       aria-label="Harga Total"
                       value={formatRupiah(draftItemAmount)}
                       onChange={(e) => handleDraftItemAmountChange(parseRupiah(e.target.value))}
-                      className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                      className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all"
                       placeholder="Rp Total"
                     />
                   )}
@@ -235,7 +235,7 @@ export default function NewSessionManualSteps({
                     aria-label="Pajak atau PPN"
                     value={formatRupiah(manualTax)}
                     onChange={(e) => setManualTax(Number(parseRupiah(e.target.value)) || 0)}
-                    className="w-full min-h-10 px-3 py-2 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs text-text-50 outline-none focus:border-primary-500"
+                    className="w-full min-h-10 px-3 py-2 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs text-text-50 outline-none focus:border-primary-400"
                     placeholder="Rp 0"
                   />
                 </div>
@@ -249,7 +249,7 @@ export default function NewSessionManualSteps({
                     aria-label="Service Charge atau Tip"
                     value={formatRupiah(manualTip)}
                     onChange={(e) => setManualTip(Number(parseRupiah(e.target.value)) || 0)}
-                    className="w-full min-h-10 px-3 py-2 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs text-text-50 outline-none focus:border-primary-500"
+                    className="w-full min-h-10 px-3 py-2 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs text-text-50 outline-none focus:border-primary-400"
                     placeholder="Rp 0"
                   />
                 </div>
@@ -263,7 +263,7 @@ export default function NewSessionManualSteps({
                     aria-label="Diskon atau Promo"
                     value={formatRupiah(manualDiscount)}
                     onChange={(e) => setManualDiscount(Number(parseRupiah(e.target.value)) || 0)}
-                    className="w-full min-h-10 px-3 py-2 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs text-emerald-400 outline-none focus:border-primary-500"
+                    className="w-full min-h-10 px-3 py-2 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs text-emerald-400 outline-none focus:border-primary-400"
                     placeholder="Rp 0"
                   />
                 </div>
@@ -323,7 +323,7 @@ export default function NewSessionManualSteps({
         <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-              <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
+              <span className="w-5 h-5 rounded-md bg-primary-400/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
                 2
               </span>
               Siapa Aja yang Ikut PETE-PETE?
@@ -341,7 +341,7 @@ export default function NewSessionManualSteps({
                   handleAddMember();
                 }
               }}
-              className="flex-1 min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+              className="flex-1 min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all"
               placeholder="Nama temen lo (misal: Budi, Sarah)..."
             />
             <Button
@@ -362,9 +362,9 @@ export default function NewSessionManualSteps({
                 <Avatar
                   alt={currentUserName}
                   size="lg"
-                  className="shadow-md border border-primary-500 ring-2 ring-primary-500/40"
+                  className="shadow-md border border-primary-400 ring-2 ring-primary-400/40"
                 />
-                <span className="absolute -bottom-1 -right-1 bg-primary-500 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs">
+                <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs">
                   Gua
                 </span>
               </div>
@@ -389,7 +389,7 @@ export default function NewSessionManualSteps({
                         if (e.key === "Escape") setEditingManualIndex(null);
                       }}
                       autoFocus
-                      className="w-full text-xs px-1.5 py-1 rounded bg-secondary-900 border border-primary-500 text-text text-center outline-none"
+                      className="w-full text-xs px-1.5 py-1 rounded bg-secondary-900 border border-primary-400 text-text text-center outline-none"
                     />
                   </div>
                 ) : (
@@ -439,7 +439,7 @@ export default function NewSessionManualSteps({
           <div className="bg-secondary-950/60 border border-secondary-800 rounded-2xl p-4 sm:p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xs font-extrabold text-text-100 uppercase tracking-wider flex items-center gap-2">
-                <span className="w-5 h-5 rounded-md bg-primary-500/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
+                <span className="w-5 h-5 rounded-md bg-primary-400/20 text-primary-400 flex items-center justify-center text-2xs font-extrabold">
                   3
                 </span>
                 Siapa Pesen Apa Nih?
@@ -504,7 +504,7 @@ export default function NewSessionManualSteps({
                                   size="md"
                                   className={`shadow-md transition-all duration-200 ${
                                     qty > 0
-                                      ? "ring-2 ring-primary-500 border-primary-500 scale-105"
+                                      ? "ring-2 ring-primary-400/40 border-primary-400/60 scale-105"
                                       : "opacity-40"
                                   }`}
                                 />
@@ -512,7 +512,7 @@ export default function NewSessionManualSteps({
 
                               {qty > 0 && (
                                 <>
-                                  <span className="absolute -top-1 -right-1 bg-primary-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-2xs font-bold shadow-md border border-secondary-950 pointer-events-none">
+                                  <span className="absolute -top-1 -right-1 bg-primary-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-2xs font-bold shadow-md border border-secondary-950 pointer-events-none">
                                     {qty}
                                   </span>
                                   <button

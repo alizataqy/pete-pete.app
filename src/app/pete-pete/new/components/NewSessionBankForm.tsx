@@ -58,7 +58,7 @@ export default function NewSessionBankForm({
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
+            className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
             placeholder="Contoh: Makan Siang di Gacoan bareng Tim"
           />
         </div>
@@ -70,7 +70,7 @@ export default function NewSessionBankForm({
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
+            className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
             placeholder="Contoh: Belum termasuk ongkir gofood ya guys"
           />
         </div>
@@ -99,7 +99,7 @@ export default function NewSessionBankForm({
                     setSelectedBankId("custom");
                   }
                 }}
-                className="rounded bg-secondary-950/80 border-secondary-700 text-primary-500 focus:ring-primary-500 w-4 h-4 cursor-pointer"
+                className="rounded bg-secondary-950/80 border-secondary-700 text-primary-400 focus:ring-primary-400 w-4 h-4 cursor-pointer"
               />
               Pilih dari Rekening Profil Tersimpan
             </label>
@@ -112,7 +112,7 @@ export default function NewSessionBankForm({
                       key={b.id}
                       className={`p-3 rounded-xl border text-xs text-text-300 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] ${
                         selectedBankId === b.id
-                          ? "bg-primary-950/40 border-primary-500 text-text-100 ring-2 ring-primary-500/20"
+                          ? "bg-primary-950/40 border-primary-400 text-text-100 ring-2 ring-primary-400/20"
                           : "bg-secondary-900/40 border-secondary-800 hover:border-secondary-700"
                       }`}
                     >
@@ -122,7 +122,7 @@ export default function NewSessionBankForm({
                           name="profileBankSelect"
                           checked={selectedBankId === b.id}
                           onChange={() => b.id && setSelectedBankId(b.id)}
-                          className="bg-secondary-950/80 border-secondary-700 text-primary-500 focus:ring-primary-500 w-4 h-4 cursor-pointer"
+                          className="bg-secondary-950/80 border-secondary-700 text-primary-400 focus:ring-primary-400 w-4 h-4 cursor-pointer"
                         />
                         <div>
                           <p className="font-bold text-text-50">{b.bankName}</p>
@@ -155,7 +155,7 @@ export default function NewSessionBankForm({
                     onClick={() => setSelectedTemplate(t.name)}
                     className={`p-2.5 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${
                       selectedTemplate === t.name
-                        ? "bg-primary-950/60 border-primary-500 text-primary-300 ring-2 ring-primary-500/30"
+                        ? "bg-primary-950/60 border-primary-400 text-primary-300 ring-2 ring-primary-400/30"
                         : "bg-secondary-900/40 border-secondary-800 hover:border-secondary-700 text-text-300"
                     }`}
                   >
@@ -175,7 +175,7 @@ export default function NewSessionBankForm({
                   required
                   value={qrisUrl}
                   onChange={(e) => setQrisUrl(e.target.value)}
-                  className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
+                  className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
                   placeholder="https://link-gambar-qris.com/qris.jpg"
                 />
               </div>
@@ -187,7 +187,7 @@ export default function NewSessionBankForm({
                   required
                   value={bankAccount}
                   onChange={(e) => setBankAccount(e.target.value)}
-                  className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
+                  className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
                   placeholder={BANK_TEMPLATES.find((t) => t.name === selectedTemplate)?.placeholder}
                 />
               </div>
@@ -200,7 +200,7 @@ export default function NewSessionBankForm({
                 required
                 value={bankOwner}
                 onChange={(e) => setBankOwner(e.target.value)}
-                className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
+                className="w-full min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700 focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 text-text-50 placeholder-text-500 text-xs sm:text-sm outline-none transition-all"
                 placeholder="Contoh: Muhammad Ucup"
               />
             </div>

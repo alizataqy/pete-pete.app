@@ -236,9 +236,9 @@ export default function LandingView({ user }: UserSessionProp) {
                       tabIndex={isSelected ? 0 : -1}
                       type="button"
                       onClick={() => setActiveStep(step.id)}
-                      className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-transform duration-150 ease-out active:scale-[0.97] text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 ${
+                      className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-transform duration-150 ease-out active:scale-[0.97] text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400 ${
                         isSelected
-                          ? "bg-primary-600 text-white shadow-sm shadow-primary-600/30"
+                          ? "bg-primary-400 text-white shadow-sm shadow-primary-400/30"
                           : "text-text-300 hover:text-text-50 bg-transparent"
                       }`}
                     >
@@ -355,11 +355,11 @@ export default function LandingView({ user }: UserSessionProp) {
                       <span className="text-xs text-text-50 font-bold">Preview Pesan WA</span>
                     </div>
 
-                    <div className="bg-background-900 p-3 rounded-xl text-xs text-text-100 space-y-1 border-s-2 border-primary-500">
+                    <div className="bg-background-900 p-3 rounded-xl text-xs text-text-100 space-y-1 border-s-2 border-primary-400">
                       <p className="font-bold text-primary-300">Rincian Splitbill: Ramen</p>
                       <p className="text-text-300 text-xs">Budi: <strong className="text-text-50">Rp 57.000</strong></p>
                       <p className="text-text-300 text-xs">Ucup: <strong className="text-text-50">Rp 45.000</strong></p>
-                      <div className="mt-2 text-center py-2 rounded-xl font-bold text-white text-xs shadow-sm shadow-primary-600/25">
+                      <div className="mt-2 text-center bg-primary-400 py-2 rounded-xl font-bold text-white text-xs shadow-sm shadow-primary-400/25">
                         Siap Kirim ke Grup WA
                       </div>
                     </div>

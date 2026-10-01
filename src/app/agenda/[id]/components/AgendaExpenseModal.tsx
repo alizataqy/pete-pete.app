@@ -99,12 +99,12 @@ export default function AgendaExpenseModal({
                               size="md"
                               className={`shadow-md transition-all duration-200 border border-secondary-800 ${
                                 isSelected
-                                  ? "ring-2 ring-primary border-primary scale-105"
+                                  ? "ring-2 ring-primary-400/40 border-primary-400/60 scale-105"
                                   : "opacity-40 group-hover:opacity-75"
                               }`}
                             />
                             {isSelected && (
-                              <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-secondary-950 pointer-events-none">
+                              <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-secondary-950 pointer-events-none">
                                 <Check className="w-2.5 h-2.5 stroke-[3px]" />
                               </span>
                             )}
@@ -157,12 +157,12 @@ export default function AgendaExpenseModal({
                               size="md"
                               className={`shadow-md transition-all duration-200 border border-secondary-800 ${
                                 isParticipating
-                                  ? "ring-2 ring-primary border-primary scale-105"
+                                  ? "ring-2 ring-primary-400/40 border-primary-400/60 scale-105"
                                   : "opacity-40 group-hover:opacity-75"
                               }`}
                             />
                             {isParticipating && (
-                              <span className="absolute -bottom-1 -right-1 bg-primary-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-secondary-950 pointer-events-none">
+                              <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-secondary-950 pointer-events-none">
                                 <Check className="w-2.5 h-2.5 stroke-[3px]" />
                               </span>
                             )}

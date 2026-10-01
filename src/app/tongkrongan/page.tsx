@@ -48,59 +48,34 @@ export default async function TongkronganPage() {
 
 
       {/* Header Tongkrongan */}
-      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/90 backdrop-blur-md border-b border-secondary-800 px-4 flex items-center justify-between">
+      <header className="sticky top-0 z-20 h-16 shrink-0 bg-secondary-950/80 backdrop-blur-md border-b border-secondary-800/70 px-4 flex items-center justify-between gap-3">
         <div className="flex gap-2.5 items-center min-w-0 flex-1">
-          <Button
+          <Link
             href="/profile"
-            color="link-gray"
             aria-label="Buka profil gua"
-            className="border-0 bg-transparent flex items-center justify-center rounded-full hover:opacity-80 active:scale-95 transition-all p-1 min-w-11 min-h-11"
+            className="flex items-center justify-center rounded-full hover:opacity-80 active:scale-95 transition-transform p-0.5 shrink-0"
           >
             <Avatar
               size="md"
               src={dbUser?.avatar ? `https://api.dicebear.com/9.x/dylan/svg?seed=${encodeURIComponent(dbUser.avatar)}` : undefined}
               alt={session.user.name}
             />
-          </Button>
+          </Link>
           <div className="flex-col flex min-w-0 flex-1">
-            <h1 className="text-sm font-extrabold text-text-50">Tongkrongan Gua</h1>
-            <p className="text-2xs text-text-300 mt-0.5">
-              Wassup, <strong className="text-primary-400 font-medium">{session.user.name}</strong>! Tongkrongan lo udah beres splitbill-nya?
+            <h1 className="text-sm font-extrabold text-text-50 truncate">Tongkrongan Gua</h1>
+            <p className="text-2xs text-text-400 truncate mt-0.5">
+              Wassup, <strong className="text-primary-400 font-semibold">{session.user.name}</strong>! Tongkrongan lo udah beres?
             </p>
           </div>
         </div>
-        <div className="flex shrink-0">
-          <LogoutButton
-            className="px-3 py-2 rounded-lg border border-secondary-800 hover:bg-secondary-950/80 text-danger-300 hover:text-danger-400 text-xs font-semibold min-h-10 flex items-center justify-center transition-all active:scale-95"
-          />
+        <div className="flex shrink-0 items-center">
+          <LogoutButton size="xs" />
         </div>
       </header>
 
       {/* Tongkrongan Body */}
-      <div className="flex-1 p-4 flex flex-col min-h-0 gap-5 overflow-hidden">
-        {/* Statistik/Overview Ringkas */}
-        <div className="grid grid-cols-3 gap-2">
-          <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
-            <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Semua</p>
-            <p className="text-lg font-bold text-primary-300 mt-1">{mySessions.length}</p>
-          </div>
-          <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
-            <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">On Going</p>
-            <p className="text-lg font-bold text-primary-300 mt-1">
-              {mySessions.filter((s) => s.status === "DRAFT").length}
-            </p>
-          </div>
-          <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
-            <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Udah Kelar</p>
-            <p className="text-lg font-bold text-primary-300 mt-1">
-              {mySessions.filter((s) => s.status === "COMPLETED").length}
-            </p>
-          </div>
-        </div>
-
-        {/* Input Cepat Kode Bon */}
-        <JoinBonInput />
-
+      <div className="flex-1 p-4 flex flex-col min-h-0 gap-3 overflow-hidden">
+        
         {/* Link ke Vacation / Agenda Plans */}
         <Link
           href="/agenda"
@@ -122,23 +97,46 @@ export default async function TongkronganPage() {
             New
           </Badge>
         </Link>
+        {/* Input Cepat Kode Bon */}
+        <JoinBonInput />
+
 
         {/* Daftar Sesi Split Bill */}
         <div className="flex-1 flex flex-col min-h-0 gap-3">
           <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">List Pete-Petean Lo</h2>
           <div className="flex-1 flex flex-col min-h-0 border border-secondary-800 p-3 rounded-xl bg-secondary-950/30">
 
+            {/* Statistik/Overview Ringkas */}
+            <div className="grid grid-cols-3 gap-2 pb-3">
+              <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
+                <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Semua</p>
+                <p className="text-lg font-bold text-primary-300 mt-1">{mySessions.length}</p>
+              </div>
+              <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
+                <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">On Going</p>
+                <p className="text-lg font-bold text-primary-300 mt-1">
+                  {mySessions.filter((s) => s.status === "DRAFT").length}
+                </p>
+              </div>
+              <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
+                <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Udah Kelar</p>
+                <p className="text-lg font-bold text-primary-300 mt-1">
+                  {mySessions.filter((s) => s.status === "COMPLETED").length}
+                </p>
+              </div>
+            </div>
             {mySessions.length === 0 ? (
               <div className="p-8 text-center border border-dashed border-secondary-800 rounded-xl space-y-3 bg-secondary-950/40">
                 <p className="text-text-300 text-2xs max-w-50 mx-auto leading-relaxed">
                   Sepi amat, belum ada splitbill nih. Yuk scan struk bareng geng lo biar gak ada drama!
                 </p>
-                <Link
+                <Button
                   href="/pete-pete/new"
-                  className="inline-flex items-center justify-center px-5 py-3 min-h-11 rounded-lg bg-primary hover:bg-primary-600 text-text-950 font-bold text-xs transition-all active:scale-[0.96]"
+                  color="primary"
+                  className="px-5 py-3 min-h-11 rounded-lg font-bold text-xs active:scale-[0.96] transition-transform"
                 >
                   Scan Struk Sekarang
-                </Link>
+                </Button>
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto pb-16 space-y-3 scrollbar-hide">
@@ -152,7 +150,7 @@ export default async function TongkronganPage() {
                   return (
                     <div
                       key={session.id}
-                      className="relative p-4 rounded-xl border border-secondary-800 bg-secondary-950/20 hover:bg-secondary-950/40 hover:border-primary-600/40 transition-all flex flex-col gap-3 group cursor-pointer"
+                      className="relative p-4 rounded-xl border border-secondary-800 bg-secondary-950/20 hover:bg-secondary-950/40 hover:border-primary-400/40 transition-all flex flex-col gap-3 group cursor-pointer"
                     >
                       {/* Klik area card membuka bagi tagihan */}
                       <Link
@@ -164,7 +162,7 @@ export default async function TongkronganPage() {
                       {/* Header: Icon, Judul, Merchant/Kode, dan Status */}
                       <div className="relative z-10 pointer-events-none flex items-start justify-between gap-2.5">
                         <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <div className="p-2 rounded-lg bg-primary-500/10 border border-primary-500/20 text-primary-400 shrink-0">
+                          <div className="p-2 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400 shrink-0">
                             <ReceiptCheck className="w-4 h-4" />
                           </div>
                           <div className="min-w-0 flex-1">
@@ -272,9 +270,9 @@ export default async function TongkronganPage() {
           href="/pete-pete/new"
           color="primary"
           aria-label="Scan struk baru"
-          className="shadow-2xl shadow-primary/45 rounded-full w-14 h-14 min-w-14 min-h-14 flex items-center justify-center p-0 hover:scale-105 active:scale-[0.96] transition-transform pointer-events-auto"
+          className="shadow-2xl shadow-primary-400/40 rounded-full w-14 h-14 min-w-14 min-h-14 flex items-center justify-center p-0 hover:scale-105 active:scale-[0.96] transition-transform pointer-events-auto"
         >
-          <Plus className="w-7 h-7 text-text-950" />
+          <Plus className="w-7 h-7 text-white" />
         </Button>
       </div>
     </main>

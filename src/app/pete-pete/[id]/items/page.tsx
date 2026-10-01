@@ -54,7 +54,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
         {/* Rincian Biaya Struk Card */}
         <div className="p-4 rounded-2xl border border-secondary-800 bg-secondary-950/50 space-y-3.5 shadow-sm">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-primary-500/10 border border-primary-500/20 text-primary-400 shrink-0">
+            <div className="p-2 rounded-xl bg-primary-400/10 border border-primary-400/20 text-primary-400 shrink-0">
               <ReceiptCheck className="w-4 h-4" />
             </div>
             <div className="min-w-0">

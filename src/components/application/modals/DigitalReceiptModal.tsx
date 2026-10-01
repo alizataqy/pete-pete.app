@@ -65,7 +65,7 @@ export default function DigitalReceiptModal({
               {/* Header Modal */}
               <div className="px-5 py-4 border-b border-secondary-800 flex items-center justify-between bg-secondary-950/80">
                 <div className="flex items-center gap-2">
-                  <div className="p-1.5 rounded-lg bg-primary-500/10 border border-primary-500/20 text-primary-400">
+                  <div className="p-1.5 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400">
                     <ReceiptCheck className="w-4 h-4" />
                   </div>
                   <div>
@@ -205,7 +205,7 @@ export default function DigitalReceiptModal({
                   </div>
 
                   {/* Grand Total Box (Tactile Elevated Total - Brand Palette) */}
-                  <div className="p-3.5 rounded-xl bg-primary-600/15 border border-primary-400/40 flex justify-between items-center mt-3 shadow-xs">
+                  <div className="p-3.5 rounded-xl bg-primary-400/15 border border-primary-400/40 flex justify-between items-center mt-3 shadow-xs">
                     <span className="text-xs font-bold text-text-300 uppercase tracking-wider">
                       Total Bayar
                     </span>

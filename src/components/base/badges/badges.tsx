@@ -25,18 +25,18 @@ export const filledColors: Record<BadgeColors, { root: string; addon: string; ad
     },
     brand: {
         root: "bg-primary-950 text-primary-50 ring-primary-800",
-        addon: "text-primary-500",
-        addonButton: "hover:bg-primary-900 text-primary-400 hover:text-primary-500",
+        addon: "text-primary-400",
+        addonButton: "hover:bg-primary-900 text-primary-400 hover:text-primary-300",
     },
     primary: {
         root: "bg-primary-950 text-primary-50 ring-primary-800",
-        addon: "text-primary-500",
-        addonButton: "hover:bg-primary-900 text-primary-400 hover:text-primary-500",
+        addon: "text-primary-400",
+        addonButton: "hover:bg-primary-900 text-primary-400 hover:text-primary-300",
     },
     blue: {
         root: "bg-primary-950 text-primary-50 ring-primary-800",
-        addon: "text-primary-500",
-        addonButton: "hover:bg-primary-900 text-primary-400 hover:text-primary-500",
+        addon: "text-primary-400",
+        addonButton: "hover:bg-primary-900 text-primary-400 hover:text-primary-300",
     },
     error: {
         root: "bg-danger-950 text-danger-50 ring-danger-800",
