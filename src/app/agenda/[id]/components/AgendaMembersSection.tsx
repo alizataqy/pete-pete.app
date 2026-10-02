@@ -224,7 +224,7 @@ export default function AgendaMembersSection({
                             onPress={() => handleOpenMemberSummaryShare(member)}
                             color="secondary"
                             size="xs"
-                            aria-label={`Bagikan rincian tagihan ${member.name}`}
+                            aria-label={`Share detail bill ${member.name}`}
                             className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
                           >
                             {copiedId === member.id ? (

@@ -125,7 +125,7 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
       {sessions.length === 0 ? (
         <div className="p-8 text-center border border-dashed border-secondary-800 rounded-xl space-y-3 bg-secondary-950/40">
           <p className="text-text-300 text-2xs max-w-50 mx-auto leading-relaxed">
-            Sepi amat, belum ada splitbill nih. Yuk scan struk bareng geng lo biar gak ada drama!
+            Sepi amat, belum ada pete-petean nih. Yuk scan struk bareng sohib lo biar gak ada drama!
           </p>
           <Button
             href="/pete-pete/new"
@@ -171,7 +171,7 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
                 <Link
                   href={`/pete-pete/${session.id}/split`}
                   className="absolute inset-0 z-0 rounded-xl"
-                  aria-label={`Bagi tagihan ${cleanTitle}`}
+                  aria-label={`Split bill ${cleanTitle}`}
                 />
 
                 {/* Header: Icon, Judul, Merchant/Kode, dan Status */}
@@ -227,7 +227,7 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
                 <div className="relative z-10 pointer-events-none pt-2.5 pb-0.5 border-t border-secondary-800/80 flex items-center justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <span className="text-3xs uppercase tracking-wider text-text-400 font-bold block">
-                      Total Tagihan
+                      Total Bill
                     </span>
                     <span className="text-sm sm:text-base font-extrabold text-primary-400 whitespace-nowrap block mt-0.5">
                       Rp {session.totalAmount.toLocaleString("id-ID")}
@@ -264,7 +264,7 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
                   >
                     <span className="inline-flex items-center justify-center gap-1.5">
                       <Divide01 className="w-4 h-4 shrink-0" />
-                      <span>Bagi Tagihan</span>
+                      <span>Split Bill</span>
                     </span>
                   </Button>
                   <Button

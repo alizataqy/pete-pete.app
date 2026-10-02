@@ -145,7 +145,7 @@ export default function NewSessionManualSteps({
                     Menu Ditambahkan
                   </h3>
                   <Badge color="brand" size="sm" type="pill-color" className="font-bold text-3xs">
-                    {manualItems.length} Item
+                    {manualItems.length} Menu
                   </Badge>
                 </div>
               </div>

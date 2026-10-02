@@ -233,8 +233,8 @@ export default function VacationPlanDetailView({
     if (!text) return;
     setShareModalConfig({
       isOpen: true,
-      title: "Bagi Rekap Transfer Grup",
-      description: "Mau salin seluruh rekap ke clipboard atau langsung lempar ke grup WhatsApp, Bos?",
+      title: "Share Rekap Transfer Grup",
+      description: "Mau copy rekap bill ke clipboard atau langsung share ke WhatsApp, Bos?",
       text,
     });
   };
@@ -248,8 +248,8 @@ export default function VacationPlanDetailView({
     );
 
     const cleanTitle = plan.title.replace(/^PETE-PETE\s+/i, "");
-    let text = `📢 *RINCIAN PETE-PETE: ${cleanTitle}*\n`;
-    text += `Halo *${member.name}*, berikut rincian pete-pete lo:\n\n`;
+    let text = `📢 *DETAIL BILL: ${cleanTitle}*\n`;
+    text += `Halo *${member.name}*, ini detail bill lo:\n\n`;
 
     if (paidExpenses.length > 0) {
       text += `💸 *Pengeluaran yang Lo Talangin:*\n`;
@@ -301,8 +301,8 @@ export default function VacationPlanDetailView({
     const text = generateMemberSummaryText(member);
     setShareModalConfig({
       isOpen: true,
-      title: `Bagi Tagihan ${member.name}`,
-      description: "Pilih mau salin rincian pete-pete ke clipboard atau langsung gas ke WhatsApp, Bos!",
+      title: `Share Bill ${member.name}`,
+      description: "Pilih mau copy detail bill ke clipboard atau langsung share ke WhatsApp, Bos!",
       text,
       memberId: member.id,
     });
@@ -314,7 +314,7 @@ export default function VacationPlanDetailView({
       setCopiedId(memberId);
       setTimeout(() => setCopiedId(null), 2000);
     }
-    toast.success("Rincian pete-pete berhasil disalin ke clipboard!");
+    toast.success("Detail bill berhasil di-copy ke clipboard!");
     setShareModalConfig(null);
   };
 
@@ -338,7 +338,7 @@ export default function VacationPlanDetailView({
     try {
       const res = await renameVacationMember(memberId, plan.id, editingMemberName.trim());
       if (res.success) {
-        toast.success("Nama sohib berhasil diubah!");
+        toast.success("Nama sohib berhasil diganti!");
         setMembers(
           members.map((m) =>
             m.id === memberId ? { ...m, name: editingMemberName.trim() } : m
@@ -346,10 +346,10 @@ export default function VacationPlanDetailView({
         );
         setEditingMemberId(null);
       } else {
-        toast.error(res.error || "Gagal mengubah nama sohib");
+        toast.error(res.error || "Gagal ganti nama sohib nih");
       }
     } catch {
-      toast.error("Gagal mengubah nama sohib");
+      toast.error("Gagal ganti nama sohib nih");
     } finally {
       setLoading(false);
     }
@@ -374,7 +374,7 @@ export default function VacationPlanDetailView({
     }
 
     if (expenseParticipants.length === 0) {
-      toast.error("Minimal harus ada 1 orang yang ikutan splitbill!");
+      toast.error("Minimal harus ada 1 sohib yang ikutan split bill!");
       return;
     }
 
@@ -433,7 +433,7 @@ export default function VacationPlanDetailView({
         });
         if (!res.success) {
           setExpenses(prevExpenses);
-          toast.error(res.error || "Gagal menyimpan pengeluaran");
+          toast.error(res.error || "Gagal nyimpen pengeluaran nih");
         }
       } else {
         const res = await addVacationExpense(plan.id, {
@@ -448,12 +448,12 @@ export default function VacationPlanDetailView({
           );
         } else if (!res.success) {
           setExpenses(prevExpenses);
-          toast.error(res.error || "Gagal menyimpan pengeluaran");
+          toast.error(res.error || "Gagal nyimpen pengeluaran nih");
         }
       }
     } catch {
       setExpenses(prevExpenses);
-      toast.error("Gagal menyimpan pengeluaran");
+      toast.error("Gagal nyimpen pengeluaran nih");
     }
   };
 
@@ -469,11 +469,11 @@ export default function VacationPlanDetailView({
       const res = await deleteVacationExpense(expenseId, plan.id);
       if (!res.success) {
         setExpenses(prevExpenses);
-        toast.error(res.error || "Gagal menghapus pengeluaran");
+        toast.error(res.error || "Gagal ngehapus pengeluaran nih");
       }
     } catch {
       setExpenses(prevExpenses);
-      toast.error("Gagal menghapus pengeluaran");
+      toast.error("Gagal ngehapus pengeluaran nih");
     }
   };
 

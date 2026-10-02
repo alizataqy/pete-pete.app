@@ -117,8 +117,8 @@ export async function addVacationMember(planId: string, name: string) {
     revalidatePath(`/agenda/${planId}`);
     return { success: true, member };
   } catch (error) {
-    console.error("Gagal menambahkan anggota:", error);
-    return { success: false, error: "Gagal menambahkan anggota baru" };
+    console.error("Gagal nambahin sohib:", error);
+    return { success: false, error: "Gagal nambahin sohib baru" };
   }
 }
 
@@ -131,8 +131,8 @@ export async function removeVacationMember(memberId: string, planId: string) {
     revalidatePath(`/agenda/${planId}`);
     return { success: true };
   } catch (error) {
-    console.error("Gagal menghapus anggota:", error);
-    return { success: false, error: "Gagal menghapus anggota" };
+    console.error("Gagal ngehapus sohib:", error);
+    return { success: false, error: "Gagal ngehapus sohib" };
   }
 }
 
@@ -147,7 +147,7 @@ export async function addVacationExpense(
 ) {
   try {
     if (data.memberIds.length === 0) {
-      return { success: false, error: "Minimal ada 1 anggota yang splitbill" };
+      return { success: false, error: "Minimal ada 1 sohib yang split bill" };
     }
 
     const shareAmount = Math.round(data.amount / data.memberIds.length);
@@ -209,7 +209,7 @@ export async function updateVacationExpense(
 ) {
   try {
     if (data.memberIds.length === 0) {
-      return { success: false, error: "Minimal ada 1 anggota yang splitbill" };
+      return { success: false, error: "Minimal ada 1 sohib yang split bill" };
     }
 
     const shareAmount = Math.round(data.amount / data.memberIds.length);

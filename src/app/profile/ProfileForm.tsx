@@ -67,7 +67,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         });
 
         setProfileSuccess(true);
-        toast.success("Profil lo udah berhasil diperbarui!");
+        toast.success("Profil lo berhasil diupdate!");
         router.refresh();
       } else {
         toast.error(res.error || "Gagal nyimpen profil nih, coba lagi ya!");

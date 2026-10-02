@@ -263,7 +263,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                     Bikin Plan Baru
                   </Heading>
                   <p className="text-2xs text-text-400">
-                    Isi detail rencana kumpul-kumpul atau liburan bareng temen-temen lo.
+                    Isi detail rencana kumpul-kumpul atau liburan bareng sohib-sohib lo.
                   </p>
                 </div>
 

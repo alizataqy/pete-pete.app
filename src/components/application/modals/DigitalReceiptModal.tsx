@@ -73,7 +73,7 @@ export default function DigitalReceiptModal({
                       Kartu Bon Digital
                     </h3>
                     <p className="text-2xs text-text-400">
-                      Siap lo cetak atau simpan ke PDF
+                      Download atau print PDF
                     </p>
                   </div>
                 </div>
@@ -135,7 +135,7 @@ export default function DigitalReceiptModal({
                   {/* Daftar Item Menu */}
                   <div className="space-y-2">
                     <span className="text-3xs font-bold text-text-400 uppercase tracking-wider block">
-                      Rincian Menu Yang Dipesan:
+                      Detail Menu Pesanan:
                     </span>
                     {data.items.length === 0 ? (
                       <p className="text-2xs text-text-400 italic">
@@ -240,7 +240,7 @@ export default function DigitalReceiptModal({
                   iconLeading={Printer}
                   className="w-full font-bold shadow-md shadow-primary/20 active:scale-97 transition-transform duration-160 cursor-pointer"
                 >
-                  Cetak / Simpan PDF
+                  Print / Download PDF
                 </Button>
               </div>
             </div>

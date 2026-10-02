@@ -180,7 +180,7 @@ export default function BonView({
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
-    toast.success("Link bon berhasil disalin!");
+    toast.success("Link bon berhasil di-copy!");
   };
 
   const handleShareLink = async () => {
@@ -189,7 +189,7 @@ export default function BonView({
       try {
         await navigator.share({
           title: `Bon: ${cleanSessionTitle}`,
-          text: `Cek rincian bon splitbill "${cleanSessionTitle}" di Ceban Pertama:`,
+          text: `Cek detail bon split bill "${cleanSessionTitle}" di Ceban Pertama:`,
           url,
         });
         return;
@@ -210,7 +210,7 @@ export default function BonView({
     if (!activeMemberDetail) return;
     const isPlaceholder = /^(saya(\s*\(owner\))?|gua|owner)$/i.test(activeMemberDetail.member.name.trim());
     const memberName = isPlaceholder && session.creatorName ? session.creatorName : activeMemberDetail.member.name;
-    const text = `Halo, gua (${memberName}) udah transfer splitbill *${cleanSessionTitle}* sebesar *Rp ${activeMemberDetail.grandTotal.toLocaleString("id-ID")}* ya! Tolong dicek, thank you!`;
+    const text = `Halo, gua (${memberName}) udah transfer split bill *${cleanSessionTitle}* sebesar *Rp ${activeMemberDetail.grandTotal.toLocaleString("id-ID")}* ya! Tolong dicek, thank you!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -254,7 +254,7 @@ export default function BonView({
           <div className="text-right">
             <span className="text-3xs uppercase font-bold text-black/50 block">Status Patungan</span>
             <span className="text-xs font-bold uppercase">
-              {session.status === "COMPLETED" ? "Selesai (Kelar)" : "Draft Berjalan"}
+              {session.status === "COMPLETED" ? "Udah Kelar" : "On Going"}
             </span>
           </div>
         </div>
@@ -312,7 +312,7 @@ export default function BonView({
             onPress={handlePrint}
             color="tertiary"
             size="sm"
-            aria-label="Cetak atau simpan PDF"
+            aria-label="Print atau download PDF"
             className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-50 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
           >
             <Printer className="w-4 h-4" />
@@ -321,7 +321,7 @@ export default function BonView({
             onPress={handleCopyLink}
             color="tertiary"
             size="sm"
-            aria-label="Salin link bon"
+            aria-label="Copy link bon"
             className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-50 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
           >
             {copiedLink ? (
@@ -334,7 +334,7 @@ export default function BonView({
             onPress={handleShareLink}
             color="tertiary"
             size="sm"
-            aria-label="Bagikan link bon"
+            aria-label="Share link bon"
             className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-50 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
           >
             <Share07 className="w-4 h-4" />
@@ -361,7 +361,7 @@ export default function BonView({
               <span>Pilih Nama Lo</span>
             </h2>
             <span className="text-2xs text-text-400 font-medium">
-              {members.length} Orang
+              {members.length} Sohib
             </span>
           </div>
 
@@ -590,7 +590,7 @@ export default function BonView({
                     iconLeading={Share07}
                     className="w-full min-h-11 py-3 text-xs sm:text-sm font-bold active:scale-95 transition-all shadow-sm cursor-pointer"
                   >
-                    Kirim Bukti Transfer ke Temen Lo
+                    Kirim Bukti Transfer ke Sohib Lo
                   </Button>
 
                   <Button
@@ -600,7 +600,7 @@ export default function BonView({
                     iconLeading={ReceiptCheck}
                     className="w-full min-h-9 py-2 text-xs cursor-pointer"
                   >
-                    Cetak / Simpan Bon Digital (PDF)
+                    Download Bon Digital (PDF)
                   </Button>
                 </div>
               </div>

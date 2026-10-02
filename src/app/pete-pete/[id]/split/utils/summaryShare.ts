@@ -61,8 +61,8 @@ export function generateMemberSummaryText(
   }
 
   const bankDetails = session.bankName
-    ? `💳 *Info Pembayaran:*\nTransfer ke: ${session.bankName}\nNo. Rekening: ${session.bankAccount}\nA/N: ${session.bankOwner}`
-    : "Silakan hubungi pembuat sesi untuk detail transfer.";
+    ? `💳 *Info Transfer:*\nTransfer ke: ${session.bankName}\nNo. Rekening: ${session.bankAccount}\nA/N: ${session.bankOwner}`
+    : "Silakan kontak pembuat sesi buat detail rekening transfer.";
 
   const cleanTitle = session.title.replace(/^PETE-PETE\s+/i, "");
 
@@ -71,13 +71,13 @@ export function generateMemberSummaryText(
       ? `${window.location.origin}/bon/${session.inviteCode}?member=${member.id}`
       : `/bon/${session.inviteCode}?member=${member.id}`;
 
-  return `🧾 *TAGIHAN PETE-PETE: ${cleanTitle}*
-${session.merchantName ? `📍 Lokasi: ${session.merchantName}\n` : ""}Halo *${member.name}*, ini rincian tagihan lo:
+  return `🧾 *BILL PETE-PETE: ${cleanTitle}*
+${session.merchantName ? `📍 Lokasi: ${session.merchantName}\n` : ""}Halo *${member.name}*, ini detail bill lo:
 
 🍽️ *Menu Pesanan:*
-${itemsText || "  • Belum memilih menu makanan\n"}───────────────────
+${itemsText || "  • Belum pilih menu makanan\n"}───────────────────
 Subtotal Pesanan: Rp ${subtotal.toLocaleString("id-ID")}
-${feeBreakdownText}💰 *Total Tagihan: Rp ${grandTotal.toLocaleString("id-ID")}*
+${feeBreakdownText}💰 *Total Bill: Rp ${grandTotal.toLocaleString("id-ID")}*
 
 ${bankDetails}
 
@@ -162,8 +162,8 @@ export function generateAllSummaryText(
   }
 
   const bankDetails = session.bankName
-    ? `💳 *Info Pembayaran:*\nTransfer ke: ${session.bankName}\nNo. Rekening: ${session.bankAccount}\nA/N: ${session.bankOwner}`
-    : "Silakan hubungi pembuat sesi untuk detail transfer.";
+    ? `💳 *Info Transfer:*\nTransfer ke: ${session.bankName}\nNo. Rekening: ${session.bankAccount}\nA/N: ${session.bankOwner}`
+    : "Silakan kontak pembuat sesi buat detail rekening transfer.";
 
   const cleanTitle = session.title.replace(/^PETE-PETE\s+/i, "");
 
@@ -172,16 +172,16 @@ export function generateAllSummaryText(
       ? `${window.location.origin}/bon/${session.inviteCode}`
       : `/bon/${session.inviteCode}`;
 
-  return `🧾 *REKAP TAGIHAN PETE-PETE: ${cleanTitle}*
+  return `🧾 *REKAP BILL PETE-PETE: ${cleanTitle}*
 ${session.merchantName ? `📍 Lokasi: ${session.merchantName}\n` : ""}
-📊 *Rincian Keseluruhan Bill:*
-${overallFeeText}💰 Total Tagihan: *Rp ${session.totalAmount.toLocaleString("id-ID")}*
+📊 *Detail Keseluruhan Bill:*
+${overallFeeText}💰 Total Bill: *Rp ${session.totalAmount.toLocaleString("id-ID")}*
 ───────────────────
-👥 *Rincian per Orang:*
+👥 *Detail per Sohib:*
 ${allMembersShareText}───────────────────
 ${bankDetails}
 
-🔗 *Cek Bon & Rincian Lengkap Online:*
+🔗 *Cek Bon & Detail Lengkap Online:*
 ${bonUrl}
 
 🙏 Ditunggu transferannya ya, Bos! Thank you.`;

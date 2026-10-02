@@ -61,12 +61,12 @@ export default function ItemInputForm({
       {/* Nama Menu */}
       <div className="space-y-1.5">
         <label className="text-xs font-bold text-text-100 block">
-          Nama Menu / Item
+          Nama Menu
         </label>
         <input
           type="text"
           required
-          aria-label="Nama Menu / Item"
+          aria-label="Nama Menu"
           value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => {

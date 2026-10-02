@@ -33,7 +33,7 @@ export default function JoinBonInput() {
           placeholder="Masukan Kode Bon"
           maxLength={6}
           className="w-full mb-1.5 bg-transparent text-xs font-semibold text-text placeholder:text-text-500 outline-none uppercase tracking-wider"
-          aria-label="Masukkan kode bon splitbill"
+          aria-label="Masukkan kode bon split bill"
         />
       </div>
       <Button

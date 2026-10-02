@@ -57,7 +57,7 @@ export default function JoinSessionForm({ userId, userName }: JoinSessionFormPro
       <div>
         <h3 className="text-xs font-bold text-text-100 uppercase tracking-wider">Gabung Bill</h3>
         <p className="text-2xs text-text-300 mt-0.5">
-          Minta kode 6 digit dari temen lo yang bikin Bill, terus masukin di sini.
+          Minta kode 6 digit dari sohib lo yang bikin Bill, terus masukin di sini.
         </p>
       </div>
 

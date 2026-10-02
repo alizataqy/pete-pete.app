@@ -77,7 +77,7 @@ export default function SplitShareModal({
                 <div className="p-2.5 rounded-xl bg-warning-950/60 border border-warning-800/80 flex items-start gap-2.5 text-warning-100 text-xs leading-snug">
                   <AlertTriangle className="w-4 h-4 shrink-0 text-warning-400 mt-0.5" />
                   <span>
-                    Info rekening pembayaran belum lo atur, temen-temen lo bakal disuruh nanya manual detail transfernya.
+                    Info rekening transfer belum diatur nih, sohib lo bakal nanya manual rekeningnya nanti.
                   </span>
                 </div>
               )}
@@ -91,7 +91,7 @@ export default function SplitShareModal({
                     className="w-full justify-center py-2.5 text-xs font-semibold"
                     onPress={() => onShareToClipboard(config.text, config.memberId)}
                   >
-                    Salin ke Clipboard
+                    Copy Teks
                   </Button>
                   <Button
                     color="primary"
@@ -100,7 +100,7 @@ export default function SplitShareModal({
                     className="w-full justify-center py-2.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white"
                     onPress={() => onShareToWhatsApp(config.text)}
                   >
-                    Kirim ke WhatsApp
+                    Share ke WhatsApp
                   </Button>
                 </div>
 
@@ -115,7 +115,7 @@ export default function SplitShareModal({
                       onClose();
                     }}
                   >
-                    Cetak / Simpan Kartu Bon (PDF)
+                    Download Bon Digital (PDF)
                   </Button>
                 )}
               </div>

@@ -58,34 +58,34 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
               <ReceiptCheck className="w-4 h-4" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-xs font-bold text-text-50">Rincian Biaya Struk</h2>
-              <p className="text-2xs text-text-400">Pajak & servis otomatis dibagi rata pas splitbill</p>
+              <h2 className="text-xs font-bold text-text-50">Detail Biaya Struk</h2>
+              <p className="text-2xs text-text-400">Pajak & servis otomatis dibagi rata pas split bill</p>
             </div>
           </div>
 
           <div className={`grid ${discount > 0 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"} gap-2 pt-2 border-t border-secondary-800/80 text-center`}>
             <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
               <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Subtotal</p>
-              <p className="text-xs font-bold text-text-100 mt-1">
+              <p className="text-xs font-bold text-text-100 mt-1 tabular-nums">
                 Rp {itemsSubtotal.toLocaleString("id-ID")}
               </p>
             </div>
             <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
               <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Pajak</p>
-              <p className="text-xs font-bold text-text-100 mt-1">
+              <p className="text-xs font-bold text-text-100 mt-1 tabular-nums">
                 Rp {tax.toLocaleString("id-ID")}
               </p>
             </div>
             <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
               <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Servis</p>
-              <p className="text-xs font-bold text-text-100 mt-1">
+              <p className="text-xs font-bold text-text-100 mt-1 tabular-nums">
                 Rp {tip.toLocaleString("id-ID")}
               </p>
             </div>
             {discount > 0 && (
               <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
                 <p className="text-3xs text-emerald-400 font-semibold uppercase tracking-wider">Diskon</p>
-                <p className="text-xs font-bold text-emerald-400 mt-1">
+                <p className="text-xs font-bold text-emerald-400 mt-1 tabular-nums">
                   - Rp {discount.toLocaleString("id-ID")}
                 </p>
               </div>
@@ -142,10 +142,10 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
         {/* Grand Total Card */}
         <div className="p-4 rounded-2xl bg-secondary-950/70 border border-secondary-800 flex justify-between items-center shadow-sm">
           <div>
-            <span className="text-xs font-bold text-text-100 block">Total Keseluruhan Struk</span>
+            <span className="text-xs font-bold text-text-100 block">Total Keseluruhan Bill</span>
             <span className="text-2xs text-text-400 block mt-0.5">Termasuk pajak & biaya servis</span>
           </div>
-          <span className="text-base font-extrabold text-primary-400">
+          <span className="text-base font-extrabold text-primary-400 tabular-nums">
             Rp {total.toLocaleString("id-ID")}
           </span>
         </div>
@@ -161,7 +161,7 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
           className="w-full min-h-12 py-3.5 text-sm font-bold active:scale-[0.96] transition-transform"
         >
           <span className="inline-flex items-center justify-center gap-2">
-            <span>Lanjut Bagi Tagihan</span>
+            <span>Lanjut Split Bill</span>
             <ArrowRight className="w-4 h-4 shrink-0" />
           </span>
         </Button>

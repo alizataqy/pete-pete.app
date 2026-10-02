@@ -95,10 +95,10 @@ const TONGKRONGAN_QUOTES = [
   "Lagi baca struk lecek lo nih... Tenang, AI kita udah terlatih hadapi kenyataan pahit.",
   "Nongkrong berjam-jam, pesennya es teh tawar refill... Ketauan lu ya!",
   "Tarik napas dulu, bentar lagi liat totalan yang bikin elus dada...",
-  "Ada temen pas mesen: 'Gua mah apa aja terserah'. Pas bon dateng: 'Kok mahal banget?' Ya lu mesen salmon steak, Bambang!",
+  "Ada sohib pas mesen: 'Gua mah apa aja terserah'. Pas bon dateng: 'Kok mahal banget?' Ya lu mesen salmon steak, Bambang!",
   "Lagi investigasi sohib yang tadi sok asik nawarin 'Coba nih cicip menu gua', tapi pas bayar minta dibagi rata.",
   "Deteksi radar: Ada yang tangannya mendadak kram pas dompet mau dikeluarin, pura-pura HP-nya lowbatt.",
-  "Temen lu: 'Gua talangin dulu ya pake kartu'. Dalem hati: Lumayan dapet poin reward sama miles gratis.",
+  "Sohib lu: 'Gua talangin dulu ya pake kartu'. Dalem hati: Lumayan dapet poin reward sama miles gratis.",
   "Definisi panik: Pas bon dateng, semua tiba-tiba sibuk natap layar HP padahal lagi buka kalkulator bawaan.",
   "Pesanan: Kopi satu, kentang goreng satu. Nongkrongnya dari jam 3 sore sampe barista ganti shift dua kali.",
   "Ada sohib yang pamit ke toilet jam 9 malem, pas balik udah jam 10 pas kasir udah beres dibayar.",
@@ -108,7 +108,7 @@ const TONGKRONGAN_QUOTES = [
   "Kalo kata pepatah: Bersatu kita teguh, pas bagi bon pura-pura gak denger.",
   "Jangan sedih liat bonnya, yang penting feeds Instagram lo keliatan aesthetic dan mewah.",
   "Nongkrongnya fomo, pas bagi bon langsung overthinking mikirin masa depan.",
-  "AI lagi verifikasi: Siapa yang tadi paling kenceng ngide pindah tempat padahal dompet udah sekarat?",
+  "AI lagi review: Siapa yang tadi paling kenceng ngide pindah tempat padahal dompet udah sekarat?",
   "Curiga ada oknum yang pas pelayan nganter bon langsung pura-pura dapet telpon darurat.",
   "Bon udah kebaca... Siapin mental dan buka m-banking masing-masing, no kabur-kaburan!",
 ];
@@ -148,7 +148,7 @@ function ScanLoadingOverlay() {
     if (progress < 30) return "Membaca gambar struk";
     if (progress < 65) return "Mengekstrak menu & harga";
     if (progress < 85) return "Mendeteksi pajak & diskon";
-    return "Menyiapkan rincian tagihan";
+    return "Menyiapkan detail bill";
   };
 
   const currentQuote = TONGKRONGAN_QUOTES[quoteIndex];
@@ -290,7 +290,7 @@ export default function NewSessionScanStep({
       {/* Step Indicator */}
       <WizardStepHeader
         wizardStep={wizardStep}
-        step1Title="Langkah 1: Upload & Verifikasi Menu"
+        step1Title="Langkah 1: Upload & Review Menu"
       />
 
       {/* WIZARD STEP 1: UPLOAD & VERIFY SCAN ITEMS */}
@@ -651,7 +651,7 @@ export default function NewSessionScanStep({
                         />
                       </div>
 
-                      {/* Tipe Harga: ringkas */}
+                      {/* Tipe Harga: simpel */}
                       <div className="w-28 sm:w-32 shrink-0 space-y-1.5">
                         <label className="text-2xs sm:text-xs font-semibold text-text-300 block text-center truncate">
                           Tipe Harga

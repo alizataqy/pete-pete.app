@@ -120,9 +120,9 @@ export default function NewSessionBankForm({
           </div>
           <div>
             <h2 className="text-xs font-extrabold text-text-50 uppercase tracking-wider">
-              Rekening Buat Temen Transfer
+              Rekening Buat Sohib Transfer
             </h2>
-            <p className="text-2xs text-text-400">Temen-temen lo bakal transfer ke rekening/e-wallet ini</p>
+            <p className="text-2xs text-text-400">Sohib-sohib lo bakal transfer ke rekening/e-wallet ini</p>
           </div>
         </div>
 
@@ -172,7 +172,7 @@ export default function NewSessionBankForm({
                 Sesi Pete-Pete Tanpa Info Rekening
               </p>
               <p className="text-2xs text-text-400 leading-relaxed">
-                Rincian tagihan tetep dibikin rapi tanpa rekening. Temen lo bisa langsung bayar tunai (cash) atau transfer manual nanti.
+                Rincian tagihan tetep dibikin rapi tanpa rekening. Sohib lo bisa langsung bayar tunai (cash) atau transfer manual nanti.
               </p>
             </div>
           </div>

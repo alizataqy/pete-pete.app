@@ -75,7 +75,7 @@ export default async function TongkronganPage() {
           <div className="flex-col flex min-w-0 flex-1">
             <h1 className="text-sm font-extrabold text-text-50 truncate">Tongkrongan Gua</h1>
             <p className="text-2xs text-text-400 truncate mt-0.5">
-              Wassup, <strong className="text-primary-400 font-semibold">{session.user.name}</strong>! Bill Tongkrongan lo udah beres?
+              Wassup, <strong className="text-primary-400 font-semibold">{session.user.name}</strong>! Pete-petean lo udah kelar?
             </p>
           </div>
         </div>

@@ -144,15 +144,15 @@ export default function SplitItemRow({
             />
             <div className="grid grid-cols-3 gap-2">
               <div className="space-y-1">
-                <label className="text-3xs text-text-400 uppercase font-bold">Jumlah (Qty)</label>
+                <label className="text-3xs text-text-400 uppercase font-bold">Porsi</label>
                 <input
                   type="text"
                   required
-                  aria-label="Ubah jumlah porsi menu"
+                  aria-label="Ubah porsi menu"
                   value={editQty}
                   onChange={(e) => handleQtyChange(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
-                  placeholder="Qty"
+                  className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400 tabular-nums"
+                  placeholder="Porsi"
                 />
               </div>
               <div className="space-y-1">

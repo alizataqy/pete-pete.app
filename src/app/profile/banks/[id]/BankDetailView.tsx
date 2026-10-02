@@ -42,10 +42,10 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
         toast.success("Rekening berhasil dihapus!");
         router.push("/profile");
       } else {
-        toast.error(res.error || "Gagal menghapus rekening.");
+        toast.error(res.error || "Gagal ngehapus rekening nih, coba lagi ya.");
       }
     } catch {
-      toast.error("Gagal menghapus rekening.");
+      toast.error("Gagal ngehapus rekening nih, coba lagi ya.");
     } finally {
       setDeleting(false);
       setShowDeleteConfirm(false);
@@ -140,11 +140,11 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
             type="button"
             onClick={() => {
               navigator.clipboard.writeText(bank.bankAccount);
-              toast.success("Nomor rekening disalin!");
+              toast.success("Nomor rekening berhasil di-copy!");
             }}
-            className="flex items-center justify-center gap-2 min-h-12 py-3.5 px-4 rounded-lg border border-secondary-800 bg-secondary-900 text-text-100 text-xs font-bold hover:bg-secondary-800 active:scale-[0.96] transition-transform cursor-pointer"
+            className="flex items-center justify-center gap-2 min-h-12 py-3.5 px-4 rounded-lg border border-secondary-800 bg-secondary-950 text-text-100 text-xs font-bold hover:bg-secondary-900 active:scale-[0.96] transition-transform cursor-pointer"
           >
-            <Copy01 className="w-4 h-4" /> Salin Nomor
+            <Copy01 className="w-4 h-4" /> Copy Nomor
           </button>
           <button
             type="button"

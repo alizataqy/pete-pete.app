@@ -122,13 +122,13 @@ export default function NewSessionPage() {
       targetId: "tour-session-details",
       badge: "Langkah 1 dari 2",
       title: "Kasih Nama Tongkrongan",
-      description: "Tulis nama acaranya (misal: 'Kopi Nako Tebet') biar sohib lo gak bingung pas nerima link rincian tagihan.",
+      description: "Tulis nama acaranya (misal: 'Kopi Nako Tebet') biar sohib lo gak bingung pas nerima link bill.",
     },
     {
       targetId: "tour-bank-account",
       badge: "Langkah 2 dari 2",
-      title: "Rekening Buat Temen Transfer",
-      description: "Tentukan ke mana temen-temen lo harus transfer patungannya (BCA, Mandiri, GoPay, atau QRIS).",
+      title: "Rekening Buat Sohib Transfer",
+      description: "Tentukan ke mana sohib-sohib lo harus transfer patungannya (BCA, Mandiri, GoPay, atau QRIS).",
     },
   ];
 
@@ -394,7 +394,7 @@ export default function NewSessionPage() {
       return [
         {
           targetId: "tour-scan-items",
-          badge: "Verifikasi Menu",
+          badge: "Review Menu",
           title: "Cek Menu Hasil Scan",
           description:
             "Periksa hasil pembacaan AI. Lo bisa edit harga, hapus menu, atau nambah menu baru kalo ada yang kelewatan.",
@@ -425,10 +425,10 @@ export default function NewSessionPage() {
       return [
         {
           targetId: "tour-members-manager",
-          badge: "Temen Patungan",
+          badge: "Sohib Patungan",
           title: "Tambah Sohib Nongkrong",
           description:
-            "Masukin nama-nama temen lo yang ikut patungan buat dibagi tagihan per porsi menunya.",
+            "Masukin nama-nama sohib lo yang ikut patungan buat split bill per porsi menunya.",
         },
       ];
     }
@@ -571,7 +571,7 @@ export default function NewSessionPage() {
     const isScan = inputMode === "scan";
 
     if (isScan && !scanResult) {
-      toast.error("Scan dulu foto struk lo biar bisa bagi tagihan, Bos!");
+      toast.error("Scan dulu foto struk lo biar bisa split bill, Bos!");
       return;
     }
     if (isManual && manualItems.some((i) => !i.name.trim())) {
@@ -678,14 +678,14 @@ export default function NewSessionPage() {
       });
 
       if (!res.success) {
-        toast.error(res.error || "Gagal nyimpen sesi splitbill nih, coba periksa data menu lo ya!");
+        toast.error(res.error || "Gagal nyimpen sesi split bill nih, coba periksa data menu lo ya!");
       } else {
         clearSessionStorage();
         router.push(`/pete-pete/${res.session?.id}/split`);
       }
     } catch (err) {
       console.error(err);
-      toast.error("Terjadi kendala saat nyimpen sesi splitbill nih, coba lagi ya!");
+      toast.error("Terjadi kendala saat nyimpen sesi split bill nih, coba lagi ya!");
     } finally {
       setLoading(false);
     }
@@ -766,7 +766,7 @@ export default function NewSessionPage() {
             </Button>
             <div className="min-w-0 flex-1">
               <h1 className="text-sm font-extrabold text-text-50">Bikin Bill PETE-PETE</h1>
-              <p className="text-2xs text-text-300">Pilih cara input menu splitbill</p>
+              <p className="text-2xs text-text-300">Pilih cara input menu split bill</p>
             </div>
           </div>
           <Button
@@ -786,7 +786,7 @@ export default function NewSessionPage() {
               Mau input menu gimana nih?
             </h2>
             <p className="text-xs text-text-300 leading-relaxed text-pretty">
-              Pilih cara paling praktis buat kamu &amp; geng. Pake foto struk jauh lebih cepet dan anti ribet!
+              Pilih cara paling praktis buat lo &amp; geng. Pake foto struk jauh lebih cepet dan anti ribet!
             </p>
           </div>
 
@@ -931,9 +931,9 @@ export default function NewSessionPage() {
               {wizardStep === 1
                 ? inputMode === "scan" && !scanResult
                   ? "Langkah 1: Upload Foto Struk"
-                  : "Langkah 1: Verifikasi Menu"
+                  : "Langkah 1: Review Menu"
                 : wizardStep === 2
-                ? "Langkah 2: Tambah Teman Patungan"
+                ? "Langkah 2: Tambah Sohib Patungan"
                 : "Langkah 3: Info Rekening & Bayar"}
             </p>
           </div>

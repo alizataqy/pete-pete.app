@@ -275,14 +275,14 @@ export default function SplitBoard({
         nextNum++;
       }
     } else if (members.some((m) => m.name.toLowerCase() === name.toLowerCase())) {
-      toast.error("Nama sohib ini udah ada di splitbill, pake nama lain ya!");
+      toast.error("Nama sohib ini udah ada di split bill, pake nama lain ya!");
       return;
     }
 
     const tempId = `temp-${Date.now()}`;
     const prevMembers = members;
     setMembers((prev) => [...prev, { id: tempId, name, shareAmount: 0 }]);
-    toast.success("Teman berhasil ditambahkan!");
+    toast.success("Sohib berhasil ditambahin!");
 
     try {
       const res = await addSessionMember(session.id, name);
@@ -312,7 +312,7 @@ export default function SplitBoard({
     }
     const prevMembers = members;
     setMembers((prev) => prev.map((m) => (m.id === memberId ? { ...m, name: trimmed } : m)));
-    toast.success("Nama anggota berhasil diubah!");
+    toast.success("Nama sohib berhasil diubah!");
 
     try {
       const res = await renameSessionMember(memberId, trimmed, session.id);
@@ -334,21 +334,21 @@ export default function SplitBoard({
     setMembers((prev) => prev.filter((m) => m.id !== memberId));
     setAllocations((prev) => prev.filter((a) => a.memberId !== memberId));
     setDeleteConfig(null);
-    toast.success("Teman berhasil dihapus");
+    toast.success("Sohib berhasil dihapus!");
 
     try {
       const res = await removeSessionMember(memberId, session.id);
       if (!res.success) {
         setMembers(prevMembers);
         setAllocations(prevAllocations);
-        setError(res.error || "Gagal ngehapus sohib dari splitbill nih, coba lagi ya!");
-        toast.error(res.error || "Gagal ngehapus sohib dari splitbill nih, coba lagi ya!");
+        setError(res.error || "Gagal ngehapus sohib dari split bill nih, coba lagi ya!");
+        toast.error(res.error || "Gagal ngehapus sohib dari split bill nih, coba lagi ya!");
       }
     } catch {
       setMembers(prevMembers);
       setAllocations(prevAllocations);
-      setError("Gagal ngehapus sohib dari splitbill nih, coba lagi ya!");
-      toast.error("Gagal ngehapus sohib dari splitbill nih, coba lagi ya!");
+      setError("Gagal ngehapus sohib dari split bill nih, coba lagi ya!");
+      toast.error("Gagal ngehapus sohib dari split bill nih, coba lagi ya!");
     }
   };
 
@@ -363,11 +363,11 @@ export default function SplitBoard({
       const res = await toggleMemberPaidStatus(memberId, newStatus, session.id);
       if (!res.success) {
         setMembers(prevMembers);
-        toast.error(res.error || "Gagal update status pembayaran sohib nih.");
+        toast.error(res.error || "Gagal update status bayar sohib nih.");
       }
     } catch {
       setMembers(prevMembers);
-      toast.error("Gagal update status pembayaran sohib nih.");
+      toast.error("Gagal update status bayar sohib nih.");
     }
   };
 
@@ -460,15 +460,15 @@ export default function SplitBoard({
       if (res.success) {
         setSessionStatus(newStatus);
         const statusLabel =
-          newStatus === "CANCELLED" ? "Bill berhasil DIBATALKAN!" : "Status bill diubah ke DRAFT!";
+          newStatus === "CANCELLED" ? "Bill berhasil dibatalin!" : "Status bill balik ke Draft!";
         toast.success(statusLabel);
       } else {
-        setError(res.error || "Gagal mengubah status bill.");
-        toast.error(res.error || "Gagal mengubah status bill.");
+        setError(res.error || "Gagal ganti status bill nih, coba lagi ya!");
+        toast.error(res.error || "Gagal ganti status bill nih, coba lagi ya!");
       }
     } catch {
-      setError("Gagal mengubah status bill.");
-      toast.error("Gagal mengubah status bill.");
+      setError("Gagal ganti status bill nih, coba lagi ya!");
+      toast.error("Gagal ganti status bill nih, coba lagi ya!");
     } finally {
       setLoading(false);
     }
@@ -500,7 +500,7 @@ export default function SplitBoard({
     setNewItemQty("1");
     setNewItemPrice("");
     setNewItemTotal("");
-    toast.success("Menu makanan berhasil ditambahkan!");
+    toast.success("Menu berhasil ditambahin!");
 
     try {
       const res = await addSessionItem(session.id, newItem.name, qty, unitPrice);
@@ -548,7 +548,7 @@ export default function SplitBoard({
     setItemList((prev) =>
       prev.map((i) => (i.id === itemId ? { ...i, name: cleanName, quantity: qty, totalPrice } : i))
     );
-    toast.success("Menu makanan berhasil diperbarui!");
+    toast.success("Menu berhasil diupdate!");
 
     try {
       const res = await updateSessionItem(itemId, session.id, cleanName, qty, unitPrice);
@@ -569,7 +569,7 @@ export default function SplitBoard({
     setItemList((prev) => prev.filter((i) => i.id !== itemId));
     setAllocations((prev) => prev.filter((a) => a.itemId !== itemId));
     setDeleteConfig(null);
-    toast.success("Menu makanan berhasil dihapus");
+    toast.success("Menu berhasil dihapus!");
 
     try {
       const res = await deleteSessionItem(itemId, session.id);
@@ -590,8 +590,8 @@ export default function SplitBoard({
     const text = generateMemberSummaryText(member, allocations, itemList, session);
     setShareModalConfig({
       isOpen: true,
-      title: `Bagi Tagihan ${member.name}`,
-      description: "Pilih mau salin rincian tagihan ke clipboard atau langsung gas ke WhatsApp, Bos!",
+      title: `Share Bill ${member.name}`,
+      description: "Pilih mau copy detail bill ke clipboard atau langsung share ke WhatsApp, Bos!",
       text,
       memberId: member.id,
     });
@@ -601,8 +601,8 @@ export default function SplitBoard({
     const text = generateAllSummaryText(members, allocations, itemList, session);
     setShareModalConfig({
       isOpen: true,
-      title: "Bagi Rekap Tagihan Grup",
-      description: "Mau salin seluruh rekap ke clipboard atau langsung lempar ke grup WhatsApp?",
+      title: "Share Rekap Bill",
+      description: "Mau copy rekap bill ke clipboard atau langsung share ke grup WhatsApp, Bos?",
       text,
     });
   };
@@ -614,16 +614,16 @@ export default function SplitBoard({
       setTimeout(() => setCopiedId(null), 2000);
     }
     if (!session.bankName || !session.bankAccount) {
-      toast.warning("Rincian disalin, tapi info rekening bank lo belum diisi nih, Bos!");
+      toast.warning("Detail bill di-copy, tapi info rekening belum diisi nih, Bos!");
     } else {
-      toast.success("Rincian tagihan berhasil disalin ke clipboard!");
+      toast.success("Detail bill berhasil di-copy ke clipboard!");
     }
     setShareModalConfig(null);
   };
 
   const handleShareToWhatsApp = (text: string) => {
     if (!session.bankName || !session.bankAccount) {
-      toast.warning("Info rekening bank lo belum diisi nih di rincian!");
+      toast.warning("Info rekening belum diisi nih di detail bill!");
     }
     setShareModalConfig(null);
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
@@ -733,12 +733,12 @@ export default function SplitBoard({
                     navigator.clipboard.writeText(textToCopy);
                     setCopiedAccount(true);
                     setTimeout(() => setCopiedAccount(false), 2000);
-                    toast.success("Rekening udah disalin, Bos!");
+                    toast.success("Rekening berhasil di-copy, Bos!");
                   }
                 }}
                 color="secondary"
                 size="xs"
-                aria-label="Salin nomor rekening"
+                aria-label="Copy nomor rekening"
                 className="p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center"
               >
                 {copiedAccount ? (
@@ -763,8 +763,8 @@ export default function SplitBoard({
           onDeleteMemberPrompt={(member) =>
             setDeleteConfig({
               isOpen: true,
-              title: "Hapus Teman dari Sesi?",
-              description: `Yakin mau ngapus ${member.name} dari splitbill ini, Bos? Semua porsi makanannya bakal dihapus juga.`,
+              title: "Hapus Sohib dari Sesi?",
+              description: `Yakin mau ngapus sohib "${member.name}" dari pete-petean ini, Bos? Semua porsi menunya bakal dihapus juga.`,
               confirmText: "Hapus Aja",
               onConfirm: () => handleRemoveMember(member.id),
             })
@@ -826,11 +826,11 @@ export default function SplitBoard({
 
                 <div className="grid grid-cols-3 gap-2">
                   <div className="space-y-1">
-                    <label className="text-3xs text-text-400 uppercase font-bold">Jumlah (Qty)</label>
+                    <label className="text-3xs text-text-400 uppercase font-bold">Porsi</label>
                     <input
                       type="text"
                       required
-                      aria-label="Jumlah porsi menu baru"
+                      aria-label="Porsi menu baru"
                       value={newItemQty}
                       onChange={(e) => {
                         setNewItemQty(e.target.value);
@@ -841,7 +841,7 @@ export default function SplitBoard({
                           setNewItemPrice(String(Math.round(Number(newItemTotal) / q)));
                         }
                       }}
-                      className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text outline-none focus:border-primary-400 tabular-nums"
                     />
                   </div>
                   <div className="space-y-1">
@@ -933,8 +933,8 @@ export default function SplitBoard({
                 onDeleteItemPrompt={(targetItem) =>
                   setDeleteConfig({
                     isOpen: true,
-                    title: "Hapus Menu Makanan?",
-                    description: `Yakin mau ngapus menu "${targetItem.name}" ini, Bos? Semua porsi splitbill-nya bakal hilang.`,
+                    title: "Hapus Menu?",
+                    description: `Yakin mau ngapus menu "${targetItem.name}" ini, Bos? Semua porsi split bill-nya bakal hilang.`,
                     confirmText: "Hapus Aja",
                     onConfirm: () => handleDeleteItem(targetItem.id),
                   })
@@ -986,7 +986,7 @@ export default function SplitBoard({
               className="flex-1 min-h-12 py-3.5"
               iconLeading={Check}
             >
-              Selesai
+              Kelarin
             </Button>
           </div>
         )}
@@ -1012,9 +1012,9 @@ export default function SplitBoard({
             setShowCancelConfirm(false);
             await handleUpdateStatus("CANCELLED");
           }}
-          title="Batalin Bill Pete-Pete?"
-          description="Yakin mau ngebatalin sesi splitbill ini, Bos? Statusnya bakal berubah jadi DIBATALKAN."
-          confirmText="Batalin Bill"
+          title="Batalin Pete-Petean?"
+          description="Yakin mau ngebatalin pete-petean ini, Bos? Statusnya bakal berubah jadi BATAL."
+          confirmText="Batalin Aja"
           cancelText="Gak Jadi"
           color="error"
           icon={AlertTriangle}
@@ -1027,8 +1027,8 @@ export default function SplitBoard({
           isOpen={showCompleteConfirm}
           onClose={() => setShowCompleteConfirm(false)}
           onConfirm={handleConfirmCompleteSession}
-          title="Kelarin Bill Pete-Pete?"
-          description="Yakin mau kelarin Bill PETE-PETE ini? Kalo udah selesai gak bisa diotak-atik lagi ya, Bos!"
+          title="Kelarin Pete-Petean?"
+          description="Yakin mau kelarin pete-petean ini? Kalo udah kelar gak bisa diotak-atik lagi ya, Bos!"
           confirmText="Kelarin Aja"
           cancelText="Gak Jadi"
           color="warning"

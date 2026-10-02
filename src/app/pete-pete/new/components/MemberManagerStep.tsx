@@ -45,14 +45,14 @@ export default function MemberManagerStep({
           <h2 className="text-xs font-extrabold text-text-50 uppercase tracking-wider">
             Siapa Aja yang Ikut PETE-PETE?
           </h2>
-          <p className="text-2xs text-text-400">Masukin nama temen-temen yang ikutan patungan</p>
+          <p className="text-2xs text-text-400">Masukin nama sohib-sohib yang ikutan patungan</p>
         </div>
       </div>
 
       <div className="flex gap-2">
         <input
           type="text"
-          aria-label="Nama teman baru"
+          aria-label="Nama sohib baru"
           value={newMemberInput}
           onChange={(e) => setNewMemberInput(e.target.value)}
           onKeyDown={(e) => {
@@ -62,7 +62,7 @@ export default function MemberManagerStep({
             }
           }}
           className="flex-1 min-h-11 px-3.5 py-2.5 rounded-xl bg-secondary-900/60 border border-secondary-700/80 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all shadow-2xs"
-          placeholder="Nama temen lo (misal: Budi, Sarah)"
+          placeholder="Nama sohib lo (misal: Budi, Sarah)"
         />
         <Button
           type="button"
@@ -105,7 +105,7 @@ export default function MemberManagerStep({
                 <Avatar alt={m} size="lg" className="shadow-md border border-secondary-800" />
                 <input
                   type="text"
-                  aria-label="Ubah nama teman"
+                  aria-label="Ubah nama sohib"
                   value={editingManualName}
                   onChange={(e) => setEditingManualName(e.target.value)}
                   onBlur={() => handleSaveManualRename(idx)}

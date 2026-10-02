@@ -74,7 +74,7 @@ export default function AgendaShareModal({
                   className="w-full justify-center min-h-11 py-3 text-xs font-bold rounded-lg active:scale-[0.96] transition-transform"
                   onPress={() => onShareToClipboard(config.text, config.memberId)}
                 >
-                  Salin ke Clipboard
+                  Copy Teks
                 </Button>
                 <Button
                   color="primary"
@@ -83,7 +83,7 @@ export default function AgendaShareModal({
                   className="w-full justify-center min-h-11 py-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg active:scale-[0.96] transition-transform"
                   onPress={() => onShareToWhatsApp(config.text)}
                 >
-                  Kirim ke WhatsApp
+                  Share ke WhatsApp
                 </Button>
               </div>
             </div>

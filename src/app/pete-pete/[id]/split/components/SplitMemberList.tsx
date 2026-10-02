@@ -70,7 +70,7 @@ export default function SplitMemberList({
   return (
     <div
       role="region"
-      aria-label="Daftar anggota sesi"
+      aria-label="Daftar sohib sesi"
       className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 space-y-2.5 shrink-0 select-none"
     >
       <div
@@ -138,7 +138,7 @@ export default function SplitMemberList({
           <Button
             onPress={() => setShowMembers(!showMembers)}
             color="secondary"
-            aria-label={showMembers ? "Tutup daftar anggota" : "Buka daftar anggota"}
+            aria-label={showMembers ? "Tutup daftar sohib" : "Buka daftar sohib"}
             aria-expanded={showMembers}
             className="px-2 py-1 shrink-0"
           >
@@ -219,8 +219,8 @@ export default function SplitMemberList({
                             <span className="text-3xs font-normal text-text-400"> (Gua)</span>
                           )}
                         </p>
-                        <p className="text-2xs text-primary-400 font-medium">
-                          Splitbill: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
+                        <p className="text-2xs text-primary-400 font-medium tabular-nums">
+                          Tagihan: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
                         </p>
                       </div>
                     )}
@@ -246,14 +246,14 @@ export default function SplitMemberList({
                       <Button
                         onPress={() => {
                           if (sessionStatus !== "COMPLETED") {
-                            toast.warning("Kelarin dulu bill-nya sebelum bagi rincian ya, Bos!");
+                            toast.warning("Kelarin dulu bill-nya sebelum share detail ya, Bos!");
                             return;
                           }
                           onOpenMemberSummaryShare(member);
                         }}
                         color="secondary"
                         size="xs"
-                        aria-label={`Bagi rincian tagihan untuk ${member.name}`}
+                        aria-label={`Share detail bill untuk ${member.name}`}
                         className={`p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center ${
                           sessionStatus !== "COMPLETED" ? "opacity-60" : ""
                         }`}

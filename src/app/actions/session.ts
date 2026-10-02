@@ -139,12 +139,12 @@ export async function addSessionMember(sessionId: string, name: string) {
       }
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Gagal menambahkan anggota";
+    const message = error instanceof Error ? error.message : "Gagal nambahin sohib";
     return { success: false, error: message };
   }
 }
 
-// Action untuk menghapus member/anggota dari sesi
+// Action untuk menghapus member/sohib dari sesi
 export async function removeSessionMember(memberId: string, sessionId: string) {
   try {
     // Hapus semua alokasi item untuk member ini terlebih dahulu
@@ -159,12 +159,12 @@ export async function removeSessionMember(memberId: string, sessionId: string) {
     revalidatePath(`/pete-pete/${sessionId}/split`);
     return { success: true };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Gagal menghapus anggota";
+    const message = error instanceof Error ? error.message : "Gagal ngehapus sohib";
     return { success: false, error: message };
   }
 }
 
-// Action untuk mengubah nama member/anggota sesi
+// Action untuk mengubah nama member/sohib sesi
 export async function renameSessionMember(memberId: string, name: string, sessionId: string) {
   try {
     const member = await prisma.billMember.update({
@@ -181,7 +181,7 @@ export async function renameSessionMember(memberId: string, name: string, sessio
       },
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Gagal mengubah nama anggota";
+    const message = error instanceof Error ? error.message : "Gagal ganti nama sohib";
     return { success: false, error: message };
   }
 }
