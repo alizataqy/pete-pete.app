@@ -20,6 +20,7 @@ import WizardStepHeader from "./WizardStepHeader";
 import MemberManagerStep from "./MemberManagerStep";
 import FeeAdjustmentsFields from "./FeeAdjustmentsFields";
 import ItemInputForm from "./ItemInputForm";
+import DeleteConfirmation from "@/components/application/modals/DeleteConfirmation";
 
 interface NewSessionScanStepProps {
   wizardStep: number;
@@ -247,6 +248,42 @@ export default function NewSessionScanStep({
   detailsForm,
 }: NewSessionScanStepProps) {
   const scanItems = scanResult?.items || [];
+  const [deleteItemIndex, setDeleteItemIndex] = useState<number | null>(null);
+
+  // Update item menu langsung dari form input baris
+  const handleUpdateItem = (
+    idx: number,
+    field: "name" | "quantity" | "unitPrice" | "totalPrice",
+    val: string
+  ) => {
+    const updatedItems = [...scanItems];
+    const item = { ...updatedItems[idx] };
+
+    if (field === "name") {
+      item.name = val;
+    } else if (field === "quantity") {
+      const q = val === "" ? 0 : Math.max(0, parseInt(val) || 0);
+      item.quantity = q;
+      item.totalPrice = (item.unitPrice || 0) * q;
+    } else if (field === "unitPrice") {
+      const u = val === "" ? 0 : Math.max(0, parseFloat(val) || 0);
+      item.unitPrice = u;
+      item.totalPrice = u * (item.quantity || 1);
+    } else if (field === "totalPrice") {
+      const t = val === "" ? 0 : Math.max(0, parseFloat(val) || 0);
+      item.totalPrice = t;
+      const q = item.quantity || 1;
+      item.unitPrice = q > 0 ? t / q : t;
+    }
+
+    updatedItems[idx] = item;
+    updateScanResultCalculations(
+      updatedItems,
+      scanResult?.taxAmount,
+      scanResult?.tipAmount,
+      scanResult?.discountAmount
+    );
+  };
 
   return (
     <div className="space-y-4 pb-4">
@@ -444,8 +481,8 @@ export default function NewSessionScanStep({
                       <h3 className="text-xs font-extrabold text-text-50 uppercase tracking-wider">
                         Rincian Menu Struk
                       </h3>
-                      <p className="text-2xs text-text-400">
-                        Periksa dan sesuaikan menu, porsi, atau harga jika ada yang kurang pas
+                      <p className="text-2xs text-text-400 mr-0.5">
+                        Bisa langsung diedit di kotak masing-masing kalo ada nama, porsi, atau harga yang keliru dibaca AI
                       </p>
                     </div>
                   </div>
@@ -454,42 +491,98 @@ export default function NewSessionScanStep({
                   </Badge>
                 </div>
 
-                {/* Items List */}
-                <div className="space-y-2">
+                {/* Items List - Form Input Langsung */}
+                <div className="space-y-2.5">
                   {scanItems.map((item, idx) => (
                     <div
                       key={idx}
-                      className="bg-secondary-900/50 border border-secondary-800/80 rounded-xl p-3 flex items-center justify-between gap-3 hover:border-secondary-700 transition-colors"
+                      className="bg-secondary-900/60 border border-secondary-800/90 hover:border-secondary-700/90 focus-within:border-primary-400/60 focus-within:ring-1 focus-within:ring-primary-400/20 rounded-xl p-3 space-y-2.5 transition-all shadow-xs"
                     >
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <span className="w-6 h-6 rounded-lg bg-secondary-800/80 border border-secondary-700/80 text-text-300 flex items-center justify-center text-3xs font-bold shrink-0">
+                      {/* Baris 1: Nomor Urut, Input Nama Menu, dan Tombol Hapus */}
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-secondary-800/80 border border-secondary-700/80 text-text-300 flex items-center justify-center text-3xs font-black shrink-0">
                           {idx + 1}
                         </span>
-                        <div className="space-y-0.5 min-w-0 flex-1">
-                          <span className="text-xs sm:text-sm font-bold text-text-50 block truncate">
-                            {item.name}
-                          </span>
-                          <div className="flex items-center gap-1.5 text-2xs text-text-400">
-                            <span className="bg-secondary-950/80 px-1.5 py-0.2 rounded border border-secondary-800/60">
-                              {item.quantity}x
-                            </span>
-                            <span>&bull;</span>
-                            <span>@ Rp {Math.round(item.unitPrice).toLocaleString("id-ID")}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2.5 shrink-0">
-                        <span className="text-xs sm:text-sm font-extrabold text-text-50 tabular-nums">
-                          Rp {item.totalPrice.toLocaleString("id-ID")}
-                        </span>
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) =>
+                            handleUpdateItem(idx, "name", e.target.value)
+                          }
+                          aria-label={`Nama Menu #${idx + 1}`}
+                          placeholder="Nama menu struk"
+                          className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-secondary-950/80 border border-secondary-700/80 text-xs sm:text-sm font-bold text-text-50 placeholder-text-500 focus:border-primary-400 focus:ring-1 focus:ring-primary-400 outline-none transition-colors"
+                        />
                         <Button
                           size="xs"
                           color="tertiary-destructive"
-                          onPress={() => handleRemoveScanItem(idx)}
+                          onPress={() => setDeleteItemIndex(idx)}
                           aria-label={`Hapus ${item.name}`}
                           iconLeading={Trash01}
-                          className="p-1.5 text-danger-400 hover:bg-danger-950/40 rounded-lg active:scale-95 transition-all"
+                          className="p-1.5 text-danger-400 hover:bg-danger-950/40 rounded-lg active:scale-95 transition-all shrink-0"
+                        />
+                      </div>
+
+                      {/* Baris 2: Input Porsi & Input Harga Satuan (Satuan mengisi sisa gap di kanan) */}
+                      <div className="flex items-center gap-2 pt-1 border-t border-secondary-800/60">
+                        {/* Porsi / Qty */}
+                        <div className="flex items-center gap-1.5 bg-secondary-950/80 border border-secondary-700/80 rounded-lg px-2.5 py-1 focus-within:border-primary-400 shrink-0">
+                          <span className="text-3xs text-text-400 font-bold uppercase tracking-wider">
+                            Porsi
+                          </span>
+                          <input
+                            type="number"
+                            min={1}
+                            value={item.quantity === 0 ? "" : item.quantity}
+                            onChange={(e) =>
+                              handleUpdateItem(idx, "quantity", e.target.value)
+                            }
+                            aria-label={`Porsi #${idx + 1}`}
+                            className="w-8 text-center text-xs font-black text-text-50 bg-transparent outline-none tabular-nums"
+                          />
+                          <span className="text-3xs text-text-400 font-bold">x</span>
+                        </div>
+
+                        {/* Harga Satuan - Mengisi sisa gap lebar di kanan */}
+                        <div className="flex-1 min-w-0 flex items-center gap-1.5 bg-secondary-950/80 border border-secondary-700/80 rounded-lg px-2.5 py-1 focus-within:border-primary-400">
+                          <span className="text-3xs text-text-400 font-bold uppercase tracking-wider shrink-0">
+                            Satuan
+                          </span>
+                          <input
+                            type="text"
+                            value={formatRupiah(String(Math.round(item.unitPrice)))}
+                            onChange={(e) =>
+                              handleUpdateItem(
+                                idx,
+                                "unitPrice",
+                                parseRupiah(e.target.value)
+                              )
+                            }
+                            aria-label={`Harga satuan #${idx + 1}`}
+                            placeholder="0"
+                            className="flex-1 min-w-0 text-xs font-bold text-text-50 bg-transparent outline-none tabular-nums"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Baris 3: Total Harga w-full, nominal di pojok kanan (end) */}
+                      <div className="w-full flex items-center justify-between gap-2 bg-secondary-950/80 border border-secondary-700/80 rounded-lg px-2.5 py-1 focus-within:border-primary-400">
+                        <span className="text-3xs text-text-400 font-bold uppercase tracking-wider shrink-0">
+                          Total
+                        </span>
+                        <input
+                          type="text"
+                          value={formatRupiah(String(Math.round(item.totalPrice)))}
+                          onChange={(e) =>
+                            handleUpdateItem(
+                              idx,
+                              "totalPrice",
+                              parseRupiah(e.target.value)
+                            )
+                          }
+                          aria-label={`Total harga #${idx + 1}`}
+                          placeholder="0"
+                          className="flex-1 min-w-0 text-right text-xs sm:text-sm font-black text-primary-400 bg-transparent outline-none tabular-nums"
                         />
                       </div>
                     </div>
@@ -504,7 +597,7 @@ export default function NewSessionScanStep({
                     size="sm"
                     color="secondary"
                     iconLeading={Plus}
-                    className="w-full min-h-10 text-xs font-bold rounded-xl border border-secondary-700/70 hover:bg-secondary-900 transition-all"
+                    className="w-full"
                   >
                     Tambah Menu Tambahan
                   </Button>
@@ -531,10 +624,11 @@ export default function NewSessionScanStep({
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-text-300 block">
-                          Porsi / Qty
+                    <div className="flex items-end gap-2 sm:gap-2.5">
+                      {/* Porsi: simpel & ramping */}
+                      <div className="w-14 sm:w-16 shrink-0 space-y-1.5">
+                        <label className="text-2xs sm:text-xs font-semibold text-text-300 block text-center truncate">
+                          Porsi
                         </label>
                         <input
                           type="number"
@@ -553,21 +647,22 @@ export default function NewSessionScanStep({
                               );
                             }
                           }}
-                          className="w-full px-3.5 py-2.5 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text-50 outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400 text-center"
+                          className="w-full h-10 px-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs font-bold text-text-50 outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400 text-center tabular-nums"
                         />
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-text-300 block">
+                      {/* Tipe Harga: ringkas */}
+                      <div className="w-28 sm:w-32 shrink-0 space-y-1.5">
+                        <label className="text-2xs sm:text-xs font-semibold text-text-300 block text-center truncate">
                           Tipe Harga
                         </label>
-                        <div className="grid grid-cols-2 gap-1 bg-secondary-900 p-1 rounded-lg border border-secondary-800 h-10 items-center">
+                        <div className="grid grid-cols-2 gap-0.5 bg-secondary-900 p-1 rounded-lg border border-secondary-800 h-10 items-center">
                           <Button
                             type="button"
                             onPress={() => setDraftPriceMode("unit")}
                             color={draftPriceMode === "unit" ? "primary" : "tertiary"}
                             size="xs"
-                            className="h-full text-xs font-semibold rounded"
+                            className="h-full px-1 text-3xs sm:text-xs font-bold rounded"
                           >
                             Satuan
                           </Button>
@@ -576,15 +671,16 @@ export default function NewSessionScanStep({
                             onPress={() => setDraftPriceMode("total")}
                             color={draftPriceMode === "total" ? "primary" : "tertiary"}
                             size="xs"
-                            className="h-full text-xs font-semibold rounded"
+                            className="h-full px-1 text-3xs sm:text-xs font-bold rounded"
                           >
                             Total
                           </Button>
                         </div>
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-text-300 block truncate">
+                      {/* Input Harga: fleksibel mengambil sisa ruang yang banyak */}
+                      <div className="flex-1 min-w-0 space-y-1.5">
+                        <label className="text-2xs sm:text-xs font-semibold text-text-300 block truncate">
                           {draftPriceMode === "unit" ? "Harga Satuan" : "Harga Total"}
                         </label>
                         {draftPriceMode === "unit" ? (
@@ -599,7 +695,7 @@ export default function NewSessionScanStep({
                               const q = parseFloat(draftItemQty) || 1;
                               setDraftItemAmount(p ? String(q * Number(p)) : "");
                             }}
-                            className="w-full px-3.5 py-2.5 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text-50 outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400"
+                            className="w-full h-10 px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs sm:text-sm font-semibold text-text-50 outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400 tabular-nums"
                             placeholder="Rp Satuan"
                           />
                         ) : (
@@ -616,7 +712,7 @@ export default function NewSessionScanStep({
                                 a && q > 0 ? String(Math.round(Number(a) / q)) : ""
                               );
                             }}
-                            className="w-full px-3.5 py-2.5 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs text-text-50 outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400"
+                            className="w-full h-10 px-3 py-2 rounded-lg bg-secondary-950/80 border border-secondary-700 text-xs sm:text-sm font-semibold text-text-50 outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400 tabular-nums"
                             placeholder="Rp Total"
                           />
                         )}
@@ -718,6 +814,26 @@ export default function NewSessionScanStep({
           {detailsForm}
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Menu Struk */}
+      <DeleteConfirmation
+        isOpen={deleteItemIndex !== null}
+        onClose={() => setDeleteItemIndex(null)}
+        onConfirm={() => {
+          if (deleteItemIndex !== null) {
+            handleRemoveScanItem(deleteItemIndex);
+            setDeleteItemIndex(null);
+          }
+        }}
+        title="Hapus Menu Ini?"
+        description={
+          deleteItemIndex !== null && scanItems[deleteItemIndex]
+            ? `Yakin mau hapus menu "${scanItems[deleteItemIndex].name || `Menu #${deleteItemIndex + 1}`}" dari struk? Nominal total bakal otomatis dihitung ulang.`
+            : "Yakin mau hapus menu ini dari struk? Nominal total bakal otomatis dihitung ulang."
+        }
+        confirmText="Hapus Aja"
+        cancelText="Gak Jadi"
+      />
     </div>
   );
 }

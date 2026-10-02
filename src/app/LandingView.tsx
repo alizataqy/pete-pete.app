@@ -52,7 +52,7 @@ const steps = [
   },
   {
     index: "03",
-    title: "Kirim Detailnya ke WhatsApp.",
+    title: "Kirim Rincian ke WhatsApp.",
     desc: "Dapet format teks siap kirim ke grup WhatsApp, lengkap dengan rincian tiap orang serta nomor rekening atau QRIS.",
     icon: MessageChatCircle,
     details: [

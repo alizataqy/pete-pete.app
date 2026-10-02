@@ -50,7 +50,7 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
         aria-label="Filter status pete-petean"
         className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-secondary-950/70 border border-secondary-800/80 mb-3"
       >
-        
+
         <button
           type="button"
           role="tab"
@@ -59,10 +59,14 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
           className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border transition-all cursor-pointer active:scale-[0.98] ${
             statusFilter === "ALL"
               ? "bg-secondary-800/90 border-secondary-700/80 shadow-xs text-text-50"
-              : "bg-secondary-900/30 border-transparent text-text-400 hover:bg-secondary-900/60 hover:text-text-200"
+              : "border-transparent text-text-400 hover:bg-secondary-900/60 hover:text-text-200"
           }`}
         >
-          <span className="text-3xs font-bold uppercase tracking-wider truncate">
+          <span
+            className={`font-bold uppercase tracking-wider truncate transition-all ${
+              statusFilter === "ALL" ? "text-xs" : "text-2xs"
+            }`}
+          >
             Semua
           </span>
           <span className="text-xs font-black tabular-nums">
@@ -78,10 +82,14 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
           className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border transition-all cursor-pointer active:scale-[0.98] ${
             statusFilter === "DRAFT"
               ? "bg-secondary-800/90 border-secondary-700/80 shadow-xs text-text-50"
-              : "bg-secondary-900/30 border-transparent text-text-400 hover:bg-secondary-900/60 hover:text-text-200"
+              : "border-transparent text-text-400 hover:bg-secondary-900/60 hover:text-text-200"
           }`}
         >
-          <span className="text-3xs font-bold uppercase tracking-wider truncate">
+          <span
+            className={`font-bold uppercase tracking-wider truncate transition-all ${
+              statusFilter === "DRAFT" ? "text-xs" : "text-2xs"
+            }`}
+          >
             On Going
           </span>
           <span className="text-xs font-black tabular-nums">
@@ -97,10 +105,14 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
           className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border transition-all cursor-pointer active:scale-[0.98] ${
             statusFilter === "COMPLETED"
               ? "bg-secondary-800/90 border-secondary-700/80 shadow-xs text-text-50"
-              : "bg-secondary-900/30 border-transparent text-text-400 hover:bg-secondary-900/60 hover:text-text-200"
+              : "border-transparent text-text-400 hover:bg-secondary-900/60 hover:text-text-200"
           }`}
         >
-          <span className="text-3xs font-bold uppercase tracking-wider truncate">
+          <span
+            className={`font-bold uppercase tracking-wider truncate transition-all ${
+              statusFilter === "COMPLETED" ? "text-xs" : "text-2xs"
+            }`}
+          >
             Udah Kelar
           </span>
           <span className="text-xs font-black tabular-nums">
@@ -174,7 +186,7 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
                       </h3>
                       <p className="text-2xs text-text-400 mt-0.5 flex flex-wrap items-center gap-1.5">
                         {session.merchantName &&
-                        session.merchantName.toLowerCase() !== cleanTitle.toLowerCase() ? (
+                          session.merchantName.toLowerCase() !== cleanTitle.toLowerCase() ? (
                           <>
                             <span className="font-medium text-text-300">
                               {session.merchantName}

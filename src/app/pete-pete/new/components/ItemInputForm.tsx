@@ -81,12 +81,12 @@ export default function ItemInputForm({
       </div>
 
       {/* Porsi, Tipe Harga, & Input Harga */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="flex items-end gap-2 sm:gap-2.5">
         {/* Porsi / Qty */}
-        <div className="space-y-1.5">
-          <div className="h-5 flex items-center">
-            <label className="text-xs font-bold text-text-100 block">
-              Porsi / Qty
+        <div className="w-14 sm:w-16 shrink-0 space-y-1.5">
+          <div className="h-5 flex items-center justify-center">
+            <label className="text-2xs sm:text-xs font-bold text-text-100 block text-center truncate">
+              Porsi
             </label>
           </div>
           <input
@@ -96,24 +96,24 @@ export default function ItemInputForm({
             inputMode="numeric"
             value={qty}
             onChange={(e) => onQtyChange(e.target.value)}
-            className="w-full min-h-11 px-3.5 py-2.5 rounded-xl bg-secondary-900/60 border border-secondary-700/80 text-xs sm:text-sm text-text-50 font-semibold outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all text-center shadow-2xs"
+            className="w-full min-h-11 h-11 px-2 rounded-xl bg-secondary-900/60 border border-secondary-700/80 text-xs sm:text-sm text-text-50 font-bold outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all text-center shadow-2xs tabular-nums"
           />
         </div>
 
         {/* Tipe Harga */}
-        <div className="space-y-1.5">
-          <div className="h-5 flex items-center">
-            <label className="text-xs font-bold text-text-100 block">
+        <div className="w-28 sm:w-32 shrink-0 space-y-1.5">
+          <div className="h-5 flex items-center justify-center">
+            <label className="text-2xs sm:text-xs font-bold text-text-100 block text-center truncate">
               Tipe Harga
             </label>
           </div>
-          <div className="grid grid-cols-2 gap-1 bg-secondary-900/90 p-1 rounded-xl border border-secondary-700/80 min-h-11 items-center shadow-2xs">
+          <div className="grid grid-cols-2 gap-1 bg-secondary-900/90 p-1 rounded-xl border border-secondary-700/80 min-h-11 h-11 items-center shadow-2xs">
             <Button
               type="button"
               onPress={() => setPriceMode("unit")}
               color={priceMode === "unit" ? "primary" : "tertiary"}
               size="sm"
-              className={`h-full text-xs font-bold rounded-lg transition-all ${
+              className={`h-full px-1 text-3xs sm:text-xs font-bold rounded-lg transition-all ${
                 priceMode === "unit" ? "" : "text-text-400 hover:text-text-200"
               }`}
             >
@@ -124,7 +124,7 @@ export default function ItemInputForm({
               onPress={() => setPriceMode("total")}
               color={priceMode === "total" ? "primary" : "tertiary"}
               size="sm"
-              className={`h-full text-xs font-bold rounded-lg transition-all ${
+              className={`h-full px-1 text-3xs sm:text-xs font-bold rounded-lg transition-all ${
                 priceMode === "total" ? "" : "text-text-400 hover:text-text-200"
               }`}
             >
@@ -134,9 +134,9 @@ export default function ItemInputForm({
         </div>
 
         {/* Input Harga */}
-        <div className="space-y-1.5">
+        <div className="flex-1 min-w-0 space-y-1.5">
           <div className="h-5 flex items-center">
-            <label className="text-xs font-bold text-text-100 block truncate">
+            <label className="text-2xs sm:text-xs font-bold text-text-100 block truncate">
               {priceMode === "unit" ? "Harga Satuan" : "Harga Total"}
             </label>
           </div>
@@ -161,8 +161,8 @@ export default function ItemInputForm({
                 handleSubmit();
               }
             }}
-            className="w-full min-h-11 px-3.5 py-2.5 rounded-xl bg-secondary-900/60 border border-secondary-700/80 text-xs sm:text-sm text-text-50 placeholder-text-500 font-semibold outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all shadow-2xs"
             placeholder={priceMode === "unit" ? "Rp Satuan" : "Rp Total"}
+            className="w-full min-h-11 h-11 px-3.5 py-2.5 rounded-xl bg-secondary-900/60 border border-secondary-700/80 text-xs sm:text-sm text-text-50 placeholder-text-500 font-semibold outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all shadow-2xs tabular-nums"
           />
         </div>
       </div>
