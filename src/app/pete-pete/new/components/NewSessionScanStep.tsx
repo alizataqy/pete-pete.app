@@ -13,6 +13,7 @@ import {
   ArrowUpRight,
   MessageChatCircle,
   CheckCircle,
+  Camera01,
 } from "@untitledui/icons";
 import { ScanResult, ScanItem, formatRupiah, parseRupiah } from "../types";
 import WizardStepHeader from "./WizardStepHeader";
@@ -245,8 +246,6 @@ export default function NewSessionScanStep({
   handleSaveManualRename,
   detailsForm,
 }: NewSessionScanStepProps) {
-  // const [showReceiptPreview, setShowReceiptPreview] = useState(false);
-
   const scanItems = scanResult?.items || [];
 
   return (
@@ -281,36 +280,126 @@ export default function NewSessionScanStep({
               </div>
 
               {!filePreview ? (
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => document.getElementById("file-input")?.click()}
-                  className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-[0.99] group ${isDragOver
-                      ? "border-primary-400 bg-primary-950/40"
-                      : "border-secondary-700/80 bg-secondary-900/30 hover:border-primary-400/60 hover:bg-secondary-900/60"
+                <div className="space-y-3">
+                  {/* Hidden Inputs: Kamera HP bawaan (capture) & File picker galeri */}
+                  <input
+                    id="camera-input"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleFileChange}
+                    className="sr-only"
+                  />
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="sr-only"
+                  />
+
+                  {/* Opsi 1: Ambil Foto Langsung dengan Aplikasi Kamera HP */}
+                  <label
+                    htmlFor="camera-input"
+                    className="w-full p-4 sm:p-5 rounded-2xl border-2 border-primary-500/40 bg-linear-to-br from-primary-950/40 via-secondary-950/60 to-secondary-900/40 hover:border-primary-400 hover:bg-primary-950/60 transition-all text-left flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99] shadow-xs"
+                  >
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="w-12 h-12 rounded-xl bg-primary-400/20 border border-primary-400/30 text-primary-400 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:bg-primary-400/30 transition-all shadow-xs">
+                        <Camera01 className="w-6 h-6" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-extrabold text-text-50 group-hover:text-primary-300 transition-colors">
+                          Foto Struk Langsung
+                        </p>
+                        <p className="text-2xs text-text-300 mt-0.5">
+                          Buka aplikasi kamera bawaan HP buat langsung jepret bon
+                        </p>
+                      </div>
+                    </div>
+                    <span className="shrink-0 text-3xs font-extrabold bg-primary-400/20 text-primary-300 px-2.5 py-1 rounded-md border border-primary-400/30 group-hover:bg-primary-400 group-hover:text-secondary-950 transition-colors">
+                      Buka Kamera
+                    </span>
+                  </label>
+
+                  {/* Opsi 2: Dropzone / Upload dari Galeri atau File */}
+                  <label
+                    htmlFor="file-input"
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    className={`border-2 border-dashed rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-[0.99] group ${
+                      isDragOver
+                        ? "border-primary-400 bg-primary-950/40"
+                        : "border-secondary-700/80 bg-secondary-900/30 hover:border-secondary-600 hover:bg-secondary-900/60"
                     }`}
-                >
-                  <input id="file-input" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                  <div className="w-14 h-14 rounded-xl bg-primary-400/10 border border-primary-400/20 text-primary-400 flex items-center justify-center mb-3 group-hover:scale-105 group-hover:bg-primary-400/20 transition-all shadow-xs">
-                    <UploadCloud01 className="w-7 h-7" />
-                  </div>
-                  <p className="text-sm font-bold text-text-50 mb-1">Upload foto struk lo</p>
-                  <p className="text-xs text-text-300">Sentuh untuk buka kamera / galeri</p>
-                  <span className="text-2xs text-text-400 mt-2 bg-secondary-900/80 border border-secondary-800 px-2.5 py-1 rounded-full">
-                    Format: JPG, PNG, WebP (maks. 10MB)
-                  </span>
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-secondary-800/80 border border-secondary-700 text-text-300 flex items-center justify-center mb-2.5 group-hover:scale-105 group-hover:text-text-100 transition-all shadow-xs">
+                      <UploadCloud01 className="w-5 h-5" />
+                    </div>
+                    <p className="text-xs sm:text-sm font-bold text-text-100">
+                      Atau pilih dari galeri / file
+                    </p>
+                    <p className="text-2xs text-text-400 mt-0.5">
+                      Klik buat cari file atau tarik foto struk ke sini
+                    </p>
+                    <span className="text-3xs text-text-400 mt-2 bg-secondary-900/80 border border-secondary-800 px-2.5 py-0.5 rounded-full">
+                      Format: JPG, PNG, WebP (maks. 10MB)
+                    </span>
+                  </label>
                 </div>
               ) : (
-                <div className="relative w-full rounded-2xl overflow-hidden bg-secondary-950/60 border border-secondary-800 p-2 flex items-center justify-center max-h-122 sm:max-h-136">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={filePreview}
-                    alt="Struk"
-                    className="max-h-104 sm:max-h-128 w-auto max-w-full object-contain rounded-xl"
+                <div className="space-y-3">
+                  {/* Hidden Inputs untuk ganti / foto ulang */}
+                  <input
+                    id="camera-input"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleFileChange}
+                    className="sr-only"
                   />
-                  {/* Loading Overlay khusus di dalam frame foto struk */}
-                  {loading && <ScanLoadingOverlay />}
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="sr-only"
+                  />
+
+                  <div className="relative w-full rounded-2xl overflow-hidden bg-secondary-950/60 border border-secondary-800 p-2 flex items-center justify-center max-h-122 sm:max-h-136">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={filePreview}
+                      alt="Struk"
+                      className="max-h-104 sm:max-h-128 w-auto max-w-full object-contain rounded-xl"
+                    />
+                    {/* Loading Overlay khusus di dalam frame foto struk */}
+                    {loading && <ScanLoadingOverlay />}
+                  </div>
+
+                  {!loading && (
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                      <p className="text-2xs text-text-400">
+                        Foto kurang pas? Bisa foto ulang atau ganti file
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <label
+                          htmlFor="camera-input"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg border border-secondary-700 bg-secondary-900 text-xs font-semibold text-text-100 hover:bg-secondary-800 hover:text-text-50 transition-all cursor-pointer active:scale-95 shadow-2xs"
+                        >
+                          <Camera01 className="w-3.5 h-3.5 shrink-0" />
+                          <span>Foto Ulang</span>
+                        </label>
+                        <label
+                          htmlFor="file-input"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg border border-secondary-700 bg-secondary-900 text-xs font-semibold text-text-100 hover:bg-secondary-800 hover:text-text-50 transition-all cursor-pointer active:scale-95 shadow-2xs"
+                        >
+                          <UploadCloud01 className="w-3.5 h-3.5 shrink-0" />
+                          <span>Ganti File</span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 

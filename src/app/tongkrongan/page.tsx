@@ -6,9 +6,10 @@ import { prisma } from "@/lib/db";
 import LogoutButton from "@/components/LogoutButton";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
-import { Plus, Compass, Divide01, File06, ReceiptCheck } from "@untitledui/icons";
+import { Plus, Compass } from "@untitledui/icons";
 import { Avatar } from "@/components/base/avatar/avatar";
 import JoinBonInput from "./JoinBonInput";
+import TongkronganList from "./TongkronganList";
 
 export default async function TongkronganPage() {
   const session = await auth.api.getSession({
@@ -42,6 +43,16 @@ export default async function TongkronganPage() {
     where: { id: session.user.id },
     select: { avatar: true },
   });
+
+  const serializedSessions = mySessions.map((s) => ({
+    id: s.id,
+    title: s.title,
+    merchantName: s.merchantName,
+    inviteCode: s.inviteCode,
+    status: s.status,
+    totalAmount: Number(s.totalAmount),
+    members: s.members,
+  }));
 
   return (
     <main className="flex-1 flex flex-col relative overflow-hidden bg-background text-text">
@@ -79,7 +90,7 @@ export default async function TongkronganPage() {
         {/* Link ke Vacation / Agenda Plans */}
         <Link
           href="/agenda"
-          className="relative p-4 rounded-xl border border-secondary-800 bg-secondary-950/15 hover:bg-secondary-950/30 transition-all active:scale-[0.99] flex items-center justify-between gap-3 shrink-0 min-h-14"
+          className="relative p-2.5 rounded-xl border border-secondary-800 bg-secondary-950/15 hover:bg-secondary-950/30 transition-all active:scale-[0.99] flex items-center justify-between gap-3 shrink-0 min-h-14"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="p-2.5 bg-secondary-950/80 rounded-lg border border-secondary-800 shrink-0">
@@ -103,164 +114,8 @@ export default async function TongkronganPage() {
 
         {/* Daftar Sesi Split Bill */}
         <div className="flex-1 flex flex-col min-h-0 gap-3">
-          <h2 className="text-xs font-semibold text-text-100 uppercase tracking-wider">List Pete-Petean Lo</h2>
-          <div className="flex-1 flex flex-col min-h-0 border border-secondary-800 p-3 rounded-xl bg-secondary-950/30">
-
-            {/* Statistik/Overview Ringkas */}
-            <div className="grid grid-cols-3 gap-2 pb-3">
-              <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
-                <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Semua</p>
-                <p className="text-lg font-bold text-primary-300 mt-1">{mySessions.length}</p>
-              </div>
-              <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
-                <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">On Going</p>
-                <p className="text-lg font-bold text-primary-300 mt-1">
-                  {mySessions.filter((s) => s.status === "DRAFT").length}
-                </p>
-              </div>
-              <div className="p-3 rounded-xl border border-secondary-800 bg-secondary-950/60 text-center">
-                <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Udah Kelar</p>
-                <p className="text-lg font-bold text-primary-300 mt-1">
-                  {mySessions.filter((s) => s.status === "COMPLETED").length}
-                </p>
-              </div>
-            </div>
-            {mySessions.length === 0 ? (
-              <div className="p-8 text-center border border-dashed border-secondary-800 rounded-xl space-y-3 bg-secondary-950/40">
-                <p className="text-text-300 text-2xs max-w-50 mx-auto leading-relaxed">
-                  Sepi amat, belum ada splitbill nih. Yuk scan struk bareng geng lo biar gak ada drama!
-                </p>
-                <Button
-                  href="/pete-pete/new"
-                  color="primary"
-                  className="px-5 py-3 min-h-11 rounded-lg font-bold text-xs active:scale-[0.96] transition-transform"
-                >
-                  Scan Struk Sekarang
-                </Button>
-              </div>
-            ) : (
-              <div className="flex-1 overflow-y-auto pb-16 space-y-3 scrollbar-hide">
-                {mySessions.map((session) => {
-                  const totalMembers = session.members.length;
-                  const paidMembers = session.members.filter((m) => m.isPaid).length;
-                  const unpaidMembers = totalMembers - paidMembers;
-                  const isAllPaid = totalMembers > 0 && unpaidMembers === 0;
-                  const cleanTitle = session.title.replace(/^PETE-PETE\s*[-–—:]?\s*/i, "").trim() || session.merchantName || session.title;
-
-                  return (
-                    <div
-                      key={session.id}
-                      className="relative p-4 rounded-xl border border-secondary-800 bg-secondary-950/20 hover:bg-secondary-950/40 hover:border-primary-400/40 transition-all flex flex-col gap-3 group cursor-pointer"
-                    >
-                      {/* Klik area card membuka bagi tagihan */}
-                      <Link
-                        href={`/pete-pete/${session.id}/split`}
-                        className="absolute inset-0 z-0 rounded-xl"
-                        aria-label={`Bagi tagihan ${cleanTitle}`}
-                      />
-
-                      {/* Header: Icon, Judul, Merchant/Kode, dan Status */}
-                      <div className="relative z-10 pointer-events-none flex items-start justify-between gap-2.5">
-                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <div className="p-2 rounded-lg bg-primary-400/10 border border-primary-400/20 text-primary-400 shrink-0">
-                            <ReceiptCheck className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h3 className="font-bold text-sm text-text-50 group-hover:text-primary-400 transition-colors wrap-break-word">
-                              {cleanTitle}
-                            </h3>
-                            <p className="text-2xs text-text-400 mt-0.5 flex flex-wrap items-center gap-1.5">
-                              {session.merchantName && session.merchantName.toLowerCase() !== cleanTitle.toLowerCase() ? (
-                                <>
-                                  <span className="font-medium text-text-300">{session.merchantName}</span>
-                                  <span className="text-secondary-700">•</span>
-                                </>
-                              ) : null}
-                              <span>Kode: <strong className="font-mono text-text-200 font-semibold">{session.inviteCode}</strong></span>
-                            </p>
-                          </div>
-                        </div>
-                        <Badge
-                          color={
-                            session.status === "COMPLETED"
-                              ? "success"
-                              : session.status === "CANCELLED"
-                                ? "error"
-                                : "brand"
-                          }
-                          size="sm"
-                          type="pill-color"
-                          className="font-bold text-2xs shrink-0"
-                        >
-                          {session.status === "COMPLETED"
-                            ? "Kelar"
-                            : session.status === "CANCELLED"
-                              ? "Batal"
-                              : "Draft"}
-                        </Badge>
-                      </div>
-
-                      {/* Info Tagihan & Sohib Progress */}
-                      <div className="relative z-10 pointer-events-none pt-2.5 pb-0.5 border-t border-secondary-800/80 flex items-center justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                          <span className="text-3xs uppercase tracking-wider text-text-400 font-bold block">Total Tagihan</span>
-                          <span className="text-sm sm:text-base font-extrabold text-primary-400 whitespace-nowrap block mt-0.5">
-                            Rp {Number(session.totalAmount).toLocaleString("id-ID")}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
-                          <Badge color="gray" size="sm" type="pill-color" className="font-semibold text-2xs">
-                            {totalMembers} Sohib
-                          </Badge>
-                          {isAllPaid ? (
-                            <Badge color="success" size="sm" type="pill-color" className="font-semibold text-2xs">
-                              Lunas
-                            </Badge>
-                          ) : paidMembers > 0 ? (
-                            <Badge color="warning" size="sm" type="pill-color" className="font-semibold text-2xs">
-                              {paidMembers}/{totalMembers} Bayar
-                            </Badge>
-                          ) : (
-                            <Badge color="gray" size="sm" type="pill-color" className="font-semibold text-2xs">
-                              Belum Bayar
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Action Buttons (Thumb friendly min 44px tap target) */}
-                      <div className="relative z-10 grid grid-cols-2 gap-2 pt-0.5">
-                        <Button
-                          href={`/pete-pete/${session.id}/split`}
-                          color="primary"
-                          size="xs"
-                          noTextPadding
-                          className="w-full min-h-11 h-11 rounded-lg font-bold text-xs active:scale-[0.96] transition-transform"
-                        >
-                          <span className="inline-flex items-center justify-center gap-1.5">
-                            <Divide01 className="w-4 h-4 shrink-0" />
-                            <span>Bagi Tagihan</span>
-                          </span>
-                        </Button>
-                        <Button
-                          href={`/pete-pete/${session.id}/items`}
-                          color="secondary"
-                          size="xs"
-                          noTextPadding
-                          className="w-full min-h-11 h-11 rounded-lg font-semibold text-xs active:scale-[0.96] transition-transform"
-                        >
-                          <span className="inline-flex items-center justify-center gap-1.5">
-                            <File06 className="w-4 h-4 shrink-0" />
-                            <span>Cek Menu</span>
-                          </span>
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          
+          <TongkronganList sessions={serializedSessions} />
         </div>
       </div>
 

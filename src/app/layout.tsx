@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL("https://ceban-pertama.vercel.app"),
   title: "Split Bill Online | Ceban Pertama",
-  description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung kirim rincian ke WhatsApp.",
+  description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung Kirim Detailnya ke WhatsApp.",
   robots: {
     index: true,
     follow: true,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Split Bill Online | Ceban Pertama",
-    description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung kirim rincian ke WhatsApp.",
+    description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung Kirim Detailnya ke WhatsApp.",
     url: "https://ceban-pertama.vercel.app",
     siteName: "Ceban Pertama",
     images: [
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Split Bill Online | Ceban Pertama",
-    description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung kirim rincian ke WhatsApp.",
+    description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis bagi tagihan, hitung persen pajak resto & service charge, langsung Kirim Detailnya ke WhatsApp.",
     images: ["/og-image.png"],
   },
   verification: {
