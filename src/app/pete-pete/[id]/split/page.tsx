@@ -13,6 +13,11 @@ export default async function SessionSplitPage({ params }: { params: Promise<{ i
         orderBy: { id: "asc" },
         include: {
           allocations: true,
+          user: {
+            select: {
+              avatar: true,
+            },
+          },
         },
       },
     },
@@ -57,6 +62,7 @@ export default async function SessionSplitPage({ params }: { params: Promise<{ i
     shareAmount: Number(m.shareAmount),
     userId: m.userId,
     isPaid: m.isPaid,
+    avatar: m.user?.avatar || m.id,
   }));
 
   const formattedItems = session.items.map((i) => ({

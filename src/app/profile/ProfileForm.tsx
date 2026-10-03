@@ -10,6 +10,7 @@ import { ArrowLeft, Plus, Wallet03 } from "@untitledui/icons";
 import { toast } from "sonner";
 
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 
 interface ProfileData {
   id: string;
@@ -163,7 +164,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             <div className="flex flex-col gap-2 items-center mt-4 ">
               <Avatar
                 size="2xl"
-                src={avatar ? `https://api.dicebear.com/9.x/dylan/svg?seed=${encodeURIComponent(avatar)}` : undefined}
+                src={getAvatarUrl(avatar)}
                 alt={name}
                 className="shadow-lg border-2 border-secondary-800"
               />

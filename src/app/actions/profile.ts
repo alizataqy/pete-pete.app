@@ -66,6 +66,19 @@ export async function deleteUserBank(userId: string, bankId: string) {
   }
 }
 
+export async function getUserAvatar(userId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { avatar: true },
+    });
+    return { success: true, avatar: user?.avatar || null };
+  } catch (error) {
+    console.error("Gagal mengambil avatar user:", error);
+    return { success: false, avatar: null };
+  }
+}
+
 export async function updateUserProfile(data: { userId: string; name: string; email: string; avatar?: string }) {
   try {
     if (data.email) {
@@ -88,6 +101,8 @@ export async function updateUserProfile(data: { userId: string; name: string; em
 
     revalidatePath("/tongkrongan");
     revalidatePath("/profile");
+    revalidatePath("/pete-pete", "layout");
+    revalidatePath("/bon", "layout");
     return { success: true };
   } catch (error) {
     console.error("Gagal memperbarui profil:", error);

@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import DigitalReceiptModal from "@/components/application/modals/DigitalReceiptModal";
@@ -42,6 +43,7 @@ interface BonMember {
   isPaid: boolean;
   shareAmount: number;
   userId: string | null;
+  avatar?: string | null;
 }
 
 interface BonSession {
@@ -399,6 +401,7 @@ export default function BonView({
                   >
                     <div className="relative">
                       <Avatar
+                        src={getAvatarUrl(m.avatar || m.id)}
                         alt={displayName}
                         size="md"
                         className={`transition-transform duration-100 ${isSelected ? "ring-2 ring-white shadow-xs" : "border border-secondary-800"
@@ -463,7 +466,12 @@ export default function BonView({
               <div className="p-3.5 sm:p-4 border-b border-secondary-800 flex items-center justify-between gap-3 print:border-b print:border-black/15 print:bg-black/5">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div className="print:hidden">
-                    <Avatar alt={displayName} size="md" className="border border-secondary-800 shrink-0" />
+                    <Avatar
+                      src={getAvatarUrl(activeMemberDetail.member.avatar || activeMemberDetail.member.id)}
+                      alt={displayName}
+                      size="md"
+                      className="border border-secondary-800 shrink-0"
+                    />
                   </div>
                   <div className="min-w-0">
                     <span className="text-3xs font-semibold text-text-400 uppercase tracking-wider block print:text-black/60">
@@ -677,6 +685,7 @@ export default function BonView({
                               className="inline-flex items-center gap-1 pl-1 pr-1.5 py-0.5 rounded-md bg-secondary-900 border border-secondary-800 text-3xs"
                             >
                               <Avatar
+                                src={getAvatarUrl(member.avatar || member.id)}
                                 alt={member.name}
                                 size="xs"
                                 className="size-4 shrink-0"

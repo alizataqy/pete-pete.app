@@ -12,6 +12,7 @@ import { Heading } from "react-aria-components";
 import { toast } from "sonner";
 import { Input } from "@/components/base/input/input";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import { DatePicker } from "@/components/application/date-picker/date-picker";
 import type { DateValue } from "react-aria-components";
 
@@ -30,6 +31,7 @@ interface PlanItem {
 interface AgendaPlansViewProps {
   userId: string;
   userName: string;
+  userAvatar?: string | null;
   initialPlans: PlanItem[];
 }
 
@@ -58,7 +60,7 @@ const formatDateString = (dateStr?: string) => {
   return dateStr;
 };
 
-export default function AgendaPlansView({ userId, userName, initialPlans }: AgendaPlansViewProps) {
+export default function AgendaPlansView({ userId, userName, userAvatar, initialPlans }: AgendaPlansViewProps) {
   const router = useRouter();
   const [plans] = useState<PlanItem[]>(initialPlans);
   const [isOpen, setIsOpen] = useState(false);
@@ -325,10 +327,10 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
 
                     <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto pr-1">
                       <Badge color="brand" size="sm" type="pill-color" className="flex items-center gap-1.5 font-bold">
-                        <Avatar alt={userName} size="xs" />
+                        <Avatar src={getAvatarUrl(userAvatar)} alt={userName} size="xs" />
                         {userName} (Gua)
                       </Badge>
-                      {members.map((m) => (
+                      {members.map((m, idx) => (
                         <Badge
                           key={m}
                           color="gray"
@@ -336,7 +338,7 @@ export default function AgendaPlansView({ userId, userName, initialPlans }: Agen
                           type="pill-color"
                           className="flex items-center gap-1.5 font-bold"
                         >
-                          <Avatar alt={m} size="xs" />
+                          <Avatar src={getAvatarUrl(`guest-agenda-${idx + 1}`)} alt={m} size="xs" />
                           {m}
                           <button
                             type="button"

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import { Dot } from "@/components/foundations/dot-icon";
 import {
   Users01,
@@ -180,6 +181,7 @@ export default function SplitMemberList({
                 >
                   <div className="flex items-center gap-2.5 flex-1 min-w-0">
                     <Avatar
+                      src={getAvatarUrl(member.avatar || member.id)}
                       alt={member.name}
                       size="sm"
                       className="shadow-md border border-secondary-800"

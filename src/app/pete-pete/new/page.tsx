@@ -15,7 +15,7 @@ import {
   HelpCircle,
 } from "@untitledui/icons";
 import { SpotlightTour } from "@/components/features/onboarding/spotlight-tour";
-import { getUserBanks, UserBankData } from "@/app/actions/profile";
+import { getUserBanks, getUserAvatar, UserBankData } from "@/app/actions/profile";
 import { toast } from "sonner";
 import { useSessionStorageState } from "@/hooks/useSessionStorageState";
 
@@ -151,10 +151,16 @@ export default function NewSessionPage() {
   const [bankOwner, setBankOwner] = useSessionStorageState("pete-pete-new-bank-owner", "");
   const [qrisUrl, setQrisUrl] = useSessionStorageState("pete-pete-new-qris-url", "");
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
 
-  // Fetch profile bank details
+  // Fetch profile bank details & avatar
   useEffect(() => {
     if (authSession?.user?.id) {
+      getUserAvatar(authSession.user.id).then((res) => {
+        if (res.success && res.avatar) {
+          setCurrentUserAvatar(res.avatar);
+        }
+      });
       getUserBanks(authSession.user.id).then((res) => {
         if (res.success && res.banks && res.banks.length > 0) {
           setProfileBanks(res.banks);
@@ -987,6 +993,7 @@ export default function NewSessionPage() {
             manualMembers={manualMembers}
             setManualMembers={setManualMembers}
             currentUserName={currentUserName}
+            currentUserAvatar={currentUserAvatar}
             editingManualIndex={editingManualIndex}
             setEditingManualIndex={setEditingManualIndex}
             editingManualName={editingManualName}
@@ -1025,6 +1032,7 @@ export default function NewSessionPage() {
             manualMembers={manualMembers}
             setManualMembers={setManualMembers}
             currentUserName={currentUserName}
+            currentUserAvatar={currentUserAvatar}
             editingManualIndex={editingManualIndex}
             setEditingManualIndex={setEditingManualIndex}
             editingManualName={editingManualName}

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import {
   Edit02,
   Trash01,
@@ -338,6 +339,7 @@ export default function SplitItemRow({
                         className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-full transition-transform active:scale-95 cursor-pointer min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center p-0.5"
                       >
                         <Avatar
+                          src={getAvatarUrl(member.avatar || member.id)}
                           alt={member.name}
                           size="md"
                           className={`shadow-md transition-all duration-200 ${

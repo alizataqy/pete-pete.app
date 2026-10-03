@@ -29,6 +29,7 @@ export default async function BonPage({ params, searchParams }: BonPageProps) {
         select: {
           id: true,
           name: true,
+          avatar: true,
         },
       },
       items: {
@@ -39,6 +40,11 @@ export default async function BonPage({ params, searchParams }: BonPageProps) {
       members: {
         include: {
           allocations: true,
+          user: {
+            select: {
+              avatar: true,
+            },
+          },
         },
       },
     },
@@ -68,12 +74,15 @@ export default async function BonPage({ params, searchParams }: BonPageProps) {
       (session.userId && m.userId === session.userId && /^(saya(\s*\(owner\))?|gua|owner)$/i.test(m.name.trim())) ||
       /^(saya(\s*\(owner\))?|gua|owner)$/i.test(m.name.trim());
 
+    const userAvatar = m.user?.avatar || (isOwnerPlaceholder ? session.createdBy?.avatar : null);
+
     return {
       id: m.id,
       name: isOwnerPlaceholder && creatorName ? creatorName : m.name,
       isPaid: m.isPaid,
       shareAmount: Number(m.shareAmount),
       userId: m.userId,
+      avatar: userAvatar || m.id,
     };
   });
 

@@ -4,6 +4,7 @@ export interface Member {
   shareAmount: number;
   userId?: string | null;
   isPaid?: boolean;
+  avatar?: string | null;
 }
 
 export interface Item {

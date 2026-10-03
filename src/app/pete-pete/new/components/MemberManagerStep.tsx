@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import { Plus, XClose, Users01 } from "@untitledui/icons";
 
 interface MemberManagerStepProps {
@@ -12,6 +13,7 @@ interface MemberManagerStepProps {
   manualMembers: string[];
   setManualMembers: React.Dispatch<React.SetStateAction<string[]>>;
   currentUserName: string;
+  currentUserAvatar?: string | null;
   editingManualIndex: number | null;
   setEditingManualIndex: (val: number | null) => void;
   editingManualName: string;
@@ -26,6 +28,7 @@ export default function MemberManagerStep({
   manualMembers,
   setManualMembers,
   currentUserName,
+  currentUserAvatar,
   editingManualIndex,
   setEditingManualIndex,
   editingManualName,
@@ -81,6 +84,7 @@ export default function MemberManagerStep({
         <div className="flex flex-col items-center gap-1.5 w-16 shrink-0">
           <div className="relative">
             <Avatar
+              src={getAvatarUrl(currentUserAvatar)}
               alt={currentUserName}
               size="lg"
               className="shadow-md border border-primary-400 ring-2 ring-primary-400/40"
@@ -102,7 +106,12 @@ export default function MemberManagerStep({
           >
             {editingManualIndex === idx ? (
               <div className="flex flex-col items-center gap-1 w-full">
-                <Avatar alt={m} size="lg" className="shadow-md border border-secondary-800" />
+                <Avatar
+                  src={getAvatarUrl(`guest-member-${idx + 1}`)}
+                  alt={m}
+                  size="lg"
+                  className="shadow-md border border-secondary-800"
+                />
                 <input
                   type="text"
                   aria-label="Ubah nama sohib"
@@ -129,7 +138,12 @@ export default function MemberManagerStep({
                   title="Klik untuk ubah nama"
                   aria-label={`Ubah nama ${m}`}
                 >
-                  <Avatar alt={m} size="lg" className="shadow-md border border-secondary-800" />
+                  <Avatar
+                    src={getAvatarUrl(`guest-member-${idx + 1}`)}
+                    alt={m}
+                    size="lg"
+                    className="shadow-md border border-secondary-800"
+                  />
                 </button>
                 <p
                   onClick={() => {

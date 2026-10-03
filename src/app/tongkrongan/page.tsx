@@ -8,6 +8,7 @@ import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Plus, Compass } from "@untitledui/icons";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import JoinBonInput from "./JoinBonInput";
 import TongkronganList from "./TongkronganList";
 
@@ -68,7 +69,7 @@ export default async function TongkronganPage() {
           >
             <Avatar
               size="md"
-              src={dbUser?.avatar ? `https://api.dicebear.com/9.x/dylan/svg?seed=${encodeURIComponent(dbUser.avatar)}` : undefined}
+              src={getAvatarUrl(dbUser?.avatar)}
               alt={session.user.name}
             />
           </Link>

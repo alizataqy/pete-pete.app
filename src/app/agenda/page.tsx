@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 import { getVacationPlans } from "@/app/actions/vacation";
 import AgendaPlansView from "./AgendaPlansView";
 
@@ -14,13 +15,20 @@ export default async function AgendaPage() {
     redirect("/login");
   }
 
-  const result = await getVacationPlans(session.user.id);
+  const [result, dbUser] = await Promise.all([
+    getVacationPlans(session.user.id),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { avatar: true },
+    }),
+  ]);
   const plans = result.success && result.plans ? result.plans : [];
 
   return (
     <AgendaPlansView
       userId={session.user.id}
       userName={session.user.name}
+      userAvatar={dbUser?.avatar || null}
       initialPlans={plans.map((p) => ({
         id: p.id,
         title: p.title,

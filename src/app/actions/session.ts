@@ -135,7 +135,8 @@ export async function addSessionMember(sessionId: string, name: string) {
       member: {
         id: member.id,
         name: member.name,
-        shareAmount: Number(member.shareAmount)
+        shareAmount: Number(member.shareAmount),
+        avatar: member.id,
       }
     };
   } catch (error) {
@@ -170,6 +171,13 @@ export async function renameSessionMember(memberId: string, name: string, sessio
     const member = await prisma.billMember.update({
       where: { id: memberId },
       data: { name },
+      include: {
+        user: {
+          select: {
+            avatar: true,
+          },
+        },
+      },
     });
     revalidatePath(`/pete-pete/${sessionId}/split`);
     return {
@@ -178,6 +186,7 @@ export async function renameSessionMember(memberId: string, name: string, sessio
         id: member.id,
         name: member.name,
         shareAmount: Number(member.shareAmount),
+        avatar: member.user?.avatar || member.id,
       },
     };
   } catch (error) {

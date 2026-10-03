@@ -60,6 +60,7 @@ interface NewSessionScanStepProps {
   manualMembers: string[];
   setManualMembers: React.Dispatch<React.SetStateAction<string[]>>;
   currentUserName: string;
+  currentUserAvatar?: string | null;
   editingManualIndex: number | null;
   setEditingManualIndex: (val: number | null) => void;
   editingManualName: string;
@@ -240,6 +241,7 @@ export default function NewSessionScanStep({
   manualMembers,
   setManualMembers,
   currentUserName,
+  currentUserAvatar,
   editingManualIndex,
   setEditingManualIndex,
   editingManualName,
@@ -799,6 +801,7 @@ export default function NewSessionScanStep({
           manualMembers={manualMembers}
           setManualMembers={setManualMembers}
           currentUserName={currentUserName}
+          currentUserAvatar={currentUserAvatar}
           editingManualIndex={editingManualIndex}
           setEditingManualIndex={setEditingManualIndex}
           editingManualName={editingManualName}
