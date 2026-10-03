@@ -140,7 +140,7 @@ export default function VacationPlanDetailView({
         setMembers((prev) =>
           prev.map((m) =>
             m.id === tempId
-              ? { ...m, id: res.member.id, userId: res.member.userId, avatar: res.member.id }
+              ? { ...m, id: res.member.id, userId: res.member.userId, avatar: tempId }
               : m
           )
         );

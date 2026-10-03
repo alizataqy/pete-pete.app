@@ -281,7 +281,7 @@ export default function SplitBoard({
 
     const tempId = `temp-${Date.now()}`;
     const prevMembers = members;
-    setMembers((prev) => [...prev, { id: tempId, name, shareAmount: 0 }]);
+    setMembers((prev) => [...prev, { id: tempId, name, shareAmount: 0, avatar: tempId }]);
     toast.success("Sohib berhasil ditambahin!");
 
     try {
@@ -289,7 +289,9 @@ export default function SplitBoard({
       if (res.success && res.member) {
         setMembers((prev) =>
           prev.map((m) =>
-            m.id === tempId ? { id: res.member.id, name: res.member.name, shareAmount: 0 } : m
+            m.id === tempId
+              ? { id: res.member.id, name: res.member.name, shareAmount: 0, avatar: tempId }
+              : m
           )
         );
       } else {

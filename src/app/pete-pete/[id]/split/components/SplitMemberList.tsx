@@ -15,7 +15,9 @@ import {
   Download01,
   Edit02,
   Trash01,
+  DotsVertical,
 } from "@untitledui/icons";
+import { DialogTrigger, Popover } from "react-aria-components";
 import { toast } from "sonner";
 import { Member, SplitSessionData } from "../types";
 
@@ -245,61 +247,91 @@ export default function SplitMemberList({
                           {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
                         </Button>
                       )}
-                      <Button
-                        onPress={() => {
-                          if (sessionStatus !== "COMPLETED") {
-                            toast.warning("Kelarin dulu bill-nya sebelum share detail ya, Bos!");
-                            return;
-                          }
-                          onOpenMemberSummaryShare(member);
-                        }}
-                        color="secondary"
-                        size="xs"
-                        aria-label={`Share detail bill untuk ${member.name}`}
-                        className={`p-1.5 rounded-lg active:scale-95 transition-all flex items-center justify-center ${
-                          sessionStatus !== "COMPLETED" ? "opacity-60" : ""
-                        }`}
-                      >
-                        {copiedId === member.id ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        ) : (
-                          <Share07 className="w-3.5 h-3.5 text-primary-400" />
-                        )}
-                      </Button>
-                      <Button
-                        onPress={() => onOpenReceiptModal(member)}
-                        color="secondary"
-                        size="xs"
-                        aria-label={`Download kartu bon untuk ${member.name}`}
-                        className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
-                      >
-                        <Download01 className="w-3.5 h-3.5" />
-                      </Button>
-                      {!isCreator && session.status !== "COMPLETED" && (
-                        <>
-                          <Button
-                            onPress={() => {
-                              setEditingMemberId(member.id);
-                              setEditingMemberName(member.name);
-                            }}
-                            color="tertiary"
-                            size="xs"
-                            aria-label={`Ubah nama ${member.name}`}
-                            className="p-1.5 rounded-lg active:scale-95 transition-all text-primary-400 hover:text-primary-300 flex items-center justify-center"
-                          >
-                            <Edit02 className="w-3.5 h-3.5" />
-                          </Button>
-                          <Button
-                            onPress={() => onDeleteMemberPrompt(member)}
-                            color="tertiary"
-                            size="xs"
-                            aria-label={`Hapus ${member.name}`}
-                            className="p-1.5 rounded-lg active:scale-95 transition-all text-danger-400 hover:text-danger-300 flex items-center justify-center"
-                          >
-                            <Trash01 className="w-3.5 h-3.5" />
-                          </Button>
-                        </>
-                      )}
+                      {/* Dropdown Menu Aksi Sohib */}
+                      <DialogTrigger>
+                        <Button
+                          color="secondary"
+                          size="xs"
+                          aria-label={`Menu aksi untuk ${member.name}`}
+                          className="p-1.5 rounded-lg active:scale-95 transition-all text-text-300 hover:text-text-100 flex items-center justify-center shrink-0"
+                        >
+                          <DotsVertical className="w-4 h-4" />
+                        </Button>
+                        <Popover
+                          placement="bottom right"
+                          offset={6}
+                          className="z-50 w-44 p-1.5 rounded-xl border border-secondary-800 bg-secondary-950/95 backdrop-blur-md shadow-xl outline-hidden animate-in fade-in zoom-in-95 duration-150"
+                        >
+                          {({ close }) => (
+                            <div className="flex flex-col gap-0.5">
+                              {/* Share Detail Bill */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  close();
+                                  if (sessionStatus !== "COMPLETED") {
+                                    toast.warning("Kelarin dulu bill-nya sebelum share detail ya, Bos!");
+                                    return;
+                                  }
+                                  onOpenMemberSummaryShare(member);
+                                }}
+                                className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                              >
+                                {copiedId === member.id ? (
+                                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                                ) : (
+                                  <Share07 className="w-4 h-4 text-primary-400 shrink-0" />
+                                )}
+                                <span>Bagikan Bon</span>
+                              </button>
+
+                              {/* Download Kartu Bon */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  close();
+                                  onOpenReceiptModal(member);
+                                }}
+                                className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                              >
+                                <Download01 className="w-4 h-4 text-primary-400 shrink-0" />
+                                <span>Download Bon</span>
+                              </button>
+
+                              {/* Ganti Nama (Non-creator & Not completed) */}
+                              {!isCreator && session.status !== "COMPLETED" && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    close();
+                                    setEditingMemberId(member.id);
+                                    setEditingMemberName(member.name);
+                                  }}
+                                  className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                                >
+                                  <Edit02 className="w-4 h-4 text-primary-400 shrink-0" />
+                                  <span>Ganti Nama</span>
+                                </button>
+                              )}
+
+                              {/* Hapus Sohib (Non-creator & Not completed) */}
+                              {!isCreator && session.status !== "COMPLETED" && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    close();
+                                    onDeleteMemberPrompt(member);
+                                  }}
+                                  className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-danger-400 hover:bg-danger-950/40 rounded-lg transition-colors cursor-pointer text-left"
+                                >
+                                  <Trash01 className="w-4 h-4 text-danger-400 shrink-0" />
+                                  <span>Hapus Sohib</span>
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </Popover>
+                      </DialogTrigger>
                     </div>
                   )}
               </div>
