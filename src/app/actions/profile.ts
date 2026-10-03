@@ -101,6 +101,7 @@ export async function updateUserProfile(data: { userId: string; name: string; em
 
     revalidatePath("/tongkrongan");
     revalidatePath("/profile");
+    revalidatePath("/agenda", "layout");
     revalidatePath("/pete-pete", "layout");
     revalidatePath("/bon", "layout");
     return { success: true };

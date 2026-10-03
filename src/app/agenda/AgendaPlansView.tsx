@@ -151,7 +151,17 @@ export default function AgendaPlansView({ userId, userName, userAvatar, initialP
         <h1 className="text-sm font-extrabold text-text-50 text-center flex-1">
           Make a Plan
         </h1>
-        <div className="w-11 h-11" /> {/* Spacer */}
+        <Link
+          href="/profile"
+          aria-label="Buka profil gua"
+          className="flex items-center justify-center rounded-full hover:opacity-80 active:scale-95 transition-transform p-0.5 shrink-0"
+        >
+          <Avatar
+            size="sm"
+            src={getAvatarUrl(userAvatar)}
+            alt={userName}
+          />
+        </Link>
       </header>
 
       {/* Main Content Area */}

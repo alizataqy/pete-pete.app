@@ -75,6 +75,9 @@ export async function getVacationPlanDetail(planId: string) {
     const plan = await prisma.vacationPlan.findUnique({
       where: { id: planId },
       include: {
+        createdBy: {
+          select: { id: true, name: true, avatar: true },
+        },
         members: true,
         expenses: {
           orderBy: { createdAt: "desc" },

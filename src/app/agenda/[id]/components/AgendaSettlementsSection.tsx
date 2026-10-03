@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import {
   CreditCard01,
@@ -137,6 +138,7 @@ export default function AgendaSettlementsSection({
                     {/* Payer (From) */}
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       <Avatar
+                        src={getAvatarUrl(members.find((m) => m.id === t.fromMemberId)?.avatar || t.fromMemberId)}
                         alt={t.from}
                         size="sm"
                         className={`shadow-md border shrink-0 ${
@@ -178,6 +180,7 @@ export default function AgendaSettlementsSection({
                         <p className="text-3xs text-text-400 font-medium">Penerima</p>
                       </div>
                       <Avatar
+                        src={getAvatarUrl(members.find((m) => m.id === t.toMemberId)?.avatar || t.toMemberId)}
                         alt={t.to}
                         size="sm"
                         className={`shadow-md border shrink-0 ${

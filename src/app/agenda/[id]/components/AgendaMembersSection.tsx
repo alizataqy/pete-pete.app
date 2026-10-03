@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import { Input } from "@/components/base/input/input";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import {
@@ -139,7 +140,12 @@ export default function AgendaMembersSection({
                     className="flex items-center justify-between p-3 rounded-xl bg-secondary-950/40 border border-secondary-800/80 hover:bg-secondary-950/60 hover:border-secondary-700/80 transition-all shrink-0 gap-3"
                   >
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <Avatar alt={member.name} size="sm" className="shadow-xs border border-secondary-800 shrink-0" />
+                      <Avatar
+                        src={getAvatarUrl(member.avatar || member.id)}
+                        alt={member.name}
+                        size="sm"
+                        className="shadow-xs border border-secondary-800 shrink-0"
+                      />
                       {editingMemberId === member.id ? (
                         <div className="flex items-center gap-1.5 flex-1 min-w-0">
                           <input

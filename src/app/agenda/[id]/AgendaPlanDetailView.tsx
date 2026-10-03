@@ -127,6 +127,7 @@ export default function VacationPlanDetailView({
       id: tempId,
       name,
       userId: null,
+      avatar: tempId,
     };
     setMembers((prev) => [...prev, optimisticMember]);
     setExpenseParticipants((prev) => [...prev, tempId]);
@@ -139,7 +140,7 @@ export default function VacationPlanDetailView({
         setMembers((prev) =>
           prev.map((m) =>
             m.id === tempId
-              ? { ...m, id: res.member.id, userId: res.member.userId }
+              ? { ...m, id: res.member.id, userId: res.member.userId, avatar: res.member.id }
               : m
           )
         );

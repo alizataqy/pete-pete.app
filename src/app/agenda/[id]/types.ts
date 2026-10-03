@@ -2,6 +2,7 @@ export interface Member {
   id: string;
   name: string;
   userId?: string | null;
+  avatar?: string | null;
 }
 
 export interface Share {

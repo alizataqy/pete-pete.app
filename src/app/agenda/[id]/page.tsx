@@ -38,11 +38,18 @@ export default async function AgendaDetailPage({ params }: PageProps) {
         date: plan.date ? plan.date.toISOString() : undefined,
         createdAt: plan.createdAt.toISOString(),
       }}
-      initialMembers={plan.members.map((m) => ({
-        id: m.id,
-        name: m.name,
-        userId: m.userId,
-      }))}
+      initialMembers={plan.members.map((m) => {
+        const isMe =
+          m.userId === session.user.id ||
+          m.userId === plan.userId ||
+          (!m.userId && (m.name.toLowerCase() === session.user.name.toLowerCase() || m.name.toLowerCase() === "gua"));
+        return {
+          id: m.id,
+          name: m.name,
+          userId: m.userId,
+          avatar: isMe ? (plan.createdBy?.avatar || null) : m.id,
+        };
+      })}
       initialExpenses={plan.expenses.map((e) => ({
         id: e.id,
         title: e.title,

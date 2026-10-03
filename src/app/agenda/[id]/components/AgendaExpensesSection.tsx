@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import {
   Receipt,
@@ -103,18 +104,26 @@ export default function AgendaExpensesSection({
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-1">
-                    {exp.shares.map((sh) => (
-                      <Badge
-                        key={sh.memberId}
-                        color="gray"
-                        size="sm"
-                        type="color"
-                        className="flex items-center gap-1 text-2xs font-semibold"
-                      >
-                        <Avatar alt={sh.memberName} size="xs" className="h-4 w-4 min-w-4" />
-                        {sh.memberName} ({formatRupiah(sh.amount)})
-                      </Badge>
-                    ))}
+                    {exp.shares.map((sh) => {
+                      const member = members.find((m) => m.id === sh.memberId);
+                      return (
+                        <Badge
+                          key={sh.memberId}
+                          color="gray"
+                          size="sm"
+                          type="color"
+                          className="flex items-center gap-1 text-2xs font-semibold"
+                        >
+                          <Avatar
+                            src={getAvatarUrl(member?.avatar || sh.memberId)}
+                            alt={sh.memberName}
+                            size="xs"
+                            className="h-4 w-4 min-w-4"
+                          />
+                          {sh.memberName} ({formatRupiah(sh.amount)})
+                        </Badge>
+                      );
+                    })}
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1.5 shrink-0">

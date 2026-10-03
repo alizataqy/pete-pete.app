@@ -6,6 +6,7 @@ import { Heading } from "react-aria-components";
 import { Input } from "@/components/base/input/input";
 import { Button } from "@/components/base/buttons/button";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 import { Check } from "@untitledui/icons";
 import { Member, formatRupiah, parseRupiah } from "../types";
 
@@ -95,6 +96,7 @@ export default function AgendaExpenseModal({
                         >
                           <div className="relative min-w-11 min-h-11 flex items-center justify-center">
                             <Avatar
+                              src={getAvatarUrl(m.avatar || m.id)}
                               alt={m.name}
                               size="md"
                               className={`shadow-md transition-all duration-200 border border-secondary-800 ${
@@ -153,6 +155,7 @@ export default function AgendaExpenseModal({
                         >
                           <div className="relative min-w-11 min-h-11 flex items-center justify-center">
                             <Avatar
+                              src={getAvatarUrl(m.avatar || m.id)}
                               alt={m.name}
                               size="md"
                               className={`shadow-md transition-all duration-200 border border-secondary-800 ${
