@@ -86,8 +86,7 @@ export default async function TongkronganPage() {
       </header>
 
       {/* Tongkrongan Body */}
-      <div className="flex-1 p-4 flex flex-col min-h-0 gap-3 overflow-hidden">
-        
+      <div className="flex-1 p-3.5 flex flex-col space-y-4 min-h-0 overflow-hidden">
         {/* Link ke Vacation / Agenda Plans */}
         <Link
           href="/agenda"

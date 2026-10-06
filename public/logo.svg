@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <!-- Concept 1: The Friendly Struk Smile (Mascot Icon) -->
   <g id="background">
-    <rect width="512" height="512" rx="128" fill="#3129d6" />
-    <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="#5b54de" stroke-width="8" opacity="0.4" />
+    <rect width="512" height="512" rx="0" fill="#3129d6" />
   </g>
   <g id="icon">
     <!-- Receipt Body Shadow -->
