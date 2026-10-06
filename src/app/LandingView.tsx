@@ -14,10 +14,12 @@ import {
   ReceiptCheck,
   Target01,
   Minus,
+  Download01,
 } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
+import { triggerPwaInstall, useIsStandalone } from "@/components/features/pwa/InstallPwaPrompt";
 
 interface UserSessionProp {
   user?: {
@@ -97,7 +99,7 @@ const faqs = [
   },
   {
     q: "Harus download atau bikin akun dulu gak?",
-    a: "Gak perlu. Langsung buka lewat browser di hp atau laptop buat scan struk. Bikin akun cuma kalau lo pengen nyimpen riwayat tagihan.",
+    a: "Gak wajib. Langsung pake lewat browser di perangkat mana aja bisa langsung jalan. Tapi kalo mau lebih sat-set, lo bisa install langsung ke perangkat lo biar rasanya kayak aplikasi biasa tanpa perlu download dari Play Store atau App Store.",
   },
 ];
 
@@ -291,6 +293,8 @@ function DemoSplitCard() {
 }
 
 export default function LandingView({ user }: UserSessionProp) {
+  const isStandalone = useIsStandalone();
+
   return (
     <div
       data-landing-view
@@ -353,7 +357,7 @@ export default function LandingView({ user }: UserSessionProp) {
         <section className="w-full border-b border-secondary-800/40">
           <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-32">
             <div className="max-w-4xl space-y-8">
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-[-0.035em] text-text leading-[0.92] sm:leading-[0.90]">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-[-0.035em] text-text leading-[0.92] sm:leading-[0.90] text-balance">
                 <span className="block">Abis Nongkrong Ramean?</span>
                 <span className="text-primary-400 block">Foto Struknya Aja.</span>
               </h1>
@@ -365,15 +369,29 @@ export default function LandingView({ user }: UserSessionProp) {
 
               <div className="flex flex-wrap gap-3 pt-2">
                 {user ? (
-                  <Button
-                    href="/tongkrongan"
-                    size="xl"
-                    color="primary"
-                    iconTrailing={ArrowRight}
-                    className="font-bold tracking-tight"
-                  >
-                    Buka Tongkrongan Gua
-                  </Button>
+                  <>
+                    <Button
+                      href="/tongkrongan"
+                      size="xl"
+                      color="primary"
+                      iconTrailing={ArrowRight}
+                      className="font-bold tracking-tight"
+                    >
+                      Buka Tongkrongan Gua
+                    </Button>
+                    {!isStandalone && (
+                      <Button
+                        type="button"
+                        size="xl"
+                        color="secondary"
+                        iconLeading={Download01}
+                        onPress={triggerPwaInstall}
+                        className="font-semibold tracking-tight cursor-pointer"
+                      >
+                        Install Aplikasi
+                      </Button>
+                    )}
+                  </>
                 ) : (
                   <>
                     <Button
@@ -393,6 +411,18 @@ export default function LandingView({ user }: UserSessionProp) {
                     >
                       Bikin Akun
                     </Button>
+                    {!isStandalone && (
+                      <Button
+                        type="button"
+                        size="xl"
+                        color="secondary"
+                        iconLeading={Download01}
+                        onPress={triggerPwaInstall}
+                        className="font-semibold tracking-tight cursor-pointer"
+                      >
+                        Install Aplikasi
+                      </Button>
+                    )}
                   </>
                 )}
               </div>
@@ -405,7 +435,7 @@ export default function LandingView({ user }: UserSessionProp) {
           <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight text-balance">
                   Gimana Caranya.
                 </h2>
                 <p className="text-sm text-text-300 mt-1 max-w-md text-pretty">
@@ -582,7 +612,7 @@ export default function LandingView({ user }: UserSessionProp) {
         {/* Testimoni */}
         <section className="w-full border-b border-secondary-800/40 py-16 sm:py-24 bg-secondary-950/15">
           <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight text-balance">
               Kata Mereka Yang Udah Pake.
             </h2>
 
@@ -609,7 +639,7 @@ export default function LandingView({ user }: UserSessionProp) {
         {/* FAQ */}
         <section className="w-full border-b border-secondary-800/40 py-16 sm:py-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight text-balance">
               Yang Sering Ditanyain.
             </h2>
 

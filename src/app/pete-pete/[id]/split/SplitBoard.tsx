@@ -184,7 +184,7 @@ export default function SplitBoard({
       bankAccount: session.bankAccount,
       bankOwner: session.bankOwner,
     };
-  }, [receiptModalMember, allocations, itemList, session]);
+  }, [receiptModalMember, members, allocations, itemList, session]);
 
   // Hitung splitbill member secara real-time
   const getMemberShareAmount = (memberId: string) => {
@@ -226,10 +226,6 @@ export default function SplitBoard({
       return;
     }
 
-    const statusTimer = setTimeout(() => {
-      setSaveStatus("saving");
-    }, 0);
-
     const timer = setTimeout(async () => {
       const payload = allocations.map((a) => {
         const itemAllocations = allocations.filter((x) => x.itemId === a.itemId);
@@ -253,10 +249,9 @@ export default function SplitBoard({
         console.error("Gagal auto-save:", err);
         setSaveStatus("error");
       }
-    }, 800);
+    }, 200);
 
     return () => {
-      clearTimeout(statusTimer);
       clearTimeout(timer);
     };
   }, [allocations, session.id]);

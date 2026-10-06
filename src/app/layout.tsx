@@ -1,15 +1,38 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import MobileContainer from "@/components/MobileContainer";
+import InstallPwaPrompt from "@/components/features/pwa/InstallPwaPrompt";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const viewport: Viewport = {
+  themeColor: "#3129d6",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ceban-pertama.vercel.app"),
   title: "Split Bill Online | Ceban Pertama",
   description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis split bill, hitung pajak resto & service charge, langsung share ke WhatsApp.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Ceban Pertama",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   robots: {
     index: true,
     follow: true,
@@ -146,6 +169,7 @@ export default function RootLayout({
         <MobileContainer>
           {children}
         </MobileContainer>
+        <InstallPwaPrompt />
         <Toaster position="top-center" richColors theme="dark" />
       </body>
     </html>
