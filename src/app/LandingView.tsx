@@ -243,11 +243,10 @@ function DemoSplitCard() {
                         alt={member.name}
                         size="md"
                         src={`https://api.dicebear.com/9.x/dylan/svg?seed=${member.avatarSeed}`}
-                        className={`shadow-md transition-all duration-200 ${
-                          isSelected
+                        className={`shadow-md transition-all duration-200 ${isSelected
                             ? "ring-2 ring-primary-400/40 border-primary-400/60 scale-105"
                             : "opacity-45 hover:opacity-80 scale-100"
-                        }`}
+                          }`}
                       />
                     </button>
                     {isSelected && (
@@ -271,9 +270,8 @@ function DemoSplitCard() {
                     )}
                   </div>
                   <p
-                    className={`text-3xs sm:text-2xs truncate w-full text-center leading-tight mt-1 transition-colors ${
-                      isSelected ? "font-bold text-text" : "font-semibold text-text-400"
-                    }`}
+                    className={`text-3xs sm:text-2xs truncate w-full text-center leading-tight mt-1 transition-colors ${isSelected ? "font-bold text-text" : "font-semibold text-text-400"
+                      }`}
                   >
                     {member.name}
                   </p>
@@ -316,7 +314,7 @@ export default function LandingView({ user }: UserSessionProp) {
               priority
             />
             <span className="font-extrabold text-text text-lg tracking-tight leading-none">
-              Ceban Pertama
+              Ceban <span className="text-primary-400">Pertama</span>
             </span>
           </Link>
 
@@ -665,9 +663,9 @@ export default function LandingView({ user }: UserSessionProp) {
 
       {/* Footer */}
       <footer className="w-full bg-background border-t border-secondary-800/40 overflow-hidden select-none">
-        <div className="w-full py-12 sm:py-16 text-center overflow-hidden">
+        <div className="w-full items-center justify-between py-12 sm:py-16 text-center overflow-hidden">
           <h2 className="text-[10.5vw] font-extrabold uppercase tracking-tighter text-text leading-none whitespace-nowrap text-center">
-            CEBAN PERTAMA
+            CEBAN <span className="text-primary-400">PERTAMA</span>
           </h2>
         </div>
       </footer>
