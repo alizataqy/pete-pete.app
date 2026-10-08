@@ -80,21 +80,21 @@ export const auth = betterAuth({
                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
                   <title>Reset Password Ceban Pertama</title>
                 </head>
-                <body style="margin: 0; padding: 0; background-color: #050514; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
-                  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #050514; min-height: 100vh;">
+                <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #0f172a;">
+                  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; min-height: 100vh;">
                     <tr>
                       <td align="center" style="padding: 48px 16px;">
-                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 480px; background-color: #0b0a1a; border: 1px solid #242250; border-radius: 12px; overflow: hidden;">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 480px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);">
                           <!-- Header -->
                           <tr>
-                            <td style="padding: 24px 28px 20px;">
+                            <td style="padding: 32px 32px 24px;">
                               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                 <tr>
-                                  <td style="vertical-align: middle; padding-right: 10px;">
-                                    <img src="${logoUrl}" width="28" height="28" alt="Ceban Pertama" style="display: block; width: 28px; height: 28px; border-radius: 6px; border: 0;" />
+                                  <td style="vertical-align: middle; padding-right: 12px;">
+                                    <img src="${logoUrl}" width="32" height="32" alt="Ceban Pertama" style="display: block; width: 32px; height: 32px; border-radius: 8px; border: 0;" />
                                   </td>
                                   <td style="vertical-align: middle;">
-                                    <span style="font-size: 15px; font-weight: 700; color: #ebe9fc; letter-spacing: -0.01em;">
+                                    <span style="font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em;">
                                       Ceban Pertama
                                     </span>
                                   </td>
@@ -103,52 +103,57 @@ export const auth = betterAuth({
                             </td>
                           </tr>
 
-                          <!-- Content -->
+                          <!-- Main Content -->
                           <tr>
-                            <td style="padding: 0 28px 28px;">
-                              <h1 style="margin: 0 0 16px; font-size: 20px; font-weight: 700; color: #ebe9fc; line-height: 1.3; letter-spacing: -0.02em;">
-                                Reset password akun lo
+                            <td style="padding: 0 32px 32px;">
+                              <h1 style="margin: 0 0 16px; font-size: 22px; font-weight: 700; color: #0f172a; line-height: 1.3; letter-spacing: -0.02em;">
+                                Bikin Password Baru
                               </h1>
-                              <p style="margin: 0 0 12px; font-size: 14px; line-height: 1.6; color: #ebe9fc;">
-                                Halo ${safeName},
+                              <p style="margin: 0 0 12px; font-size: 15px; line-height: 1.6; color: #0f172a;">
+                                Halo <strong>${safeName}</strong>,
                               </p>
-                              <p style="margin: 0 0 24px; font-size: 14px; line-height: 1.6; color: #afa6f2;">
-                                Kami menerima permintaan untuk mereset password akun Ceban Pertama lo. Klik tombol di bawah untuk membuat password baru:
+                              <p style="margin: 0 0 28px; font-size: 14px; line-height: 1.6; color: #334155;">
+                                Ada yang minta reset password akun Ceban Pertama lo. Klik tombol di bawah buat lanjut:
                               </p>
 
                               <!-- CTA Button -->
                               <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 28px;">
                                 <tr>
-                                  <td align="center" style="border-radius: 8px; background-color: #5b54de;">
-                                    <a href="${url}" target="_blank" style="display: inline-block; padding: 11px 22px; font-size: 14px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 8px;">
+                                  <td align="center" style="border-radius: 8px; background-color: #3129d6;">
+                                    <a href="${url}" target="_blank" style="display: inline-block; padding: 13px 28px; font-size: 14px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 8px;">
                                       Ganti Password
                                     </a>
                                   </td>
                                 </tr>
                               </table>
 
-                              <!-- Fallback Link -->
-                              <p style="margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: #8779ec;">
-                                Atau buka langsung tautan ini di browser:
-                              </p>
-                              <p style="margin: 0 0 24px; font-size: 12px; line-height: 1.5; word-break: break-all;">
-                                <a href="${url}" style="color: #847ee7; text-decoration: underline;">
-                                  ${url}
-                                </a>
+                              <!-- Notice -->
+                              <p style="margin: 0 0 24px; font-size: 13px; line-height: 1.6; color: #64748b;">
+                                Link ini cuma aktif 1 jam. Kalo bukan lo yang minta, cuekin aja email ini. Akun lo tetep aman.
                               </p>
 
-                              <!-- Notice -->
-                              <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #8779ec; border-top: 1px solid #242250; padding-top: 16px;">
-                                Tautan ini hanya berlaku selama 1 jam. Kalau lo tidak meminta reset password, lo bisa abaikan email ini dengan aman.
-                              </p>
+                              <!-- Fallback Link -->
+                              <div style="border-top: 1px solid #f1f5f9; padding-top: 20px;">
+                                <p style="margin: 0 0 6px; font-size: 12px; line-height: 1.5; color: #64748b;">
+                                  Kalo tombol di atas gak bisa diklik, salin link ini ke browser lo:
+                                </p>
+                                <p style="margin: 0; font-size: 12px; line-height: 1.5; word-break: break-all;">
+                                  <a href="${url}" style="color: #3129d6; text-decoration: underline;">
+                                    ${url}
+                                  </a>
+                                </p>
+                              </div>
                             </td>
                           </tr>
 
                           <!-- Footer -->
                           <tr>
-                            <td style="padding: 16px 28px; background-color: #15132d; border-top: 1px solid #242250;">
-                              <p style="margin: 0; font-size: 11px; line-height: 1.5; color: #8779ec;">
-                                Ceban Pertama — Split bill online anti drama. Email ini dikirim otomatis, mohon tidak membalas langsung.
+                            <td style="padding: 20px 32px 28px; border-top: 1px solid #f1f5f9; background-color: #f8fafc;">
+                              <p style="margin: 0 0 4px; font-size: 12px; line-height: 1.5; color: #64748b;">
+                                Ceban Pertama — Split bill online anti drama.
+                              </p>
+                              <p style="margin: 0; font-size: 11px; line-height: 1.5; color: #94a3b8;">
+                                Email otomatis dari sistem, gak usah dibalas ya.
                               </p>
                             </td>
                           </tr>
