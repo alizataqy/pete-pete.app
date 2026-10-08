@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import MobileContainer from "@/components/MobileContainer";
 import InstallPwaPrompt from "@/components/features/pwa/InstallPwaPrompt";
+import { getAppUrl } from "@/utils/url";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,8 +15,10 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const appUrl = getAppUrl();
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ceban-pertama.vercel.app"),
+  metadataBase: new URL(appUrl),
   title: "Split Bill Online | Ceban Pertama",
   description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis split bill, hitung pajak resto & service charge, langsung share ke WhatsApp.",
   appleWebApp: {
@@ -56,7 +59,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Split Bill Online | Ceban Pertama",
     description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis split bill, hitung pajak resto & service charge, langsung share ke WhatsApp.",
-    url: "https://ceban-pertama.vercel.app",
+    url: appUrl,
     siteName: "Ceban Pertama",
     images: [
       {
@@ -91,7 +94,7 @@ export default function RootLayout({
       {
         "@type": "WebApplication",
         "name": "Ceban Pertama",
-        "url": "https://ceban-pertama.vercel.app",
+        "url": appUrl,
         "description": "Aplikasi split bill online gratis di Indonesia untuk split bill dan hitung patungan otomatis lewat foto struk.",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "All",

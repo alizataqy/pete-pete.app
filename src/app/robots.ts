@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
+import { getAppUrl } from "@/utils/url";
 
 export default function robots(): MetadataRoute.Robots {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://ceban-pertama.vercel.app";
+    const baseUrl = getAppUrl();
 
     return {
         rules: {

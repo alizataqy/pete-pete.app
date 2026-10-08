@@ -20,6 +20,7 @@ import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { triggerPwaInstall, useIsStandalone } from "@/components/features/pwa/InstallPwaPrompt";
+import { getAppHost } from "@/utils/url";
 
 interface UserSessionProp {
   user?: {
@@ -574,7 +575,7 @@ export default function LandingView({ user }: UserSessionProp) {
                                   Transfer: BCA 8045xxxx (a/n Taqy)
                                 </p>
                                 <p className="text-primary-400 font-mono text-2xs font-bold">
-                                  ceban-pertama.vercel.app/bon/VSED3
+                                  {getAppHost()}/bon/VSED3
                                 </p>
                               </div>
 

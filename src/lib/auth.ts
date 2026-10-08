@@ -2,11 +2,25 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
 
+const envAppUrl = process.env.NEXT_PUBLIC_APP_URL;
+const envBetterAuthUrl = process.env.BETTER_AUTH_URL;
+
+const dynamicOrigins: string[] = [
+  "http://localhost:3000",
+  "https://*.trycloudflare.com",
+];
+
+[envAppUrl, envBetterAuthUrl].forEach((url) => {
+  if (url) {
+    dynamicOrigins.push(url);
+    if (url.startsWith("https://")) {
+      dynamicOrigins.push(url.replace("https://", "https://*."));
+    }
+  }
+});
+
 export const auth = betterAuth({
-  trustedOrigins: [
-    "http://localhost:3000",
-    "https://*.trycloudflare.com",
-  ],
+  trustedOrigins: Array.from(new Set(dynamicOrigins)),
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
