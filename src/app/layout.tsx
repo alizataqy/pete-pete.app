@@ -1,12 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "sonner";
 import MobileContainer from "@/components/MobileContainer";
-import InstallPwaPrompt from "@/components/features/pwa/InstallPwaPrompt";
+import ClientProviders from "@/components/ClientProviders";
 import { getAppUrl } from "@/utils/url";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+  adjustFontFallback: true,
+});
 
 export const viewport: Viewport = {
   themeColor: "#3129d6",
@@ -164,6 +169,8 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://api.dicebear.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://api.dicebear.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -173,8 +180,7 @@ export default function RootLayout({
         <MobileContainer>
           {children}
         </MobileContainer>
-        <InstallPwaPrompt />
-        <Toaster position="top-center" richColors theme="dark" />
+        <ClientProviders />
       </body>
     </html>
   );
