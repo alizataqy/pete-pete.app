@@ -19,7 +19,7 @@ export default async function AgendaPage() {
     getVacationPlans(session.user.id),
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { avatar: true },
+      select: { avatar: true, image: true },
     }),
   ]);
   const plans = result.success && result.plans ? result.plans : [];
@@ -28,7 +28,7 @@ export default async function AgendaPage() {
     <AgendaPlansView
       userId={session.user.id}
       userName={session.user.name}
-      userAvatar={dbUser?.avatar || null}
+      userAvatar={dbUser?.avatar || dbUser?.image || session.user.image || session.user.name || null}
       initialPlans={plans.map((p) => ({
         id: p.id,
         title: p.title,

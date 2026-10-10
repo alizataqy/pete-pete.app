@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { CreditCard01, Edit02, CheckCircle, User01, Link01, Coins01, Check, ChevronRight } from "@untitledui/icons";
+import { CreditCard01, Edit02, CheckCircle, User01, Link01, Coins01, Check, ChevronRight, CurrencyDollarCircle } from "@untitledui/icons";
 import { UserBankData } from "@/app/actions/profile";
 import { BANK_TEMPLATES } from "../types";
 import { Input } from "@/components/base/input/input";
+import { Avatar } from "@/components/base/avatar/avatar";
+import { getAvatarUrl } from "@/utils/avatar";
 
 interface NewSessionBankFormProps {
   title: string;
@@ -24,6 +26,10 @@ interface NewSessionBankFormProps {
   setBankOwner: (val: string) => void;
   qrisUrl: string;
   setQrisUrl: (val: string) => void;
+  payerMember: string;
+  setPayerMember: (val: string) => void;
+  members: string[];
+  currentUserAvatar?: string | null;
   isLoggedIn?: boolean;
   formSubmitted?: boolean;
 }
@@ -46,6 +52,10 @@ export default function NewSessionBankForm({
   setBankOwner,
   qrisUrl,
   setQrisUrl,
+  payerMember,
+  setPayerMember,
+  members,
+  currentUserAvatar,
   isLoggedIn = false,
   formSubmitted = false,
 }: NewSessionBankFormProps) {
@@ -109,6 +119,79 @@ export default function NewSessionBankForm({
             placeholder="Contoh: Belum termasuk ongkir gofood ya guys"
             size="sm"
           />
+        </div>
+      </div>
+
+      {/* Siapa yang Nalanin */}
+      <div className="bg-secondary-950/40 border border-secondary-800/80 rounded-2xl p-4 sm:p-5 space-y-3">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
+            <Coins01 className="w-4 h-4" />
+          </div>
+          <div>
+            <h2 className="text-xs font-extrabold text-text-50 uppercase tracking-wider">
+              Siapa yang Nalanin?
+            </h2>
+            <p className="text-2xs text-text-400">Pilih sohib yang bayarin tagihan di kasir duluan</p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-4 pt-1">
+          {members.map((member, idx) => {
+            const isSelected = payerMember === member;
+            const isOwner = idx === 0;
+            const avatarUrl = getAvatarUrl(
+              isOwner && currentUserAvatar
+                ? currentUserAvatar
+                : isOwner
+                ? member
+                : `guest-member-${idx}`
+            );
+
+            return (
+              <button
+                key={member}
+                type="button"
+                onClick={() => {
+                  setPayerMember(member);
+                  if (selectedTemplate === "Cash" || !bankOwner.trim()) {
+                    setBankOwner(member);
+                  }
+                }}
+                className="flex flex-col items-center gap-1.5 w-16 shrink-0 cursor-pointer group focus-visible:outline-none transition-all active:scale-95"
+              >
+                <div className="relative">
+                  <Avatar
+                    src={avatarUrl}
+                    alt={member}
+                    size="lg"
+                    className={`shadow-md transition-all duration-200 ${
+                      isSelected
+                        ? "border-2 border-primary-400 ring-4 ring-primary-400/30 scale-105"
+                        : "border border-secondary-800 opacity-60 hover:opacity-90 group-hover:scale-102"
+                    }`}
+                  />
+                  {isSelected && (
+                    <span className="absolute -top-1 -left-1 bg-primary-400 text-white rounded-full size-4.5 flex items-center justify-center text-3xs font-bold shadow-xs">
+                      <Check className="w-2.5 h-2.5 stroke-[3]" />
+                    </span>
+                  )}
+                  {isOwner && (
+                    <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs">
+                      Gua
+                    </span>
+                  )}
+                </div>
+                <p
+                  className={`text-2xs font-bold wrap-break-word w-full text-center leading-tight transition-colors ${
+                    isSelected ? "text-primary-400" : "text-text-400 group-hover:text-text-200"
+                  }`}
+                >
+                  {member}
+                </p>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -354,8 +437,12 @@ export default function NewSessionBankForm({
                                 isSelected ? "bg-white/10" : "bg-secondary-950/60"
                               }`}
                             >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={t.logo} alt={t.name} className="w-9 h-9 sm:w-10 sm:h-10 object-contain" />
+                              {t.logo ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={t.logo} alt={t.name} className="w-9 h-9 sm:w-10 sm:h-10 object-contain" />
+                              ) : (
+                                <CurrencyDollarCircle className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-400" />
+                              )}
                             </div>
                             <span
                               className={`text-xs font-bold leading-tight text-center truncate w-full ${
@@ -396,6 +483,18 @@ export default function NewSessionBankForm({
                       placeholder="https://link-gambar-qris.com/qris.jpg"
                       size="sm"
                     />
+                  ) : selectedTemplate === "Cash" ? (
+                    <div className="p-3.5 rounded-xl bg-secondary-900/40 border border-secondary-800/80 flex items-start gap-3">
+                      <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
+                        <CurrencyDollarCircle className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-bold text-text-50">Bayar Tunai / Cash</p>
+                        <p className="text-2xs text-text-400 mt-0.5 leading-relaxed">
+                          Sohib lo bakal bayar patungannya secara tunai langsung ke <strong>{payerMember || "yang nalanin"}</strong> pas lagi kumpul.
+                        </p>
+                      </div>
+                    </div>
                   ) : (
                     <Input
                       label="Nomor Rekening / No. HP"
@@ -411,14 +510,14 @@ export default function NewSessionBankForm({
                   )}
 
                   <Input
-                    label="Nama Pemilik Rekening"
+                    label={selectedTemplate === "Cash" ? "Nama Penerima Tunai" : "Nama Pemilik Rekening"}
                     isRequired
                     icon={User01}
                     value={bankOwner}
                     onChange={setBankOwner}
                     isInvalid={formSubmitted && !bankOwner.trim()}
                     hint={formSubmitted && !bankOwner.trim() ? "Wajib diisi ya, Bos!" : undefined}
-                    placeholder="Contoh: Usop"
+                    placeholder={payerMember || "Contoh: Usop"}
                     size="sm"
                   />
                 </div>

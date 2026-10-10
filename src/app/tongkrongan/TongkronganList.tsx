@@ -113,7 +113,7 @@ export default function TongkronganList({ sessions }: TongkronganListProps) {
               statusFilter === "COMPLETED" ? "text-xs" : "text-2xs"
             }`}
           >
-            Udah Kelar
+            Kelar
           </span>
           <span className="text-xs font-black tabular-nums">
             {completedCount}

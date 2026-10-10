@@ -76,9 +76,11 @@ export async function getVacationPlanDetail(planId: string) {
       where: { id: planId },
       include: {
         createdBy: {
-          select: { id: true, name: true, avatar: true },
+          select: { id: true, name: true, avatar: true, image: true },
         },
-        members: true,
+        members: {
+          orderBy: { createdAt: "asc" },
+        },
         expenses: {
           orderBy: { createdAt: "desc" },
           include: {

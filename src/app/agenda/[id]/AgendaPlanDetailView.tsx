@@ -127,7 +127,7 @@ export default function VacationPlanDetailView({
       id: tempId,
       name,
       userId: null,
-      avatar: tempId,
+      avatar: name,
     };
     setMembers((prev) => [...prev, optimisticMember]);
     setExpenseParticipants((prev) => [...prev, tempId]);
@@ -140,7 +140,7 @@ export default function VacationPlanDetailView({
         setMembers((prev) =>
           prev.map((m) =>
             m.id === tempId
-              ? { ...m, id: res.member.id, userId: res.member.userId, avatar: tempId }
+              ? { ...m, id: res.member.id, userId: res.member.userId, avatar: name }
               : m
           )
         );
@@ -342,7 +342,13 @@ export default function VacationPlanDetailView({
         toast.success("Nama sohib berhasil diganti!");
         setMembers(
           members.map((m) =>
-            m.id === memberId ? { ...m, name: editingMemberName.trim() } : m
+            m.id === memberId
+              ? {
+                  ...m,
+                  name: editingMemberName.trim(),
+                  avatar: m.userId ? m.avatar : editingMemberName.trim(),
+                }
+              : m
           )
         );
         setEditingMemberId(null);

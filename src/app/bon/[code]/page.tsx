@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import BonView from "./BonView";
 import { decrypt } from "@/lib/encryption";
+
+export const metadata: Metadata = {
+  title: "Detail Bon Pete-Pete",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 interface BonPageProps {
   params: Promise<{ code: string }>;

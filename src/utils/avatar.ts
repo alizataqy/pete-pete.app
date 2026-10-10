@@ -3,5 +3,6 @@
  */
 export function getAvatarUrl(seed?: string | null): string | undefined {
   if (!seed || !seed.trim()) return undefined;
+  if (seed.startsWith("http://") || seed.startsWith("https://")) return seed;
   return `https://api.dicebear.com/9.x/dylan/svg?seed=${encodeURIComponent(seed.trim())}`;
 }

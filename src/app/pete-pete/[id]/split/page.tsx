@@ -1,10 +1,33 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import SplitBoard from "./SplitBoard";
 import { decrypt } from "@/lib/encryption";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-export default async function SessionSplitPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function SessionSplitPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ confirmPayMember?: string }>;
+}) {
   const { id } = await params;
+  const { confirmPayMember } = await searchParams;
+
+  const authSession = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const currentUserId = authSession?.user?.id || null;
+
+  if (confirmPayMember && !currentUserId) {
+    redirect(
+      `/login?callbackUrl=${encodeURIComponent(
+        `/pete-pete/${id}/split?confirmPayMember=${confirmPayMember}`
+      )}`
+    );
+  }
+
   const session = await prisma.billSession.findUnique({
     where: { id },
     include: {
@@ -62,7 +85,7 @@ export default async function SessionSplitPage({ params }: { params: Promise<{ i
     shareAmount: Number(m.shareAmount),
     userId: m.userId,
     isPaid: m.isPaid,
-    avatar: m.user?.avatar || m.id,
+    avatar: m.user?.avatar || m.name,
   }));
 
   const formattedItems = session.items.map((i) => ({
@@ -80,6 +103,8 @@ export default async function SessionSplitPage({ params }: { params: Promise<{ i
         initialMembers={formattedMembers}
         items={formattedItems}
         initialAllocations={initialAllocations}
+        currentUserId={currentUserId}
+        confirmPayMemberId={confirmPayMember}
       />
     </main>
   );

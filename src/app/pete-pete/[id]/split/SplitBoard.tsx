@@ -77,6 +77,8 @@ interface SplitBoardProps {
   initialMembers: Member[];
   items: Item[];
   initialAllocations: { itemId: string; memberId: string; quantity?: number }[];
+  currentUserId?: string | null;
+  confirmPayMemberId?: string;
 }
 
 export default function SplitBoard({
@@ -84,8 +86,11 @@ export default function SplitBoard({
   initialMembers,
   items,
   initialAllocations,
+  currentUserId,
+  confirmPayMemberId,
 }: SplitBoardProps) {
   const router = useRouter();
+  const isOwner = session.userId ? currentUserId === session.userId : true;
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [itemList, setItemList] = useState<Item[]>(items);
 
@@ -103,6 +108,9 @@ export default function SplitBoard({
   const [showAccount, setShowAccount] = useState(false);
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [confirmPayMember, setConfirmPayMember] = useState<Member | null>(null);
+  const [isConfirmingPay, setIsConfirmingPay] = useState(false);
+  const hasHandledConfirmParam = useRef(false);
 
   const [deleteConfig, setDeleteConfig] = useState<{
     isOpen: boolean;
@@ -256,6 +264,36 @@ export default function SplitBoard({
     };
   }, [allocations, session.id]);
 
+  // Handle auto-open modal konfirmasi pembayaran dari link WhatsApp
+  useEffect(() => {
+    if (!confirmPayMemberId || hasHandledConfirmParam.current) return;
+    hasHandledConfirmParam.current = true;
+
+    if (session.userId && currentUserId !== session.userId) {
+      toast.error("Eits, cuma pembuat bill yang punya hak buat konfirmasi status bayar!");
+      router.replace(`/pete-pete/${session.id}/split`);
+      return;
+    }
+
+    const targetMember = members.find((m) => m.id === confirmPayMemberId);
+    if (!targetMember) {
+      toast.error("Data sohib gak ketemu nih di sesi pete-pete ini.");
+      router.replace(`/pete-pete/${session.id}/split`);
+      return;
+    }
+
+    if (targetMember.isPaid) {
+      toast.info(`Sohib ${targetMember.name} emang udah lunas kok, Bos!`);
+      router.replace(`/pete-pete/${session.id}/split`);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setConfirmPayMember(targetMember);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [confirmPayMemberId, session.id, session.userId, currentUserId, members, router]);
+
   // Manajemen Member
   const handleAddMember = async (nameInput: string) => {
     let name = nameInput.trim();
@@ -276,7 +314,7 @@ export default function SplitBoard({
 
     const tempId = `temp-${Date.now()}`;
     const prevMembers = members;
-    setMembers((prev) => [...prev, { id: tempId, name, shareAmount: 0, avatar: tempId }]);
+    setMembers((prev) => [...prev, { id: tempId, name, shareAmount: 0, avatar: name }]);
     toast.success("Sohib berhasil ditambahin!");
 
     try {
@@ -285,7 +323,7 @@ export default function SplitBoard({
         setMembers((prev) =>
           prev.map((m) =>
             m.id === tempId
-              ? { id: res.member.id, name: res.member.name, shareAmount: 0, avatar: tempId }
+              ? { id: res.member.id, name: res.member.name, shareAmount: 0, avatar: name }
               : m
           )
         );
@@ -350,6 +388,10 @@ export default function SplitBoard({
   };
 
   const handleTogglePaid = async (memberId: string, currentPaid: boolean) => {
+    if (!isOwner) {
+      toast.error("Cuma pembuat bill yang punya hak buat ubah status bayar!");
+      return;
+    }
     const newStatus = !currentPaid;
     const prevMembers = members;
     setMembers((prev) => prev.map((m) => (m.id === memberId ? { ...m, isPaid: newStatus } : m)));
@@ -365,6 +407,32 @@ export default function SplitBoard({
     } catch {
       setMembers(prevMembers);
       toast.error("Gagal update status bayar sohib nih.");
+    }
+  };
+
+  const handleConfirmPayViaModal = async () => {
+    if (!confirmPayMember) return;
+    setIsConfirmingPay(true);
+    const memberId = confirmPayMember.id;
+    const memberName = confirmPayMember.name;
+    const prevMembers = members;
+    setMembers((prev) => prev.map((m) => (m.id === memberId ? { ...m, isPaid: true } : m)));
+
+    try {
+      const res = await toggleMemberPaidStatus(memberId, true, session.id);
+      if (!res.success) {
+        setMembers(prevMembers);
+        toast.error(res.error || "Gagal update status bayar sohib nih.");
+      } else {
+        toast.success(`Mantap, pembayaran ${memberName} udah ditandai lunas!`);
+      }
+    } catch {
+      setMembers(prevMembers);
+      toast.error("Gagal update status bayar sohib nih.");
+    } finally {
+      setIsConfirmingPay(false);
+      setConfirmPayMember(null);
+      router.replace(`/pete-pete/${session.id}/split`);
     }
   };
 
@@ -755,6 +823,7 @@ export default function SplitBoard({
           sessionStatus={sessionStatus}
           loading={loading}
           saveStatus={saveStatus}
+          isOwner={isOwner}
           onAddMember={handleAddMember}
           onRenameMember={handleRenameMember}
           onDeleteMemberPrompt={(member) =>
@@ -1031,6 +1100,24 @@ export default function SplitBoard({
           color="warning"
           icon={AlertTriangle}
           isLoading={loading}
+        />
+      )}
+
+      {confirmPayMember && (
+        <ConfirmationModal
+          isOpen={!!confirmPayMember}
+          onClose={() => {
+            setConfirmPayMember(null);
+            router.replace(`/pete-pete/${session.id}/split`);
+          }}
+          onConfirm={handleConfirmPayViaModal}
+          title="Konfirmasi Pembayaran Sohib"
+          description={`Sohib ${confirmPayMember.name} ngabarin udah transfer Rp ${getMemberShareAmount(confirmPayMember.id).toLocaleString("id-ID")}. Tandai pembayaran udah lunas sekarang, Bos?`}
+          confirmText="Iya, Tandai Lunas"
+          cancelText="Nanti Dulu"
+          color="success"
+          icon={Check}
+          isLoading={isConfirmingPay}
         />
       )}
 

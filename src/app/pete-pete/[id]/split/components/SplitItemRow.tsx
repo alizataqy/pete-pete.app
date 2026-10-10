@@ -322,11 +322,14 @@ export default function SplitItemRow({
           {/* Avatar Pemilihan Anggota */}
           {members.length > 0 && (
             <div className="flex flex-wrap gap-x-2.5 sm:gap-x-3 gap-y-2.5 sm:gap-y-3 items-start pt-1.5">
-              {members.map((member) => {
+              {members.map((member, idx) => {
                 const alloc = allocations.find(
                   (a) => a.itemId === item.id && a.memberId === member.id
                 );
                 const qty = alloc ? alloc.quantity : 0;
+                const isUser = sessionUserId
+                  ? member.userId === sessionUserId
+                  : (idx === 0 || member.name.trim().toLowerCase() === "gua");
 
                 return (
                   <div key={member.id} className="flex flex-col items-center w-12 sm:w-13 shrink-0 relative">
@@ -347,6 +350,11 @@ export default function SplitItemRow({
                           }`}
                         />
                       </button>
+                      {isUser && (
+                        <span className="absolute -bottom-1 -right-1 z-10 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs pointer-events-none">
+                          Gua
+                        </span>
+                      )}
                       {qty > 0 && sessionStatus !== "COMPLETED" && (
                         <>
                           <button
@@ -373,7 +381,7 @@ export default function SplitItemRow({
                       }`}
                       title={member.name}
                     >
-                      {sessionUserId && member.userId === sessionUserId ? "Gua" : member.name}
+                      {member.name}
                     </p>
                   </div>
                 );

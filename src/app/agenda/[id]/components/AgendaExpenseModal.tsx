@@ -96,7 +96,7 @@ export default function AgendaExpenseModal({
                         >
                           <div className="relative min-w-11 min-h-11 flex items-center justify-center">
                             <Avatar
-                              src={getAvatarUrl(m.avatar || m.id)}
+                              src={getAvatarUrl(m.avatar || m.name)}
                               alt={m.name}
                               size="md"
                               className={`shadow-md transition-all duration-200 border border-secondary-800 ${
@@ -106,8 +106,13 @@ export default function AgendaExpenseModal({
                               }`}
                             />
                             {isSelected && (
-                              <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-secondary-950 pointer-events-none">
-                                <Check className="w-2.5 h-2.5 stroke-[3px]" />
+                              <span className="absolute -top-1 -left-1 bg-primary-400 text-white rounded-full size-4.5 flex items-center justify-center text-3xs font-bold shadow-xs">
+                                <Check className="w-2.5 h-2.5 stroke-[3]" />
+                              </span>
+                            )}
+                            {m.userId === userId && (
+                              <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs pointer-events-none">
+                                Gua
                               </span>
                             )}
                           </div>
@@ -117,7 +122,6 @@ export default function AgendaExpenseModal({
                             }`}
                           >
                             {m.name}
-                            {m.userId === userId && " (Gua)"}
                           </p>
                         </button>
                       );
@@ -155,7 +159,7 @@ export default function AgendaExpenseModal({
                         >
                           <div className="relative min-w-11 min-h-11 flex items-center justify-center">
                             <Avatar
-                              src={getAvatarUrl(m.avatar || m.id)}
+                              src={getAvatarUrl(m.avatar || m.name)}
                               alt={m.name}
                               size="md"
                               className={`shadow-md transition-all duration-200 border border-secondary-800 ${
@@ -165,8 +169,13 @@ export default function AgendaExpenseModal({
                               }`}
                             />
                             {isParticipating && (
-                              <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md border border-secondary-950 pointer-events-none">
-                                <Check className="w-2.5 h-2.5 stroke-[3px]" />
+                              <span className="absolute -top-1 -left-1 bg-primary-400 text-white rounded-full size-4.5 flex items-center justify-center text-3xs font-bold shadow-xs">
+                                <Check className="w-2.5 h-2.5 stroke-[3]" />
+                              </span>
+                            )}
+                            {m.userId === userId && (
+                              <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs pointer-events-none">
+                                Gua
                               </span>
                             )}
                           </div>
@@ -176,7 +185,6 @@ export default function AgendaExpenseModal({
                             }`}
                           >
                             {m.name}
-                            {m.userId === userId && " (Gua)"}
                           </p>
                         </button>
                       );

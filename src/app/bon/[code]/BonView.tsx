@@ -212,7 +212,12 @@ export default function BonView({
     if (!activeMemberDetail) return;
     const isPlaceholder = /^(saya(\s*\(owner\))?|gua|owner)$/i.test(activeMemberDetail.member.name.trim());
     const memberName = isPlaceholder && session.creatorName ? session.creatorName : activeMemberDetail.member.name;
-    const text = `Halo, gua (${memberName}) udah transfer split bill *${cleanSessionTitle}* sebesar *Rp ${activeMemberDetail.grandTotal.toLocaleString("id-ID")}* ya! Tolong dicek, thank you!`;
+    const confirmUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/pete-pete/${session.id}/split?confirmPayMember=${activeMemberDetail.member.id}`
+        : `/pete-pete/${session.id}/split?confirmPayMember=${activeMemberDetail.member.id}`;
+    const actionText = session.bankName === "Cash" ? "udah bayar cash" : "udah transfer";
+    const text = `Halo, gua (${memberName}) ${actionText} split bill *${cleanSessionTitle}* sebesar *Rp ${activeMemberDetail.grandTotal.toLocaleString("id-ID")}* ya! Tolong dicek, thank you!\n\nKonfirmasi status lunas (khusus yang buat pete-pete):\n${confirmUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -580,6 +585,8 @@ export default function BonView({
                       <span className="text-3xs text-text-300 block mt-0.5 print:hidden">
                         {activeMemberDetail.member.isPaid
                           ? "Udah lunas dibayar"
+                          : session.bankName === "Cash"
+                          ? `Bayar tunai ke ${session.bankOwner || "yang nalangin"}`
                           : "Belum ditransfer ke yang nalangin"}
                       </span>
                     </div>
@@ -591,15 +598,19 @@ export default function BonView({
 
                 {/* Action Buttons (Hanya untuk Layar, tidak dicetak) */}
                 <div className="space-y-2 pt-1 print:hidden">
-                  <Button
-                    onPress={handleConfirmTransferWA}
-                    color="primary"
-                    size="lg"
-                    iconLeading={Share07}
-                    className="w-full min-h-11 py-3 text-xs sm:text-sm font-bold active:scale-95 transition-all shadow-sm cursor-pointer"
-                  >
-                    Kirim Bukti Transfer ke Sohib Lo
-                  </Button>
+                  {!activeMemberDetail.member.isPaid && (
+                    <Button
+                      onPress={handleConfirmTransferWA}
+                      color="primary"
+                      size="lg"
+                      iconLeading={Share07}
+                      className="w-full min-h-11 py-3 text-xs sm:text-sm font-bold active:scale-95 transition-all shadow-sm cursor-pointer"
+                    >
+                      {session.bankName === "Cash"
+                        ? "Kirim Bukti Bayar Tunai ke Sohib Lo"
+                        : "Kirim Bukti Transfer ke Sohib Lo"}
+                    </Button>
+                  )}
 
                   <Button
                     onPress={() => setIsReceiptModalOpen(true)}

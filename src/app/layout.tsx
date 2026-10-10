@@ -24,7 +24,10 @@ const appUrl = getAppUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
-  title: "Split Bill Online | Ceban Pertama",
+  title: {
+    default: "Split Bill Online | Ceban Pertama",
+    template: "%s | Ceban Pertama",
+  },
   description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis split bill, hitung pajak resto & service charge, langsung share ke WhatsApp.",
   appleWebApp: {
     capable: true,
@@ -58,9 +61,6 @@ export const metadata: Metadata = {
     "pete pete",
     "ceban pertama",
   ],
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: "Split Bill Online | Ceban Pertama",
     description: "Aplikasi split bill online gratis di Indonesia. Tinggal foto struk makan, AI otomatis split bill, hitung pajak resto & service charge, langsung share ke WhatsApp.",

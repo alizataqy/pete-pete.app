@@ -137,20 +137,26 @@ export default function AgendaSettlementsSection({
                   <div className="flex items-center justify-between gap-2">
                     {/* Payer (From) */}
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <Avatar
-                        src={getAvatarUrl(members.find((m) => m.id === t.fromMemberId)?.avatar || t.fromMemberId)}
-                        alt={t.from}
-                        size="sm"
-                        className={`shadow-md border shrink-0 ${
-                          isFromMe
-                            ? "border-danger-500/70 ring-1 ring-danger-500/50"
-                            : "border-secondary-800"
-                        }`}
-                      />
+                      <div className="relative shrink-0">
+                        <Avatar
+                          src={getAvatarUrl(members.find((m) => m.id === t.fromMemberId)?.avatar || t.from)}
+                          alt={t.from}
+                          size="sm"
+                          className={`shadow-md border shrink-0 ${
+                            isFromMe
+                              ? "border-danger-500/70 ring-1 ring-danger-500/50"
+                              : "border-secondary-800"
+                          }`}
+                        />
+                        {isFromMe && (
+                          <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs pointer-events-none">
+                            Gua
+                          </span>
+                        )}
+                      </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-text-50 wrap-break-word flex items-center gap-1">
+                        <p className="text-xs font-bold text-text-50 wrap-break-word">
                           {t.from}
-                          {isFromMe && <span className="text-3xs font-normal text-danger-400">(Gua)</span>}
                         </p>
                         <p className="text-3xs text-text-400 font-medium">Yang Bayar</p>
                       </div>
@@ -173,22 +179,28 @@ export default function AgendaSettlementsSection({
                     {/* Receiver (To) */}
                     <div className="flex items-center justify-end gap-2.5 min-w-0 flex-1 text-right">
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-text-50 wrap-break-word flex items-center justify-end gap-1">
-                          {isToMe && <span className="text-3xs font-normal text-danger-400">(Gua)</span>}
+                        <p className="text-xs font-bold text-text-50 wrap-break-word">
                           {t.to}
                         </p>
                         <p className="text-3xs text-text-400 font-medium">Penerima</p>
                       </div>
-                      <Avatar
-                        src={getAvatarUrl(members.find((m) => m.id === t.toMemberId)?.avatar || t.toMemberId)}
-                        alt={t.to}
-                        size="sm"
-                        className={`shadow-md border shrink-0 ${
-                          isToMe
-                            ? "border-primary-400/70 ring-1 ring-primary-400/50"
-                            : "border-secondary-800"
-                        }`}
-                      />
+                      <div className="relative shrink-0">
+                        <Avatar
+                          src={getAvatarUrl(members.find((m) => m.id === t.toMemberId)?.avatar || t.to)}
+                          alt={t.to}
+                          size="sm"
+                          className={`shadow-md border shrink-0 ${
+                            isToMe
+                              ? "border-primary-400/70 ring-1 ring-primary-400/50"
+                              : "border-secondary-800"
+                          }`}
+                        />
+                        {isToMe && (
+                          <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs pointer-events-none">
+                            Gua
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -150,6 +150,7 @@ export default function NewSessionPage() {
   const [bankAccount, setBankAccount] = useSessionStorageState("pete-pete-new-bank-account", "");
   const [bankOwner, setBankOwner] = useSessionStorageState("pete-pete-new-bank-owner", "");
   const [qrisUrl, setQrisUrl] = useSessionStorageState("pete-pete-new-qris-url", "");
+  const [payerMember, setPayerMember] = useSessionStorageState("pete-pete-new-payer-member", "");
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
 
@@ -317,6 +318,7 @@ export default function NewSessionPage() {
       "pete-pete-new-bank-account",
       "pete-pete-new-bank-owner",
       "pete-pete-new-qris-url",
+      "pete-pete-new-payer-member",
       "pete-pete-new-selected-template",
       "pete-pete-new-selected-bank-id",
       "pete-pete-new-use-profile-bank",
@@ -361,6 +363,8 @@ export default function NewSessionPage() {
 
   const currentUserName = authSession?.user?.name ?? "Gua";
   const allPeople = [currentUserName, ...manualMembers];
+  const activePayerMember =
+    payerMember && allPeople.includes(payerMember) ? payerMember : allPeople[0] || currentUserName;
 
   const getActiveTourStage = (): string => {
     if (!inputMode) return "mode_select";
@@ -601,6 +605,8 @@ export default function NewSessionPage() {
           toast.error("URL gambar QRIS wajib diisi ya, Bos!");
           return;
         }
+      } else if (selectedTemplate === "Cash") {
+        // Cash tidak membutuhkan input nomor rekening
       } else {
         if (!bankAccount.trim()) {
           setFormSubmitted(true);
@@ -608,7 +614,7 @@ export default function NewSessionPage() {
           return;
         }
       }
-      if (!bankOwner.trim()) {
+      if (selectedTemplate !== "Cash" && !bankOwner.trim()) {
         setFormSubmitted(true);
         toast.error("Nama pemilik rekening wajib diisi ya, Bos!");
         return;
@@ -641,6 +647,10 @@ export default function NewSessionPage() {
       } else if (selectedTemplate === "QRIS") {
         finalBankName = "QRIS";
         finalBankAccount = qrisUrl;
+      } else if (selectedTemplate === "Cash") {
+        finalBankName = "Cash";
+        finalBankAccount = "Tunai";
+        finalBankOwner = bankOwner.trim() || activePayerMember;
       } else {
         finalBankName = selectedTemplate;
       }
@@ -677,6 +687,7 @@ export default function NewSessionPage() {
         discountAmount,
         userId: authSession?.user?.id,
         members: allPeople,
+        payerMemberName: activePayerMember,
         items: itemsPayload,
         bankName: finalBankName,
         bankAccount: finalBankAccount,
@@ -902,6 +913,10 @@ export default function NewSessionPage() {
       setBankOwner={setBankOwner}
       qrisUrl={qrisUrl}
       setQrisUrl={setQrisUrl}
+      payerMember={activePayerMember}
+      setPayerMember={setPayerMember}
+      members={allPeople}
+      currentUserAvatar={currentUserAvatar}
       isLoggedIn={!!authSession?.user}
       formSubmitted={formSubmitted}
     />

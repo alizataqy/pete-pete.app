@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/base/buttons/button";
+import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { getAvatarUrl } from "@/utils/avatar";
 import { Dot } from "@/components/foundations/dot-icon";
@@ -36,6 +37,7 @@ interface SplitMemberListProps {
   onOpenReceiptModal: (member: Member) => void;
   getMemberShareAmount: (memberId: string) => number;
   copiedId: string | null;
+  isOwner?: boolean;
 }
 
 export default function SplitMemberList({
@@ -53,6 +55,7 @@ export default function SplitMemberList({
   onOpenReceiptModal,
   getMemberShareAmount,
   copiedId,
+  isOwner = true,
 }: SplitMemberListProps) {
   const [showMembers, setShowMembers] = useState(false);
   const [newMemberName, setNewMemberName] = useState("");
@@ -175,6 +178,9 @@ export default function SplitMemberList({
                 : index === 0;
               const isNameGua = member.name.trim().toLowerCase() === "gua";
               const showGuaBadge = isCreator && !isNameGua;
+              const isPayer = session.bankOwner
+                ? member.name.trim().toLowerCase() === session.bankOwner.trim().toLowerCase()
+                : (isCreator && member.isPaid);
 
               return (
                 <div
@@ -182,12 +188,19 @@ export default function SplitMemberList({
                   className="flex items-center justify-between p-2 px-3 rounded-xl bg-secondary-950/40 border border-secondary-800/80 hover:bg-secondary-950/60 transition-all"
                 >
                   <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                    <Avatar
-                      src={getAvatarUrl(member.avatar || member.id)}
-                      alt={member.name}
-                      size="sm"
-                      className="shadow-md border border-secondary-800"
-                    />
+                    <div className="relative shrink-0">
+                      <Avatar
+                        src={getAvatarUrl(member.avatar || member.id)}
+                        alt={member.name}
+                        size="sm"
+                        className="shadow-md border border-secondary-800"
+                      />
+                      {isCreator && (
+                        <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs pointer-events-none">
+                          Gua
+                        </span>
+                      )}
+                    </div>
                     {editingMemberId === member.id ? (
                       <div className="flex items-center gap-1.5 flex-1 min-w-0">
                         <input
@@ -217,12 +230,24 @@ export default function SplitMemberList({
                       </div>
                     ) : (
                       <div className="flex flex-col min-w-0">
-                        <p className="font-semibold text-text text-xs wrap-break-word">
-                          {member.name}
-                          {showGuaBadge && (
-                            <span className="text-3xs font-normal text-text-400"> (Gua)</span>
+                        <div className="flex items-center gap-1 flex-wrap">
+                          <p className="font-semibold text-text text-xs wrap-break-word">
+                            {member.name}
+                            {showGuaBadge && (
+                              <span className="text-3xs font-normal text-text-400"> (Gua)</span>
+                            )}
+                          </p>
+                          {isPayer && (
+                            <Badge
+                              color="brand"
+                              size="sm"
+                              type="pill-color"
+                              className="font-bold shrink-0 text-3xs px-1.5 py-0.5"
+                            >
+                              Nalanin
+                            </Badge>
                           )}
-                        </p>
+                        </div>
                         <p className="text-2xs text-primary-400 font-medium tabular-nums">
                           Tagihan: Rp {getMemberShareAmount(member.id).toLocaleString("id-ID")}
                         </p>
@@ -232,7 +257,16 @@ export default function SplitMemberList({
 
                   {editingMemberId !== member.id && (
                     <div className="flex items-center gap-1.5">
-                      {!isCreator && (
+                      {isPayer ? (
+                        <Badge
+                          color="success"
+                          size="sm"
+                          type="pill-color"
+                          className="font-bold shrink-0 text-3xs px-2 py-0.5"
+                        >
+                          Lunas
+                        </Badge>
+                      ) : isOwner ? (
                         <Button
                           onPress={() => onTogglePaid(member.id, !!member.isPaid)}
                           color={!member.isPaid ? "primary" : "secondary"}
@@ -246,6 +280,15 @@ export default function SplitMemberList({
                         >
                           {!member.isPaid ? "Udah Bayar" : "Belum Bayar"}
                         </Button>
+                      ) : (
+                        <Badge
+                          color={member.isPaid ? "success" : "warning"}
+                          size="sm"
+                          type="pill-color"
+                          className="font-bold shrink-0 text-3xs px-2 py-0.5"
+                        >
+                          {member.isPaid ? "Lunas" : "Belum Bayar"}
+                        </Badge>
                       )}
                       {/* Dropdown Menu Aksi Sohib */}
                       <DialogTrigger>

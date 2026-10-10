@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import LandingView from "./LandingView";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 export default async function Home() {
   // Ambil data session Better Auth dari incoming request headers

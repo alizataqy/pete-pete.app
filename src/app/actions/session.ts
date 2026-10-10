@@ -490,6 +490,7 @@ export interface CreateManualSessionData {
   bankName?: string;
   bankAccount?: string;
   bankOwner?: string;
+  payerMemberName?: string;
   members: string[];
   items: {
     name: string;
@@ -523,16 +524,19 @@ export async function createManualBillSession(data: CreateManualSessionData) {
     });
 
     // 2. Create members
+    const payerName = (data.payerMemberName || data.members[0] || "").trim().toLowerCase();
     const dbMembers = [];
     for (let i = 0; i < data.members.length; i++) {
       const name = data.members[i];
       const isOwner = i === 0;
+      const isPayer = name.trim().toLowerCase() === payerName;
       const m = await prisma.billMember.create({
         data: {
           name,
           sessionId: session.id,
           shareAmount: 0,
           userId: isOwner ? (data.userId || null) : null,
+          isPaid: isPayer,
         },
       });
       dbMembers.push(m);
@@ -583,6 +587,24 @@ export async function createManualBillSession(data: CreateManualSessionData) {
 // Action untuk mengubah status pembayaran member (isPaid)
 export async function toggleMemberPaidStatus(memberId: string, isPaid: boolean, sessionId: string) {
   try {
+    const sessionAuth = await auth.api.getSession({
+      headers: await headers(),
+    });
+    const currentUserId = sessionAuth?.user?.id;
+
+    const billSession = await prisma.billSession.findUnique({
+      where: { id: sessionId },
+      select: { userId: true },
+    });
+
+    if (!billSession) {
+      return { success: false, error: "Sesi bill gak ketemu nih." };
+    }
+
+    if (!currentUserId || billSession.userId !== currentUserId) {
+      return { success: false, error: "Cuma pembuat bill yang punya hak buat ubah status bayar." };
+    }
+
     const member = await prisma.billMember.update({
       where: { id: memberId },
       data: { isPaid },

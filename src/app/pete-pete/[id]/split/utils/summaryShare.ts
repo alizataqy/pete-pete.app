@@ -60,7 +60,9 @@ export function generateMemberSummaryText(
     feeBreakdownText += `Pajak & Servis: Rp ${memberTaxAndTips.toLocaleString("id-ID")}\n`;
   }
 
-  const bankDetails = session.bankName
+  const bankDetails = session.bankName === "Cash"
+    ? `💵 *Info Pembayaran:*\nBayar tunai (cash) langsung ke: ${session.bankOwner || "yang nalangin"}`
+    : session.bankName
     ? `💳 *Info Transfer:*\nTransfer ke: ${session.bankName}\nNo. Rekening: ${session.bankAccount}\nA/N: ${session.bankOwner}`
     : "Silakan kontak pembuat sesi buat detail rekening transfer.";
 
@@ -70,6 +72,16 @@ export function generateMemberSummaryText(
     typeof window !== "undefined"
       ? `${window.location.origin}/bon/${session.inviteCode}?member=${member.id}`
       : `/bon/${session.inviteCode}?member=${member.id}`;
+
+  const ctaClosing =
+    session.bankName === "Cash"
+      ? "🙏 Ditunggu bayar tunainya ya, Bos! Thank you."
+      : "🙏 Ditunggu transferannya ya, Bos! Thank you.";
+
+  const ctaLinkTitle =
+    session.bankName === "Cash"
+      ? "🔗 *Cek Bon & Konfirmasi Pembayaran:*"
+      : "🔗 *Cek Bon & Konfirmasi Transfer:*";
 
   return `🧾 *BILL PETE-PETE: ${cleanTitle}*
 ${session.merchantName ? `📍 Lokasi: ${session.merchantName}\n` : ""}Halo *${member.name}*, ini detail bill lo:
@@ -81,10 +93,10 @@ ${feeBreakdownText}💰 *Total Bill: Rp ${grandTotal.toLocaleString("id-ID")}*
 
 ${bankDetails}
 
-🔗 *Cek Bon & Konfirmasi Transfer:*
+${ctaLinkTitle}
 ${bonUrl}
 
-🙏 Ditunggu transferannya ya, Bos! Thank you.`;
+${ctaClosing}`;
 }
 
 export function generateAllSummaryText(
@@ -161,7 +173,9 @@ export function generateAllSummaryText(
     overallFeeText += `Diskon/Promo (-${discountPercent}%): -Rp ${discountAmount.toLocaleString("id-ID")}\n`;
   }
 
-  const bankDetails = session.bankName
+  const bankDetails = session.bankName === "Cash"
+    ? `💵 *Info Pembayaran:*\nBayar tunai (cash) langsung ke: ${session.bankOwner || "yang nalangin"}`
+    : session.bankName
     ? `💳 *Info Transfer:*\nTransfer ke: ${session.bankName}\nNo. Rekening: ${session.bankAccount}\nA/N: ${session.bankOwner}`
     : "Silakan kontak pembuat sesi buat detail rekening transfer.";
 
@@ -171,6 +185,11 @@ export function generateAllSummaryText(
     typeof window !== "undefined"
       ? `${window.location.origin}/bon/${session.inviteCode}`
       : `/bon/${session.inviteCode}`;
+
+  const ctaClosing =
+    session.bankName === "Cash"
+      ? "🙏 Ditunggu bayar tunainya ya, Bos! Thank you."
+      : "🙏 Ditunggu transferannya ya, Bos! Thank you.";
 
   return `🧾 *REKAP BILL PETE-PETE: ${cleanTitle}*
 ${session.merchantName ? `📍 Lokasi: ${session.merchantName}\n` : ""}
@@ -184,5 +203,5 @@ ${bankDetails}
 🔗 *Cek Bon & Detail Lengkap Online:*
 ${bonUrl}
 
-🙏 Ditunggu transferannya ya, Bos! Thank you.`;
+${ctaClosing}`;
 }

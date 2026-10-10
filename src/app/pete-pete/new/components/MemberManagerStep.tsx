@@ -64,7 +64,7 @@ export default function MemberManagerStep({
               handleAddMember();
             }
           }}
-          className="flex-1 min-h-11 px-3.5 py-2.5 rounded-xl bg-secondary-900/60 border border-secondary-700/80 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all shadow-2xs"
+          className="flex-1 min-h-11 px-3.5 py-2.5 rounded-lg bg-secondary-900/60 border border-secondary-700/80 text-xs sm:text-sm text-text-50 placeholder-text-500 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all shadow-2xs"
           placeholder="Nama sohib lo (misal: Budi, Sarah)"
         />
         <Button
@@ -73,7 +73,7 @@ export default function MemberManagerStep({
           size="sm"
           color="primary"
           iconLeading={Plus}
-          className="min-h-11 px-4 rounded-xl font-bold text-xs active:scale-[0.96] transition-transform shrink-0"
+          className="min-h-11 px-4 font-bold text-xs active:scale-[0.96] transition-transform shrink-0"
         >
           Tambahin
         </Button>
@@ -168,6 +168,22 @@ export default function MemberManagerStep({
             )}
           </div>
         ))}
+
+        {/* Tombol Tambah Sohib Cepat di samping avatar */}
+        <div className="flex flex-col items-center gap-1.5 w-16 shrink-0">
+          <button
+            type="button"
+            onClick={handleAddMember}
+            className="size-12 rounded-full border-2 border-dashed border-secondary-700 hover:border-primary-400 bg-secondary-900/40 hover:bg-secondary-900/80 text-text-400 hover:text-primary-400 flex items-center justify-center cursor-pointer transition-all active:scale-95 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+            title="Tambah Sohib"
+            aria-label="Tambah sohib baru"
+          >
+            <Plus className="w-5 h-5 transition-transform group-hover:scale-110" />
+          </button>
+          <span className="text-2xs text-text-400 font-semibold text-center leading-tight">
+            Tambah
+          </span>
+        </div>
       </div>
     </div>
   );

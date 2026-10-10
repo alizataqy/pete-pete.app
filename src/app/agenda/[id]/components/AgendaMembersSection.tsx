@@ -7,6 +7,7 @@ import { Avatar } from "@/components/base/avatar/avatar";
 import { getAvatarUrl } from "@/utils/avatar";
 import { Input } from "@/components/base/input/input";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { DialogTrigger, Popover, Dialog } from "react-aria-components";
 import {
   Plus,
   Trash01,
@@ -16,6 +17,7 @@ import {
   ArrowDown,
   Edit02,
   Share07,
+  DotsVertical,
 } from "@untitledui/icons";
 import { Member, formatRupiah } from "../types";
 
@@ -28,7 +30,7 @@ interface AgendaMembersSectionProps {
   setShowMembers: (val: boolean) => void;
   newMemberName: string;
   setNewMemberName: (val: string) => void;
-  handleAddMember: (e: React.FormEvent) => void;
+  handleAddMember: (e: React.SyntheticEvent) => void;
   loading: boolean;
   editingMemberId: string | null;
   setEditingMemberId: (val: string | null) => void;
@@ -140,12 +142,19 @@ export default function AgendaMembersSection({
                     className="flex items-center justify-between p-3 rounded-xl bg-secondary-950/40 border border-secondary-800/80 hover:bg-secondary-950/60 hover:border-secondary-700/80 transition-all shrink-0 gap-3"
                   >
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <Avatar
-                        src={getAvatarUrl(member.avatar || member.id)}
-                        alt={member.name}
-                        size="sm"
-                        className="shadow-xs border border-secondary-800 shrink-0"
-                      />
+                      <div className="relative shrink-0">
+                        <Avatar
+                          src={getAvatarUrl(member.avatar || member.name)}
+                          alt={member.name}
+                          size="sm"
+                          className="shadow-xs border border-secondary-800 shrink-0"
+                        />
+                        {isMe && (
+                          <span className="absolute -bottom-1 -right-1 bg-primary-400 text-white rounded-full px-1 py-0.2 text-4xs font-extrabold shadow-xs pointer-events-none">
+                            Gua
+                          </span>
+                        )}
+                      </div>
                       {editingMemberId === member.id ? (
                         <div className="flex items-center gap-1.5 flex-1 min-w-0">
                           <input
@@ -178,16 +187,6 @@ export default function AgendaMembersSection({
                             <p className="font-semibold text-text-50 text-xs wrap-break-word">
                               {member.name}
                             </p>
-                            {isMe && (
-                              <Badge
-                                color="brand"
-                                size="sm"
-                                type="pill-color"
-                                className="text-3xs px-1.5 py-0 font-medium"
-                              >
-                                Gua
-                              </Badge>
-                            )}
                           </div>
                           <div className="flex items-center gap-1.5 mt-1">
                             {balance < 0 ? (
@@ -225,46 +224,73 @@ export default function AgendaMembersSection({
 
                     <div className="flex items-center gap-1.5 shrink-0">
                       {editingMemberId !== member.id && (
-                        <>
+                        <DialogTrigger>
                           <Button
-                            onPress={() => handleOpenMemberSummaryShare(member)}
                             color="secondary"
                             size="xs"
-                            aria-label={`Share detail bill ${member.name}`}
-                            className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+                            aria-label={`Menu aksi untuk ${member.name}`}
+                            className="p-1.5 rounded-lg active:scale-95 transition-all text-text-300 hover:text-text-100 flex items-center justify-center shrink-0"
                           >
-                            {copiedId === member.id ? (
-                              <Check className="w-4 h-4 text-emerald-400" />
-                            ) : (
-                              <Share07 className="w-4 h-4 text-text-400" />
-                            )}
+                            <DotsVertical className="w-4 h-4" />
                           </Button>
-
-                          <Button
-                            onPress={() => {
-                              setEditingMemberId(member.id);
-                              setEditingMemberName(member.name);
-                            }}
-                            color="secondary"
-                            size="xs"
-                            aria-label={`Ubah nama ${member.name}`}
-                            className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+                          <Popover
+                            placement="bottom right"
+                            offset={6}
+                            className="z-50 w-44 p-1.5 rounded-xl border border-secondary-800 bg-secondary-950/95 backdrop-blur-md shadow-xl outline-hidden animate-in fade-in zoom-in-95 duration-150"
                           >
-                            <Edit02 className="w-4 h-4 text-text-400" />
-                          </Button>
+                            <Dialog className="outline-hidden">
+                              {({ close }) => (
+                                <div className="flex flex-col gap-0.5">
+                                  {/* Share Detail Bill */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      close();
+                                      handleOpenMemberSummaryShare(member);
+                                    }}
+                                    className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                                  >
+                                    {copiedId === member.id ? (
+                                      <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                                    ) : (
+                                      <Share07 className="w-4 h-4 text-primary-400 shrink-0" />
+                                    )}
+                                    <span>Bagikan Bon</span>
+                                  </button>
 
-                          {!isMe && (
-                            <Button
-                              onPress={() => onRequestDeleteMember(member)}
-                              color="secondary-destructive"
-                              size="xs"
-                              aria-label={`Hapus ${member.name} dari tim`}
-                              className="min-w-9 min-h-9 h-9 w-9 p-0 rounded-lg flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-                            >
-                              <Trash01 className="w-4 h-4 text-danger-400" />
-                            </Button>
-                          )}
-                        </>
+                                  {/* Ganti Nama */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      close();
+                                      setEditingMemberId(member.id);
+                                      setEditingMemberName(member.name);
+                                    }}
+                                    className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                                  >
+                                    <Edit02 className="w-4 h-4 text-primary-400 shrink-0" />
+                                    <span>Ganti Nama</span>
+                                  </button>
+
+                                  {/* Hapus Sohib */}
+                                  {!isMe && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        close();
+                                        onRequestDeleteMember(member);
+                                      }}
+                                      className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-danger-400 hover:bg-danger-950/40 rounded-lg transition-colors cursor-pointer text-left"
+                                    >
+                                      <Trash01 className="w-4 h-4 text-danger-400 shrink-0" />
+                                      <span>Hapus Sohib</span>
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                            </Dialog>
+                          </Popover>
+                        </DialogTrigger>
                       )}
                     </div>
                   </div>

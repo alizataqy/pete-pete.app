@@ -7,8 +7,15 @@ export default function robots(): MetadataRoute.Robots {
     return {
         rules: {
             userAgent: "*",
-            allow: "/",
-            disallow: ["/api/", "/tongkrongan/", "/profile/"],
+            allow: ["/", "/pete-pete/new"],
+            disallow: [
+                "/api/",
+                "/tongkrongan/",
+                "/profile/",
+                "/bon/",
+                "/agenda/",
+                "/pete-pete/",
+            ],
         },
         sitemap: `${baseUrl}/sitemap.xml`,
     };

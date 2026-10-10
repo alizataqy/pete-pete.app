@@ -73,7 +73,7 @@ export default function SplitShareModal({
                 </Button>
               </div>
 
-              {(!session.bankName || !session.bankAccount) && (
+              {(!session.bankName || (session.bankName !== "Cash" && !session.bankAccount)) && (
                 <div className="p-2.5 rounded-xl bg-warning-950/60 border border-warning-800/80 flex items-start gap-2.5 text-warning-100 text-xs leading-snug">
                   <AlertTriangle className="w-4 h-4 shrink-0 text-warning-400 mt-0.5" />
                   <span>

@@ -19,6 +19,7 @@ export interface ScanResult {
 export type InputMode = "scan" | "manual";
 
 export const BANK_TEMPLATES = [
+  { name: "Cash", logo: "", placeholder: "Bayar tunai langsung" },
   { name: "BCA", logo: "/bank-logos/bca.svg", placeholder: "Contoh: 1234567890" },
   { name: "Mandiri", logo: "/bank-logos/mandiri.svg", placeholder: "Contoh: 1370012345678" },
   { name: "BRI", logo: "/bank-logos/bri.svg", placeholder: "Contoh: 001201000123456" },

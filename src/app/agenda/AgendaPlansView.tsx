@@ -337,10 +337,10 @@ export default function AgendaPlansView({ userId, userName, userAvatar, initialP
 
                     <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto pr-1">
                       <Badge color="brand" size="sm" type="pill-color" className="flex items-center gap-1.5 font-bold">
-                        <Avatar src={getAvatarUrl(userAvatar)} alt={userName} size="xs" />
+                        <Avatar src={getAvatarUrl(userAvatar || userName)} alt={userName} size="xs" />
                         {userName} (Gua)
                       </Badge>
-                      {members.map((m, idx) => (
+                      {members.map((m) => (
                         <Badge
                           key={m}
                           color="gray"
@@ -348,7 +348,7 @@ export default function AgendaPlansView({ userId, userName, userAvatar, initialP
                           type="pill-color"
                           className="flex items-center gap-1.5 font-bold"
                         >
-                          <Avatar src={getAvatarUrl(`guest-agenda-${idx + 1}`)} alt={m} size="xs" />
+                          <Avatar src={getAvatarUrl(m)} alt={m} size="xs" />
                           {m}
                           <button
                             type="button"

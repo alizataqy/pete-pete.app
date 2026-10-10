@@ -43,11 +43,17 @@ export default async function AgendaDetailPage({ params }: PageProps) {
           m.userId === session.user.id ||
           m.userId === plan.userId ||
           (!m.userId && (m.name.toLowerCase() === session.user.name.toLowerCase() || m.name.toLowerCase() === "gua"));
+        const creatorAvatar =
+          plan.createdBy?.avatar ||
+          plan.createdBy?.image ||
+          session.user.image ||
+          session.user.name ||
+          null;
         return {
           id: m.id,
           name: m.name,
           userId: m.userId,
-          avatar: isMe ? (plan.createdBy?.avatar || null) : m.id,
+          avatar: isMe ? (creatorAvatar || m.name) : m.name,
         };
       })}
       initialExpenses={plan.expenses.map((e) => ({
