@@ -14,7 +14,9 @@ import {
   User01,
   Printer,
   Download01,
+  DotsVertical,
 } from "@untitledui/icons";
+import { DialogTrigger, Popover, Dialog } from "react-aria-components";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from "@/components/base/badges/badges";
 import { Avatar } from "@/components/base/avatar/avatar";
@@ -315,46 +317,83 @@ export default function BonView({
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
-          <Button
-            onPress={handlePrint}
-            color="tertiary"
-            size="sm"
-            aria-label="Print atau download PDF"
-            className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-50 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
-          >
-            <Printer className="w-4 h-4" />
-          </Button>
-          <Button
-            onPress={handleCopyLink}
-            color="tertiary"
-            size="sm"
-            aria-label="Copy link bon"
-            className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-50 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
-          >
-            {copiedLink ? (
-              <Check className="w-4 h-4 text-emerald-600" />
-            ) : (
-              <Copy01 className="w-4 h-4" />
-            )}
-          </Button>
-          <Button
-            onPress={handleShareLink}
-            color="tertiary"
-            size="sm"
-            aria-label="Share link bon"
-            className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-50 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
-          >
-            <Share07 className="w-4 h-4" />
-          </Button>
-          <Button
-            onPress={() => setIsReceiptModalOpen(true)}
-            color="tertiary"
-            size="sm"
-            aria-label="Download kartu bon digital"
-            className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-primary-400 hover:text-primary-300 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center"
-          >
-            <Download01 className="w-3.5 h-3.5" />
-          </Button>
+          <DialogTrigger>
+            <Button
+              color="secondary"
+              size="sm"
+              aria-label="Menu opsi bon"
+              className="size-9 min-w-9 min-h-9 p-1.5 rounded-lg border border-secondary-800 text-text-300 hover:text-text-100 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center cursor-pointer shrink-0"
+            >
+              <DotsVertical className="w-4 h-4" />
+            </Button>
+            <Popover
+              placement="bottom right"
+              offset={6}
+              className="z-50 w-48 p-1.5 rounded-xl border border-secondary-800 bg-secondary-950/95 backdrop-blur-md shadow-xl outline-hidden animate-in fade-in zoom-in-95 duration-150"
+            >
+              <Dialog className="outline-hidden">
+                {({ close }) => (
+                  <div className="flex flex-col gap-0.5">
+                    {/* Share Link Bon */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        close();
+                        handleShareLink();
+                      }}
+                      className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                    >
+                      <Share07 className="w-4 h-4 text-primary-400 shrink-0" />
+                      <span>Bagikan Bon</span>
+                    </button>
+
+                    {/* Copy Link Bon */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        close();
+                        handleCopyLink();
+                      }}
+                      className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                    >
+                      {copiedLink ? (
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                      ) : (
+                        <Copy01 className="w-4 h-4 text-primary-400 shrink-0" />
+                      )}
+                      <span>Salin Link Bon</span>
+                    </button>
+
+                    {/* Download Kartu Bon */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        close();
+                        setIsReceiptModalOpen(true);
+                      }}
+                      className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                    >
+                      <Download01 className="w-4 h-4 text-primary-400 shrink-0" />
+                      <span>Download Kartu Bon</span>
+                    </button>
+
+                    {/* Print / Simpan PDF */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        close();
+                        handlePrint();
+                      }}
+                      className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs font-semibold text-text-100 hover:bg-secondary-900 rounded-lg transition-colors cursor-pointer text-left"
+                    >
+                      <Printer className="w-4 h-4 text-primary-400 shrink-0" />
+                      <span>Cetak / Simpan PDF</span>
+                    </button>
+                  </div>
+                )}
+              </Dialog>
+            </Popover>
+          </DialogTrigger>
         </div>
       </header>
 

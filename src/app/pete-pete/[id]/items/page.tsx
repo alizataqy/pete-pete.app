@@ -84,8 +84,8 @@ export default async function ItemsReviewPage({ params }: { params: Promise<{ id
             </div>
             {discount > 0 && (
               <div className="p-2 rounded-xl bg-secondary-950/70 border border-secondary-800/60">
-                <p className="text-3xs text-emerald-400 font-semibold uppercase tracking-wider">Diskon</p>
-                <p className="text-xs font-bold text-emerald-400 mt-1 tabular-nums">
+                <p className="text-3xs text-text-400 font-semibold uppercase tracking-wider">Diskon</p>
+                <p className="text-xs font-bold text-text-100 mt-1 tabular-nums">
                   - Rp {discount.toLocaleString("id-ID")}
                 </p>
               </div>
