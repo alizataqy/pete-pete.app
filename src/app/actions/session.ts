@@ -642,30 +642,6 @@ export async function createManualBillSession(data: CreateManualSessionData) {
       });
       dbMembers.push(m);
     }
-        bankName: data.bankName,
-        bankAccount: data.bankAccount ? encrypt(data.bankAccount) : null,
-        bankOwner: data.bankOwner,
-      },
-    });
-
-    // 2. Create members
-    const payerName = (data.payerMemberName || data.members[0] || "").trim().toLowerCase();
-    const dbMembers = [];
-    for (let i = 0; i < data.members.length; i++) {
-      const name = data.members[i];
-      const isOwner = i === 0;
-      const isPayer = name.trim().toLowerCase() === payerName;
-      const m = await prisma.billMember.create({
-        data: {
-          name,
-          sessionId: session.id,
-          shareAmount: 0,
-          userId: isOwner ? (data.userId || null) : null,
-          isPaid: isPayer,
-        },
-      });
-      dbMembers.push(m);
-    }
 
     // 3. Create items and their allocations
     for (const item of data.items) {
