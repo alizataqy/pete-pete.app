@@ -6,11 +6,71 @@ import { encrypt } from "@/lib/encryption";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
+async function verifySessionAccess(sessionId: string) {
+  const sessionAuth = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const currentUserId = sessionAuth?.user?.id || null;
+
+  const billSession = await prisma.billSession.findUnique({
+    where: { id: sessionId },
+    select: {
+      id: true,
+      userId: true,
+      members: {
+        select: { userId: true },
+      },
+    },
+  });
+
+  if (!billSession) {
+    return { allowed: false, error: "Sesi bill gak ketemu nih, Bos." };
+  }
+
+  // Jika bill memiliki pemilik terdaftar, validasi otorisasi
+  if (billSession.userId) {
+    if (!currentUserId) {
+      return { allowed: false, error: "Lo mesti login dulu buat ubah sesi ini ya, Bos!" };
+    }
+    const isOwner = billSession.userId === currentUserId;
+    const isMember = billSession.members.some((m) => m.userId === currentUserId);
+    if (!isOwner && !isMember) {
+      return { allowed: false, error: "Lo gak punya izin buat ubah sesi ini, Bos!" };
+    }
+  }
+
+  return { allowed: true, currentUserId, billSession };
+}
+
+async function verifySessionOwner(sessionId: string) {
+  const sessionAuth = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const currentUserId = sessionAuth?.user?.id || null;
+
+  const billSession = await prisma.billSession.findUnique({
+    where: { id: sessionId },
+    select: { id: true, userId: true },
+  });
+
+  if (!billSession) {
+    return { allowed: false, error: "Sesi bill gak ketemu nih, Bos." };
+  }
+
+  if (billSession.userId) {
+    if (!currentUserId || billSession.userId !== currentUserId) {
+      return { allowed: false, error: "Cuma pembuat bill yang punya izin buat ubah status sesi." };
+    }
+  }
+
+  return { allowed: true, currentUserId, billSession };
+}
+
 async function getCurrentUser() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  return session?.user?.name || null;
+  return session?.user || null;
 }
 
 interface CreateSessionData {
@@ -42,28 +102,28 @@ export async function createBillSession(data: CreateSessionData) {
       return { success: false, error: "User tidak ditemukan" };
     }
 
+    const currentUserId = user.id;
+    let creatorName = user.name || "Gua";
+
     // Ambil info rekening dari profil user pembuat sesi
     let firstBank = null;
-    let creatorName = user;
-    if (data.userId) {
-      const creator = await prisma.user.findUnique({
-        where: { id: data.userId },
-        select: {
-          name: true,
-          banks: {
-            select: {
-              bankName: true,
-              bankAccount: true,
-              bankOwner: true,
-            },
-            take: 1,
+    const creator = await prisma.user.findUnique({
+      where: { id: currentUserId },
+      select: {
+        name: true,
+        banks: {
+          select: {
+            bankName: true,
+            bankAccount: true,
+            bankOwner: true,
           },
+          take: 1,
         },
-      });
-      firstBank = creator?.banks?.[0];
-      if (creator?.name) {
-        creatorName = creator.name;
-      }
+      },
+    });
+    firstBank = creator?.banks?.[0];
+    if (creator?.name) {
+      creatorName = creator.name;
     }
 
     const session = await prisma.billSession.create({
@@ -76,7 +136,7 @@ export async function createBillSession(data: CreateSessionData) {
         tipAmount: data.tipAmount || 0,
         discountAmount: data.discountAmount || 0,
         inviteCode,
-        userId: data.userId || null,
+        userId: currentUserId,
         bankName: data.bankName || firstBank?.bankName,
         bankAccount: data.bankAccount ? encrypt(data.bankAccount) : firstBank?.bankAccount,
         bankOwner: data.bankOwner || firstBank?.bankOwner,
@@ -95,7 +155,7 @@ export async function createBillSession(data: CreateSessionData) {
             {
               name: creatorName,
               shareAmount: 0,
-              userId: data.userId || null,
+              userId: currentUserId,
             },
             {
               name: "Sohib 1",
@@ -122,6 +182,11 @@ export async function createBillSession(data: CreateSessionData) {
 // Action untuk menambahkan member/anggota baru ke sesi splitbill
 export async function addSessionMember(sessionId: string, name: string) {
   try {
+    const access = await verifySessionAccess(sessionId);
+    if (!access.allowed) {
+      return { success: false, error: access.error };
+    }
+
     const member = await prisma.billMember.create({
       data: {
         name,
@@ -148,6 +213,11 @@ export async function addSessionMember(sessionId: string, name: string) {
 // Action untuk menghapus member/sohib dari sesi
 export async function removeSessionMember(memberId: string, sessionId: string) {
   try {
+    const access = await verifySessionAccess(sessionId);
+    if (!access.allowed) {
+      return { success: false, error: access.error };
+    }
+
     // Hapus semua alokasi item untuk member ini terlebih dahulu
     await prisma.itemAllocation.deleteMany({
       where: { memberId },
@@ -168,6 +238,11 @@ export async function removeSessionMember(memberId: string, sessionId: string) {
 // Action untuk mengubah nama member/sohib sesi
 export async function renameSessionMember(memberId: string, name: string, sessionId: string) {
   try {
+    const access = await verifySessionAccess(sessionId);
+    if (!access.allowed) {
+      return { success: false, error: access.error };
+    }
+
     const member = await prisma.billMember.update({
       where: { id: memberId },
       data: { name },
@@ -201,6 +276,10 @@ export async function saveAllocations(
   allocations: { itemId: string; memberId: string; quantity: number; fraction: number }[]
 ) {
   try {
+    const access = await verifySessionAccess(sessionId);
+    if (!access.allowed) {
+      return { success: false, error: access.error };
+    }
     // Hapus alokasi lama pada sesi ini
     const itemIds = allocations.map((a) => a.itemId);
     await prisma.itemAllocation.deleteMany({
@@ -300,6 +379,11 @@ export async function recalculateSessionShares(sessionId: string) {
 // Action untuk menambahkan item belanja manual baru
 export async function addSessionItem(sessionId: string, name: string, quantity: number, unitPrice: number) {
   try {
+    const access = await verifySessionAccess(sessionId);
+    if (!access.allowed) {
+      return { success: false, error: access.error };
+    }
+
     const totalPrice = quantity * unitPrice;
     const createdItem = await prisma.billItem.create({
       data: {
@@ -335,6 +419,11 @@ export async function addSessionItem(sessionId: string, name: string, quantity: 
 // Action untuk mengubah/mengedit item belanjaan
 export async function updateSessionItem(itemId: string, sessionId: string, name: string, quantity: number, unitPrice: number) {
   try {
+    const access = await verifySessionAccess(sessionId);
+    if (!access.allowed) {
+      return { success: false, error: access.error };
+    }
+
     const totalPrice = quantity * unitPrice;
     await prisma.billItem.update({
       where: { id: itemId },
@@ -370,6 +459,11 @@ export async function updateSessionItem(itemId: string, sessionId: string, name:
 // Action untuk menghapus item belanjaan
 export async function deleteSessionItem(itemId: string, sessionId: string) {
   try {
+    const access = await verifySessionAccess(sessionId);
+    if (!access.allowed) {
+      return { success: false, error: access.error };
+    }
+
     // Hapus alokasi terlebih dahulu
     await prisma.itemAllocation.deleteMany({ where: { itemId } });
     // Hapus item
@@ -454,6 +548,11 @@ export async function updateBillSessionStatus(
   status: "CANCELLED" | "COMPLETED" | "DRAFT"
 ) {
   try {
+    const access = await verifySessionOwner(sessionId);
+    if (!access.allowed) {
+      return { success: false, error: access.error };
+    }
+
     await prisma.billSession.update({
       where: { id: sessionId },
       data: {
@@ -504,6 +603,8 @@ export interface CreateManualSessionData {
 export async function createManualBillSession(data: CreateManualSessionData) {
   try {
     const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const user = await getCurrentUser();
+    const currentUserId = user?.id || null;
 
     // 1. Create session
     const session = await prisma.billSession.create({
@@ -516,7 +617,31 @@ export async function createManualBillSession(data: CreateManualSessionData) {
         tipAmount: data.tipAmount || 0,
         discountAmount: data.discountAmount || 0,
         inviteCode,
-        userId: data.userId || null,
+        userId: currentUserId,
+        bankName: data.bankName,
+        bankAccount: data.bankAccount ? encrypt(data.bankAccount) : null,
+        bankOwner: data.bankOwner,
+      },
+    });
+
+    // 2. Create members
+    const payerName = (data.payerMemberName || data.members[0] || "").trim().toLowerCase();
+    const dbMembers = [];
+    for (let i = 0; i < data.members.length; i++) {
+      const name = data.members[i];
+      const isOwner = i === 0;
+      const isPayer = name.trim().toLowerCase() === payerName;
+      const m = await prisma.billMember.create({
+        data: {
+          name,
+          sessionId: session.id,
+          shareAmount: 0,
+          userId: isOwner ? currentUserId : null,
+          isPaid: isPayer,
+        },
+      });
+      dbMembers.push(m);
+    }
         bankName: data.bankName,
         bankAccount: data.bankAccount ? encrypt(data.bankAccount) : null,
         bankOwner: data.bankOwner,

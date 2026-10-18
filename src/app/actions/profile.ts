@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { encrypt, decrypt } from "@/lib/encryption";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export interface UserBankData {
   id?: string;
@@ -12,10 +14,21 @@ export interface UserBankData {
   imageUrl?: string;
 }
 
-export async function getUserBanks(userId: string) {
+export async function getUserBanks(userId?: string) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session?.user?.id) {
+      return { success: false, error: "Lo belum login nih, Bos." };
+    }
+    const targetUserId = session.user.id;
+    if (userId && userId !== targetUserId) {
+      return { success: false, error: "Gak ada izin akses rekening user lain." };
+    }
+
     const banks = await prisma.userBank.findMany({
-      where: { userId },
+      where: { userId: targetUserId },
       orderBy: { createdAt: "asc" },
     });
     return {
@@ -36,9 +49,17 @@ export async function getUserBanks(userId: string) {
 
 export async function addUserBank(userId: string, data: Omit<UserBankData, "id">) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session?.user?.id) {
+      return { success: false, error: "Lo belum login nih, Bos." };
+    }
+    const targetUserId = session.user.id;
+
     const bank = await prisma.userBank.create({
       data: {
-        userId,
+        userId: targetUserId,
         bankName: data.bankName,
         bankAccount: encrypt(data.bankAccount),
         bankOwner: data.bankOwner,
@@ -55,8 +76,16 @@ export async function addUserBank(userId: string, data: Omit<UserBankData, "id">
 
 export async function deleteUserBank(userId: string, bankId: string) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session?.user?.id) {
+      return { success: false, error: "Lo belum login nih, Bos." };
+    }
+    const targetUserId = session.user.id;
+
     await prisma.userBank.delete({
-      where: { id: bankId, userId },
+      where: { id: bankId, userId: targetUserId },
     });
     revalidatePath("/profile");
     return { success: true };
@@ -81,17 +110,28 @@ export async function getUserAvatar(userId: string) {
 
 export async function updateUserProfile(data: { userId: string; name: string; email: string; avatar?: string }) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session?.user?.id) {
+      return { success: false, error: "Lo belum login nih, Bos." };
+    }
+
+    if (session.user.id !== data.userId) {
+      return { success: false, error: "Gak ada izin buat ubah profil akun ini." };
+    }
+
     if (data.email) {
       const existingUser = await prisma.user.findUnique({
         where: { email: data.email },
       });
-      if (existingUser && existingUser.id !== data.userId) {
+      if (existingUser && existingUser.id !== session.user.id) {
         return { success: false, error: "Email sudah digunakan oleh pengguna lain." };
       }
     }
 
     await prisma.user.update({
-      where: { id: data.userId },
+      where: { id: session.user.id },
       data: {
         name: data.name,
         email: data.email,

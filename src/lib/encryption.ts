@@ -1,6 +1,11 @@
 import crypto from "crypto";
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "a-very-secure-key-32-chars-long!!"; // Must be 32 bytes
+const RAW_KEY = process.env.ENCRYPTION_KEY;
+if (!RAW_KEY && process.env.NODE_ENV === "production") {
+  throw new Error("ENCRYPTION_KEY environment variable is required in production.");
+}
+// Fallback key strictly for local development
+const ENCRYPTION_KEY = RAW_KEY || "a-very-secure-key-32-chars-long!!";
 const IV_LENGTH = 16; // For AES, this is always 16
 
 export function encrypt(text: string): string {

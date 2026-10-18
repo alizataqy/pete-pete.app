@@ -8,8 +8,11 @@ const envBetterAuthUrl = process.env.BETTER_AUTH_URL;
 
 const dynamicOrigins: string[] = [
   "http://localhost:3000",
-  "https://*.trycloudflare.com",
 ];
+
+if (process.env.NODE_ENV !== "production") {
+  dynamicOrigins.push("https://*.trycloudflare.com");
+}
 
 [envAppUrl, envBetterAuthUrl].forEach((url) => {
   if (url) {
