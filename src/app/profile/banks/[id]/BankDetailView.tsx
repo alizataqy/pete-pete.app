@@ -59,7 +59,9 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
         <Button
           href="/profile/banks"
           aria-label="Kembali ke semua wallet"
-          className="absolute left-4 min-w-11 min-h-11 p-2 rounded-lg border border-secondary-800 text-text-100 hover:bg-secondary-900 active:scale-95 transition-all flex items-center justify-center"
+          color="primary"
+          size="sm"
+          className="min-w-11 min-h-11 p-2 rounded-lg flex items-center justify-center active:scale-95 transition-all absolute left-4"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -70,17 +72,16 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
       <div className="flex-1 p-4 space-y-5 overflow-y-auto">
         {/* Premium Bank Card */}
         <div
-          className={`relative rounded-2xl p-5 overflow-hidden ${
-              bank.bankName === "BCA" ? "bg-brand-bca text-white" :
+          className={`relative rounded-2xl p-5 overflow-hidden ${bank.bankName === "BCA" ? "bg-brand-bca text-white" :
               bank.bankName === "Bank Mandiri" ? "bg-brand-mandiri text-white" :
-              bank.bankName === "BRI" ? "bg-brand-bri text-white" :
-              bank.bankName === "BNI" ? "bg-brand-bni text-white" :
-              bank.bankName === "GoPay" ? "bg-brand-gopay text-white" :
-              bank.bankName === "OVO" ? "bg-brand-ovo text-white" :
-              bank.bankName === "Dana" ? "bg-brand-dana text-white" :
-              bank.bankName === "QRIS" ? "bg-brand-qris text-white" :
-              "bg-primary text-text-950"
-          }`}
+                bank.bankName === "BRI" ? "bg-brand-bri text-white" :
+                  bank.bankName === "BNI" ? "bg-brand-bni text-white" :
+                    bank.bankName === "GoPay" ? "bg-brand-gopay text-white" :
+                      bank.bankName === "OVO" ? "bg-brand-ovo text-white" :
+                        bank.bankName === "Dana" ? "bg-brand-dana text-white" :
+                          bank.bankName === "QRIS" ? "bg-brand-qris text-white" :
+                            "bg-primary text-text-950"
+            }`}
         >
           {/* Badge */}
           <span className="absolute top-4 right-4 text-4xs font-bold uppercase tracking-wider bg-white/15 backdrop-blur-sm text-white px-2.5 py-1 rounded-full">
@@ -146,16 +147,17 @@ export default function BankDetailView({ bank, userId }: BankDetailProps) {
           >
             <Copy01 className="w-4 h-4" /> Copy Nomor
           </button>
-          <button
+          <Button
             type="button"
             onClick={() => {
               const text = `💳 Transfer ke ${bank.bankName}\n👤 A/N: ${bank.bankOwner}\n🔢 No. Rek: ${bank.bankAccount}\n\n🙏 Ditunggu transferannya ya, Bos! Thank you.`;
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
             }}
             className="flex items-center justify-center gap-2 min-h-12 py-3.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold active:scale-[0.96] transition-transform cursor-pointer"
+            iconLeading={Share07}
           >
-            <Share07 className="w-4 h-4" /> Share WA
-          </button>
+            Share WA
+          </Button>
         </div>
 
         {/* Delete Section */}
