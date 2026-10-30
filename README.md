@@ -1,6 +1,6 @@
-# PETE-PETE / Ceban Pertama 💸
+# Ceban Pertama 💸
 
-PETE-PETE adalah aplikasi split bill modern untuk nongkrong bareng, makan bareng, atau belanja rame-rame. Aplikasi ini memudahkan kamu untuk: foto struk, otomatis baca item & harga, tentuin siapa yang pesan apa, lalu bagikan tagihan ke grup WhatsApp dengan detail yang jelas.
+Ceban Pertama adalah aplikasi split bill modern untuk nongkrong bareng, makan bareng, atau belanja rame-rame. Aplikasi ini memudahkan kamu untuk: foto struk, otomatis baca item & harga, tentuin siapa pesan apa, dan bagikan tagihan ke grup tanpa ribet.
 
 > “Gak perlu ribet ngitung manual. Foto struknya, pilih siapa pesen apa, terus share ke grup. Beres.”
 
@@ -104,8 +104,8 @@ Pastikan kamu sudah punya:
 ### 1. Clone repository
 
 ```bash
-git clone https://github.com/alizataqy/pete-pete.app.git
-cd pete-pete.app
+git clone https://github.com/alizataqy/cebanpertama.git
+cd cebanpertama
 ```
 
 ### 2. Install dependency
@@ -226,6 +226,6 @@ Project ini menggunakan lisensi MIT. Silakan cek file `LICENSE` untuk detail len
 
 ## Catatan
 
-Nama project di repo ini adalah `pete-pete.app`, sementara branding UI yang dipakai di aplikasi adalah `Ceban Pertama` dan `PETE-PETE` sebagai brand utama produk. README ini disesuaikan dengan implementasi yang ada di repository saat ini.
+Brand aplikasi yang dipakai di produk adalah `Ceban Pertama`. Repository dapat di-rename sesuai kebutuhan, tetapi pengalaman dan flow produk tetap mengutamakan kemudahan membagi tagihan antar teman.
 
 *Gua mau gampang ngitung bill, bukan ribet.*
