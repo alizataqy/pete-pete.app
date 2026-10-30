@@ -1,146 +1,231 @@
-# PETE-PETE 💸
+# PETE-PETE / Ceban Pertama 💸
 
-PETE-PETE adalah aplikasi *split bill* (bagi tagihan) modern, asyik, dan gak kaku yang dirancang khusus untuk anak muda dan geng tongkrongan. Aplikasi ini mempermudah perhitungan splitbill makan, belanja, atau liburan bersama menggunakan teknologi **AI OCR Scan Struk** dan management multi-rekening/QRIS.
+PETE-PETE adalah aplikasi split bill modern untuk nongkrong bareng, makan bareng, atau belanja rame-rame. Aplikasi ini memudahkan kamu untuk: foto struk, otomatis baca item & harga, tentuin siapa yang pesan apa, lalu bagikan tagihan ke grup WhatsApp dengan detail yang jelas.
 
-> *"Udah ga perlu ribet ngitung-ngitung tagihan manual lagi. Foto struknya, pilih siapa mesen apa, terus share ke grup. Beres!"*
+> “Gak perlu ribet ngitung manual. Foto struknya, pilih siapa pesen apa, terus share ke grup. Beres.”
+
+## Fitur Utama
+
+- 📸 OCR struk otomatis dari foto
+  - Baca item, harga, pajak, dan service charge dari struk
+  - Cocok untuk resto, cafe, warung, hingga belanja bersama
+- 👥 Split bill per orang dan per porsi
+  - Pilih siapa yang pesan apa
+  - Bagi tagihan secara adil, termasuk pajak dan biaya tambahan
+- 🧾 Halaman sesi & detail tagihan
+  - Kelola sesi split bill secara terstruktur
+  - Lihat ringkasan tagihan per member
+- 💬 Share ke WhatsApp
+  - Format ringkasan bill siap dibagikan ke grup
+  - Mudah kirim ke teman-teman atau member grup
+- 🧑‍💻 Profil dan rekening
+  - Kelola profil pengguna
+  - Simpan atau atur rekening / metode pembayaran yang relevan
+- 🔐 Autentikasi dan login
+  - Login via Better Auth
+  - Dukungan konfigurasi email + Google OAuth
+- 📱 PWA-ready
+  - Dapat diinstal seperti aplikasi di perangkat
+  - Desain mobile-first untuk pengalaman yang lebih nyaman
 
 ---
 
-## ✨ Fitur Utama
+## Tech Stack
 
-- 📸 **Scan Foto Struk (AI OCR)**: Cukup upload foto struk makan/belanja, AI akan otomatis mendeteksi nama menu, kuantitas, dan harganya.
-- ✍️ **Input Manual ala Tongkrongan**: Form input manual super gampang, bisa tambah anggota geng, pilih siapa split menu apa, dan siapa yang bayar duluan.
-- 🏦 **Multi-Rekening / Wallet**: Satu user bisa mendaftarkan banyak nomor rekening bank, e-wallet (GoPay, OVO, Dana), hingga custom URL gambar QRIS dengan logo sharp (menggunakan aset dari [idn-finlogos](https://github.com/hafidznoor/idn-finlogos)).
-- 🔗 **Pilih Rekening Sesi**: Pilih rekening transfer spesifik dari profil saat membuat sesi splitbill baru.
-- 💬 **Bagi Tagihan & Share WA**: Hitung split bill instan dan bagikan rincian splitbill langsung ke grup WhatsApp teman-teman lo dengan satu klik.
-
----
-
-## 🛠️ Tech Stack
-
-- **Framework**: [Next.js](https://nextjs.org/) (App Router, React 19)
-- **Database ORM**: [Prisma ORM](https://www.prisma.io/) dengan Database PostgreSQL
-- **Authentication**: [Better Auth](https://www.better-auth.com/)
-- **UI Design System**: Built with customized [Untitled UI Components](https://github.com/untitledui) & [React Aria Components](https://react-spectrum.adobe.com/react-aria/react-aria-components.html)
-- **Styling**: Tailwind CSS v4
-- **Logo Assets**: Cloned from [idn-finlogos](https://github.com/hafidznoor/idn-finlogos)
+- Framework: [Next.js](https://nextjs.org/) 16 (App Router)
+- Language: [TypeScript](https://www.typescriptlang.org/)
+- Database ORM: [Prisma](https://www.prisma.io/)
+- Database: [PostgreSQL](https://www.postgresql.org/)
+- Authentication: [Better Auth](https://better-auth.com/)
+- Styling: [Tailwind CSS](https://tailwindcss.com/)
+- OCR: [Tesseract.js](https://tesseract.projectnaptha.com/)
+- Email: [Resend](https://resend.com/)
+- Hosting target: Vercel
 
 ---
 
-## 🚀 Cara Menjalankan Project Secara Lokal
+## Struktur Project
 
-### 1. Prasyarat (Prerequisites)
-Pastikan lo sudah menginstal:
-- [Node.js](https://nodejs.org/) (versi 18+ direkomendasikan)
-- [PostgreSQL](https://www.postgresql.org/) (running local database)
-
-### 2. Clone Repositori
 ```bash
-git clone https://github.com/username/pete-pete-splitbill.git
-cd pete-pete-splitbill
+.
+├── .env.example
+├── .gitignore
+├── AGENTS.md
+├── README.md
+├── docs/
+├── prisma/
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── agenda/
+│   │   ├── bon/
+│   │   ├── forgot-password/
+│   │   ├── login/
+│   │   ├── pete-pete/
+│   │   ├── profile/
+│   │   ├── register/
+│   │   ├── reset-password/
+│   │   ├── tongkrongan/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── LandingView.tsx
+│   ├── components/
+│   ├── hooks/
+│   ├── lib/
+│   ├── styles/
+│   └── utils/
+├── package.json
+├── prisma.config.ts
+├── next.config.ts
+├── tsconfig.json
+├── postcss.config.mjs
+├── eslint.config.mjs
+├── .oxlintrc.json
+├── LICENSE
+└── package-lock.json
 ```
 
-### 3. Instal Dependensi
+---
+
+## Prasyarat
+
+Pastikan kamu sudah punya:
+
+- [Node.js](https://nodejs.org/) 18+
+- [PostgreSQL](https://www.postgresql.org/) yang sedang berjalan local
+- Git
+
+---
+
+## Setup Local
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/alizataqy/pete-pete.app.git
+cd pete-pete.app
+```
+
+### 2. Install dependency
+
 ```bash
 npm install
 ```
 
-### 4. Setup Environment Variable (`.env`)
-Buat file bernama `.env` di root direktori project, lalu isi dengan konfigurasi berikut:
+### 3. Setup environment variable
+
+Buat file `.env` di root project dan isi sesuai `.env.example`.
+
 ```env
-# Koneksi PostgreSQL Database
-DATABASE_URL="postgresql://username:password@localhost:5432/spitbill_db?schema=public"
+# Database
+DATABASE_URL="postgresql://root:root@localhost:5432/spitbill_db?schema=public"
 
-# Better Auth secret & base URL
-BETTER_AUTH_SECRET="buat_random_secret_string_lo_di_sini"
+# Better Auth & App Configuration
+BETTER_AUTH_SECRET="your-secret-key-here"
 BETTER_AUTH_URL="http://localhost:3000"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
-# Optional: API Key untuk OCR Struk jika ingin menggunakan model AI penuh
-GEMINI_API_KEY="api_key_gemini_lo_di_sini"
+# Resend Email Configuration
+RESEND_API_KEY=""
+EMAIL_FROM="Ceban Pertama <onboarding@resend.dev>"
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
 ```
 
-### 5. Setup Database & Prisma Migrations
-Jalankan perintah ini untuk generate client Prisma dan sinkronisasi skema ke database:
+### 4. Setup database Prisma
+
 ```bash
 npx prisma generate
 npx prisma db push
 ```
 
-### 6. Jalankan Server Development
+### 5. Jalankan aplikasi
+
 ```bash
 npm run dev
 ```
-Buka [http://localhost:3000](http://localhost:3000) di browser lo untuk mencoba aplikasinya secara lokal.
+
+Buka browser ke:
+
+- http://localhost:3000
 
 ---
 
-## 🤝 Cara Berkontribusi (Open for Contributions)
+## Scripts yang Tersedia
 
-Kami sangat senang menerima kontribusi dari komunitas! Baik itu memperbaiki bug, menambahkan fitur baru, merapikan UI, atau sekadar memperbaiki typo di dokumentasi. 
-
-Berikut langkah-langkah untuk berkontribusi:
-
-1. **Fork** repositori ini ke akun GitHub lo.
-2. **Clone** hasil fork lo ke komputer lokal:
-   ```bash
-   git clone https://github.com/username-lo/pete-pete-splitbill.git
-   ```
-3. Buat branch baru untuk fitur atau perbaikan lo:
-   ```bash
-   git checkout -b feature/fitur-keren-baru
-   ```
-4. Lakukan perubahan kode, pastikan kode lo rapi dan berjalan dengan baik.
-5. Jalankan pengecekan TypeScript & Linter untuk memastikan tidak ada build error:
-   ```bash
-   npx tsc --noEmit
-   npm run lint
-   ```
-6. Commit perubahan lo dengan pesan commit yang jelas:
-   ```bash
-   git commit -m "feat: tambah integrasi split bill via Line/Telegram"
-   ```
-7. Push ke branch lo:
-   ```bash
-   git push origin feature/fitur-keren-baru
-   ```
-8. Buka halaman repositori asli di GitHub, lalu klik tombol **New Pull Request**. Jelaskan secara detail perubahan yang lo buat dengan menggunakan format template berikut:
-   
-   ### 📝 Template Deskripsi Pull Request (PR)
-   ```markdown
-   ## 🎯 Tujuan PR
-   Jelaskan secara singkat apa tujuan dari PR ini (misal: "Memperbaiki overflow pada form input manual di mobile" atau "Menambahkan fitur integrasi pembayaran QRIS BCA").
-   
-   - Closes #issue-number (jika ada issue terkait)
-   
-   ## 🛠️ Perubahan yang Dilakukan
-   Sebutkan file apa saja yang diubah dan detail logika baru yang dimasukkan:
-   - [x] Refactor `ProfileForm.tsx` untuk memindahkan form input bank ke page baru.
-   - [x] Modifikasi `button.tsx` menggunakan `flex` dibanding `inline-flex` untuk responsivitas layout.
-   
-   ## 🧪 Langkah Pengujian
-   Tuliskan langkah-langkah detail agar reviewer bisa mencoba hasil kodemu secara lokal:
-   1. Jalankan development server `npm run dev`.
-   2. Masuk ke dashboard, pilih menu profil, lalu klik "Tambah Bank".
-   3. Coba isi dengan QRIS dan periksa apakah logo QRIS muncul dengan tajam.
-   4. Hapus salah satu rekening dan pastikan datanya hilang di database.
-   
-   ## 📸 Bukti Visual (Screenshot / GIF)
-   > Wajib dilampirkan jika ada perubahan tampilan UI/UX!
-   | Sebelum (Before) | Sesudah (After) |
-   | --- | --- |
-   | [Link/Foto Sebelum] | [Link/Foto Sesudah] |
-   ```
-
-   ### ⚠️ Aturan Penting Sebelum Mengajukan PR:
-   - Pastikan **tidak ada build/typescript error** (`npx tsc --noEmit` wajib lulus).
-   - Jangan memasukkan API key pribadi (seperti `GEMINI_API_KEY`) ke dalam file commit, gunakan `.env`.
-   - Gunakan format penulisan commit yang standar (Conventional Commits), seperti `feat: ...`, `fix: ...`, atau `docs: ...`.
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+npm run lint:fix
+npm run db:push
+npm run db:generate
+```
 
 ---
 
-## 📝 Lisensi
-Project ini berlisensi [MIT License](LICENSE). Lo bebas gunain, modifikasi, dan sebarluaskan untuk keperluan belajar atau portofolio pribadi lo.
+## Workflow Aplikasi
+
+Secara umum alur produk ini adalah:
+
+1. User masuk ke landing page
+2. Buat atau join sesi split bill
+3. Upload foto struk
+4. OCR membaca item, harga, pajak, dan service charge
+5. Pilih siapa yang pesan apa
+6. Hitung tagihan per orang
+7. Share hasilnya ke grup melalui WhatsApp
+8. Kelola profil dan data rekening pengguna
 
 ---
 
-*Grup chat lo nungguin splitbill cair? PETE-PETE aja! 💸*
+## Roadmap Singkat
+
+- Split bill dasar untuk nongkrong & makan bareng
+- OCR struk dan pengelompokan orang per item
+- Sesi bill yang bisa dibagikan ke grup
+- Autentikasi, profil, dan payment-related setup
+- PWA / experience yang lebih app-like
+
+---
+
+## Kontribusi
+
+Kontribusi sangat terbuka untuk:
+
+- perbaikan bug
+- peningkatan UI/UX
+- optimasi OCR dan split logic
+- dokumentasi
+- refactor keamanan dan performa
+
+Langkah umum:
+
+```bash
+git checkout -b feature/nama-fiturnya
+# lakukan perubahan
+npm run lint
+npm run build
+git push origin feature/nama-fiturnya
+```
+
+Buat PR ke branch default repository untuk review.
+
+---
+
+## Lisensi
+
+Project ini menggunakan lisensi MIT. Silakan cek file `LICENSE` untuk detail lengkap.
+
+---
+
+## Catatan
+
+Nama project di repo ini adalah `pete-pete.app`, sementara branding UI yang dipakai di aplikasi adalah `Ceban Pertama` dan `PETE-PETE` sebagai brand utama produk. README ini disesuaikan dengan implementasi yang ada di repository saat ini.
+
+*Gua mau gampang ngitung bill, bukan ribet.*
